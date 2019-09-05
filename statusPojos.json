@@ -1,0 +1,552 @@
+[
+  {
+    "nonceHex": "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428",
+    "friendStatusByClientNonceHex": {
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": 2,
+      "9b3c951e1d53f0a9a775f62b11520b0318886d05f01f4d54d1458ca45f3d0c66": 2,
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": 2,
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": 2,
+      "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48": 2,
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": 2
+    },
+    "offersCount": 3,
+    "offersCountByClientNonceHex": {
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": 1,
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": 1,
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": 1
+    },
+    "offerIdHexByClientNonceHex": {
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": "5696995b4224324d5e606f42ffaaa18d43c3349309c9cbfaad3ec52d196d220b",
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": "1a5d7ff8f5e3e6b8d1918cb95d78751b46cef9ea170a3e38512f28e2191d5bca",
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": "dfa995e5a4cc39d19aca744ff3a766cc4ef88a8a5922c7bbdc155c2390b2e4f9"
+    },
+    "isConnectableByClientNonceHex": {
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": false,
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": false,
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": false,
+      "9b3c951e1d53f0a9a775f62b11520b0318886d05f01f4d54d1458ca45f3d0c66": false,
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": false,
+      "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48": false
+    },
+    "offersReceivedByClientNonceHex": {
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": 60,
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": 42,
+      "9b3c951e1d53f0a9a775f62b11520b0318886d05f01f4d54d1458ca45f3d0c66": 3,
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": 39,
+      "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48": 18,
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": 15
+    },
+    "extroverts": [
+      {
+        "createdAgo": 43,
+        "status": 2,
+        "peerClientNonceHex": "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb",
+        "offerSentAgo": 42,
+        "offerIdHex": "3bacfd502c0f970c72288d30b71cb94f73267bd2dae5d9a94ed1456b1a6f826b"
+      },
+      {
+        "createdAgo": 19,
+        "status": 2,
+        "peerClientNonceHex": "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922",
+        "offerSentAgo": 19,
+        "offerIdHex": "81ee782b613ae3cd47f86697266f627630e51f5043b9ffbbc21f1643b2022137"
+      },
+      {
+        "createdAgo": 18,
+        "status": 2,
+        "peerClientNonceHex": "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48",
+        "offerSentAgo": 18,
+        "offerIdHex": "1ab11b859b7ff797fae3f1aeb3c4c82c6e04356b19a62512b13a0e633f6417c9"
+      }
+    ],
+    "introverts": [
+      {
+        "createdAgo": 38,
+        "status": 2,
+        "peerClientNonceHex": "9b3c951e1d53f0a9a775f62b11520b0318886d05f01f4d54d1458ca45f3d0c66"
+      },
+      {
+        "createdAgo": 33,
+        "status": 2,
+        "peerClientNonceHex": "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f"
+      },
+      {
+        "createdAgo": 4,
+        "status": 2,
+        "peerClientNonceHex": "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27"
+      }
+    ]
+  },
+  {
+    "nonceHex": "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb",
+    "friendStatusByClientNonceHex": {
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": 2,
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": 2,
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": 2,
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": 2,
+      "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48": 2,
+      "9b3c951e1d53f0a9a775f62b11520b0318886d05f01f4d54d1458ca45f3d0c66": 2
+    },
+    "offersCount": 4,
+    "offersCountByClientNonceHex": {
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": 1,
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": 1,
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": 1,
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": 1
+    },
+    "offerIdHexByClientNonceHex": {
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": "5696995b4224324d5e606f42ffaaa18d43c3349309c9cbfaad3ec52d196d220b",
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": "86bb19c5452a4087b46cecca230382cd78fd3d38e938e0983ffd859612411475",
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": "1a5d7ff8f5e3e6b8d1918cb95d78751b46cef9ea170a3e38512f28e2191d5bca",
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": "1ab11b859b7ff797fae3f1aeb3c4c82c6e04356b19a62512b13a0e633f6417c9"
+    },
+    "isConnectableByClientNonceHex": {
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": false,
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": false,
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": false,
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": false,
+      "9b3c951e1d53f0a9a775f62b11520b0318886d05f01f4d54d1458ca45f3d0c66": false,
+      "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48": false
+    },
+    "offersReceivedByClientNonceHex": {
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": 12,
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": 60,
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": 42,
+      "9b3c951e1d53f0a9a775f62b11520b0318886d05f01f4d54d1458ca45f3d0c66": 3,
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": 39,
+      "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48": 18
+    },
+    "extroverts": [
+      {
+        "createdAgo": 18,
+        "status": 2,
+        "peerClientNonceHex": "9b3c951e1d53f0a9a775f62b11520b0318886d05f01f4d54d1458ca45f3d0c66",
+        "offerSentAgo": 15,
+        "offerIdHex": "dfa995e5a4cc39d19aca744ff3a766cc4ef88a8a5922c7bbdc155c2390b2e4f9"
+      },
+      {
+        "createdAgo": 17,
+        "status": 2,
+        "peerClientNonceHex": "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48",
+        "offerSentAgo": 17,
+        "offerIdHex": "e2cd016116d4be4ff3e4b2e75f2bd2ab6800d4b9525b522ebf8c60dbc0b29d09"
+      }
+    ],
+    "introverts": [
+      {
+        "createdAgo": 42,
+        "status": 2,
+        "peerClientNonceHex": "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428"
+      },
+      {
+        "createdAgo": 37,
+        "status": 2,
+        "peerClientNonceHex": "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27"
+      },
+      {
+        "createdAgo": 24,
+        "status": 2,
+        "peerClientNonceHex": "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922"
+      },
+      {
+        "createdAgo": 11,
+        "status": 2,
+        "peerClientNonceHex": "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f"
+      }
+    ]
+  },
+  {
+    "nonceHex": "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f",
+    "friendStatusByClientNonceHex": {
+      "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48": 2,
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": 2,
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": 2,
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": 2,
+      "9b3c951e1d53f0a9a775f62b11520b0318886d05f01f4d54d1458ca45f3d0c66": 2,
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": 2
+    },
+    "offersCount": 3,
+    "offersCountByClientNonceHex": {
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": 1,
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": 1,
+      "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48": 1
+    },
+    "offerIdHexByClientNonceHex": {
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": "dfa995e5a4cc39d19aca744ff3a766cc4ef88a8a5922c7bbdc155c2390b2e4f9",
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": "1ab11b859b7ff797fae3f1aeb3c4c82c6e04356b19a62512b13a0e633f6417c9",
+      "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48": "119490d1b054c3173129bd18630e61f030bd562cc6743f6197c6b211b79da1dc"
+    },
+    "isConnectableByClientNonceHex": {
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": false,
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": false,
+      "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48": false,
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": false,
+      "9b3c951e1d53f0a9a775f62b11520b0318886d05f01f4d54d1458ca45f3d0c66": false,
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": false
+    },
+    "offersReceivedByClientNonceHex": {
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": 42,
+      "9b3c951e1d53f0a9a775f62b11520b0318886d05f01f4d54d1458ca45f3d0c66": 3,
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": 39,
+      "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48": 18,
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": 6,
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": 15
+    },
+    "extroverts": [
+      {
+        "createdAgo": 41,
+        "status": 2,
+        "peerClientNonceHex": "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428",
+        "offerSentAgo": 34,
+        "offerIdHex": "e29c83142c6a4226d35b522647f9ece8b3d44ca15138264d5d4b78f7f1f1c7b6"
+      },
+      {
+        "createdAgo": 21,
+        "status": 2,
+        "peerClientNonceHex": "9b3c951e1d53f0a9a775f62b11520b0318886d05f01f4d54d1458ca45f3d0c66",
+        "offerSentAgo": 20,
+        "offerIdHex": "ad87c2ff056929471d88198fe4cf96a2bb4b7d373b4c1ea625a3181d68ff7097"
+      },
+      {
+        "createdAgo": 14,
+        "status": 2,
+        "peerClientNonceHex": "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb",
+        "offerSentAgo": 11,
+        "offerIdHex": "014c2d4bd7a36d8c82fef6c73b67f9cf2bbaed7c4af14771485daa6529de2b8b"
+      },
+      {
+        "createdAgo": 6,
+        "status": 2,
+        "peerClientNonceHex": "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922",
+        "offerSentAgo": 5,
+        "offerIdHex": "441a44828f2575a4f8455c21a927ce02b41d0bd0757409de67211035451c8b46"
+      },
+      {
+        "createdAgo": 0,
+        "status": 2,
+        "peerClientNonceHex": "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27",
+        "offerSentAgo": 0,
+        "offerIdHex": "5696995b4224324d5e606f42ffaaa18d43c3349309c9cbfaad3ec52d196d220b"
+      }
+    ],
+    "introverts": [
+      {
+        "createdAgo": 36,
+        "status": 2,
+        "peerClientNonceHex": "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48"
+      }
+    ]
+  },
+  {
+    "nonceHex": "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922",
+    "friendStatusByClientNonceHex": {
+      "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48": 2,
+      "9b3c951e1d53f0a9a775f62b11520b0318886d05f01f4d54d1458ca45f3d0c66": 2,
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": 2,
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": 2,
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": 2,
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": 2
+    },
+    "offersCount": 5,
+    "offersCountByClientNonceHex": {
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": 1,
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": 1,
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": 1,
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": 1,
+      "9b3c951e1d53f0a9a775f62b11520b0318886d05f01f4d54d1458ca45f3d0c66": 1
+    },
+    "offerIdHexByClientNonceHex": {
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": "5696995b4224324d5e606f42ffaaa18d43c3349309c9cbfaad3ec52d196d220b",
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": "86bb19c5452a4087b46cecca230382cd78fd3d38e938e0983ffd859612411475",
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": "dfa995e5a4cc39d19aca744ff3a766cc4ef88a8a5922c7bbdc155c2390b2e4f9",
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": "1ab11b859b7ff797fae3f1aeb3c4c82c6e04356b19a62512b13a0e633f6417c9",
+      "9b3c951e1d53f0a9a775f62b11520b0318886d05f01f4d54d1458ca45f3d0c66": "b9442dd5c3ac8f0820d53935a71510d79751710297c129efa69552658e8203e1"
+    },
+    "isConnectableByClientNonceHex": {
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": false,
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": false,
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": false,
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": false,
+      "9b3c951e1d53f0a9a775f62b11520b0318886d05f01f4d54d1458ca45f3d0c66": false,
+      "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48": false
+    },
+    "offersReceivedByClientNonceHex": {
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": 57,
+      "9b3c951e1d53f0a9a775f62b11520b0318886d05f01f4d54d1458ca45f3d0c66": 3,
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": 39,
+      "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48": 18,
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": 6,
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": 15
+    },
+    "extroverts": [
+      {
+        "createdAgo": 40,
+        "status": 2,
+        "peerClientNonceHex": "9b3c951e1d53f0a9a775f62b11520b0318886d05f01f4d54d1458ca45f3d0c66",
+        "offerSentAgo": 35,
+        "offerIdHex": "47f9863ff96ed487ce81e75cbcb6af8ee24bb7422c37c9f471445dc83ec4a530"
+      },
+      {
+        "createdAgo": 26,
+        "status": 2,
+        "peerClientNonceHex": "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb",
+        "offerSentAgo": 24,
+        "offerIdHex": "401f0430547d911dd8bcff4bfd6e54c75f176da25a1847193b2d402f147eb7b0"
+      },
+      {
+        "createdAgo": 25,
+        "status": 2,
+        "peerClientNonceHex": "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27",
+        "offerSentAgo": 25,
+        "offerIdHex": "3f12f9d96f8dbdbc3fe412bc00f8703bdb082567ddf18a435eaec1e872c91ee4"
+      },
+      {
+        "createdAgo": 15,
+        "status": 2,
+        "peerClientNonceHex": "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48",
+        "offerSentAgo": 12,
+        "offerIdHex": "1a5d7ff8f5e3e6b8d1918cb95d78751b46cef9ea170a3e38512f28e2191d5bca"
+      }
+    ],
+    "introverts": [
+      {
+        "createdAgo": 19,
+        "status": 2,
+        "peerClientNonceHex": "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428"
+      },
+      {
+        "createdAgo": 4,
+        "status": 2,
+        "peerClientNonceHex": "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f"
+      }
+    ]
+  },
+  {
+    "nonceHex": "9b3c951e1d53f0a9a775f62b11520b0318886d05f01f4d54d1458ca45f3d0c66",
+    "friendStatusByClientNonceHex": {
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": 2,
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": 2,
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": 2,
+      "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48": 2,
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": 2,
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": 2
+    },
+    "offersCount": 5,
+    "offersCountByClientNonceHex": {
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": 1,
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": 1,
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": 1,
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": 1,
+      "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48": 1
+    },
+    "offerIdHexByClientNonceHex": {
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": "5696995b4224324d5e606f42ffaaa18d43c3349309c9cbfaad3ec52d196d220b",
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": "86bb19c5452a4087b46cecca230382cd78fd3d38e938e0983ffd859612411475",
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": "1a5d7ff8f5e3e6b8d1918cb95d78751b46cef9ea170a3e38512f28e2191d5bca",
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": "1ab11b859b7ff797fae3f1aeb3c4c82c6e04356b19a62512b13a0e633f6417c9",
+      "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48": "119490d1b054c3173129bd18630e61f030bd562cc6743f6197c6b211b79da1dc"
+    },
+    "isConnectableByClientNonceHex": {
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": false,
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": false,
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": false,
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": false,
+      "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48": false,
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": false
+    },
+    "offersReceivedByClientNonceHex": {
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": 54,
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": 39,
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": 39,
+      "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48": 18,
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": 6,
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": 15
+    },
+    "extroverts": [
+      {
+        "createdAgo": 39,
+        "status": 2,
+        "peerClientNonceHex": "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428",
+        "offerSentAgo": 39,
+        "offerIdHex": "b9442dd5c3ac8f0820d53935a71510d79751710297c129efa69552658e8203e1"
+      }
+    ],
+    "introverts": [
+      {
+        "createdAgo": 34,
+        "status": 2,
+        "peerClientNonceHex": "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922"
+      },
+      {
+        "createdAgo": 25,
+        "status": 2,
+        "peerClientNonceHex": "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48"
+      },
+      {
+        "createdAgo": 20,
+        "status": 2,
+        "peerClientNonceHex": "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f"
+      },
+      {
+        "createdAgo": 19,
+        "status": 2,
+        "peerClientNonceHex": "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27"
+      },
+      {
+        "createdAgo": 14,
+        "status": 2,
+        "peerClientNonceHex": "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb"
+      }
+    ]
+  },
+  {
+    "nonceHex": "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27",
+    "friendStatusByClientNonceHex": {
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": 2,
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": 2,
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": 2,
+      "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48": 2,
+      "9b3c951e1d53f0a9a775f62b11520b0318886d05f01f4d54d1458ca45f3d0c66": 2,
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": 2
+    },
+    "offersCount": 2,
+    "offersCountByClientNonceHex": {
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": 1,
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": 1
+    },
+    "offerIdHexByClientNonceHex": {
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": "1a5d7ff8f5e3e6b8d1918cb95d78751b46cef9ea170a3e38512f28e2191d5bca",
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": "dfa995e5a4cc39d19aca744ff3a766cc4ef88a8a5922c7bbdc155c2390b2e4f9"
+    },
+    "isConnectableByClientNonceHex": {
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": false,
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": false,
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": false,
+      "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48": false,
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": false
+    },
+    "offersReceivedByClientNonceHex": {
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": 51,
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": 36,
+      "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48": 18,
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": 6,
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": 15
+    },
+    "extroverts": [
+      {
+        "createdAgo": 38,
+        "status": 2,
+        "peerClientNonceHex": "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb",
+        "offerSentAgo": 38,
+        "offerIdHex": "81d090969453108339c3760702bb4d25598aa886a41a5960bb9e03186eff056d"
+      },
+      {
+        "createdAgo": 20,
+        "status": 2,
+        "peerClientNonceHex": "9b3c951e1d53f0a9a775f62b11520b0318886d05f01f4d54d1458ca45f3d0c66",
+        "offerSentAgo": 20,
+        "offerIdHex": "320a0d9fdef16cc5bb1cee1b8e61b1069721f3e2de6fd41882077403215bd2df"
+      },
+      {
+        "createdAgo": 14,
+        "status": 2,
+        "peerClientNonceHex": "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48",
+        "offerSentAgo": 13,
+        "offerIdHex": "b4a2f1cf7db3a9cb3836b192b782a1caf15b33ae0c6322297d4b5802ba98399a"
+      },
+      {
+        "createdAgo": 6,
+        "status": 2,
+        "peerClientNonceHex": "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428",
+        "offerSentAgo": 5,
+        "offerIdHex": "86bb19c5452a4087b46cecca230382cd78fd3d38e938e0983ffd859612411475"
+      }
+    ],
+    "introverts": [
+      {
+        "createdAgo": 25,
+        "status": 2,
+        "peerClientNonceHex": "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922"
+      },
+      {
+        "createdAgo": 0,
+        "status": 2,
+        "peerClientNonceHex": "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f"
+      }
+    ]
+  },
+  {
+    "nonceHex": "85ce0b0c79c28b33d3143cbc44f565a4fe1fb42054045b28c645dc3458388c48",
+    "friendStatusByClientNonceHex": {
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": 2,
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": 2,
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": 2,
+      "9b3c951e1d53f0a9a775f62b11520b0318886d05f01f4d54d1458ca45f3d0c66": 2,
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": 2,
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": 2
+    },
+    "offersCount": 3,
+    "offersCountByClientNonceHex": {
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": 1,
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": 1,
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": 1
+    },
+    "offerIdHexByClientNonceHex": {
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": "5696995b4224324d5e606f42ffaaa18d43c3349309c9cbfaad3ec52d196d220b",
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": "86bb19c5452a4087b46cecca230382cd78fd3d38e938e0983ffd859612411475",
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": "dfa995e5a4cc39d19aca744ff3a766cc4ef88a8a5922c7bbdc155c2390b2e4f9"
+    },
+    "isConnectableByClientNonceHex": {
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": false,
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": false,
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": false,
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": false,
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": false
+    },
+    "offersReceivedByClientNonceHex": {
+      "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f": 48,
+      "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922": 33,
+      "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27": 36,
+      "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428": 6,
+      "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb": 15
+    },
+    "extroverts": [
+      {
+        "createdAgo": 37,
+        "status": 2,
+        "peerClientNonceHex": "8c0c75aac861075338e35d709e17368a3d260df1a672d7f5521c3d82f453693f",
+        "offerSentAgo": 36,
+        "offerIdHex": "6c79b0fe49f4e24c07b22ecfe421ee98d0397319de2b70bb8b8d0abf06d7b701"
+      },
+      {
+        "createdAgo": 27,
+        "status": 2,
+        "peerClientNonceHex": "9b3c951e1d53f0a9a775f62b11520b0318886d05f01f4d54d1458ca45f3d0c66",
+        "offerSentAgo": 25,
+        "offerIdHex": "119490d1b054c3173129bd18630e61f030bd562cc6743f6197c6b211b79da1dc"
+      }
+    ],
+    "introverts": [
+      {
+        "createdAgo": 18,
+        "status": 2,
+        "peerClientNonceHex": "d3bdecfe8caa9b39ace0ab83b3a3d681ba5bf50f864cb4cf06438374906d2428"
+      },
+      {
+        "createdAgo": 17,
+        "status": 2,
+        "peerClientNonceHex": "4886e3e7e52bc16265d898e2143b89206ce78eae75cda5757cc47aea02dd82fb"
+      },
+      {
+        "createdAgo": 13,
+        "status": 2,
+        "peerClientNonceHex": "12a28696c39e7f0f0bed695b8b6da4e3bed74d348dac25bd3d33780235efaa27"
+      },
+      {
+        "createdAgo": 12,
+        "status": 2,
+        "peerClientNonceHex": "225557de4d30555980dd5ac9055c6f6a210e9b2ebb0d5e0b2b3d63fcb7145922"
+      }
+    ]
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "rootDir": "ts",
+    "outDir": "js",
+    "lib": ["es5", "es6", "dom"],
+    "types": ["node"],
+    "typeRoots": [
+      "./node_modules/@types"
+    ]
+  }
+}
