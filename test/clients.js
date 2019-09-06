@@ -40,13 +40,6 @@ describe('clients', () => {
   })
   it('wait for 0 friends to be connecting', (done) => {
 
-    async function logStatusPojos() {
-      const statusPojos = await Promise.all(clients.map(async (client, index) => {
-        return client.fetchStatusPojo()
-      }))
-      fs.writeFileSync('statusPojos.json', JSON.stringify(statusPojos, null, 2))
-    }
-
     async function getIsFullyConnected() {
       let isFullyConnected = true
       await Promise.all(clients.map(async (client, index) => {
@@ -66,10 +59,7 @@ describe('clients', () => {
     }
 
     async function onFriendStatus() {
-      await logStatusPojos()
-
       if (await getIsFullyConnected()) {
-        clearInterval(logStatusPojosInterval)
         done()
       }
     }
@@ -80,7 +70,6 @@ describe('clients', () => {
         done()
         return
       }
-      logStatusPojosInterval = setInterval(logStatusPojos, 1000)
       clients.forEach((client, index) => {
         client.on('friend.status', onFriendStatus)
       })

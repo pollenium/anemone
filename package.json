@@ -1,8 +1,7 @@
 {
-  "name": "pollenium-client",
+  "name": "pollenium-clients",
   "version": "0.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "test": "npm run-script build && mocha --bail --exit --timeout 0",
     "build": "rm -rf ./js/* && tsc"
