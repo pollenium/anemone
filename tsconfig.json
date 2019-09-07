@@ -3,6 +3,7 @@
     "rootDir": "ts",
     "outDir": "js",
     "lib": ["es5", "es6", "dom"],
+    "esModuleInterop": true,
     "types": ["node"],
     "typeRoots": [
       "./node_modules/@types"
