@@ -1,7 +1,7 @@
-import { server as WsServer } from 'websocket'
+import { server as WsServer, connection as WsConnection } from 'websocket'
 import * as http from 'http'
 import { Menteeship } from './Menteeship'
-import * as EventEmitter from 'events'
+import EventEmitter from 'events'
 import { Offer } from './Offer'
 
 let debugId = 0;
@@ -9,19 +9,24 @@ let debugId = 0;
 export class SignalingServer extends EventEmitter {
 
   debugId: number = debugId++;
+
   menteeships: Menteeship[] = [];
+
   menteeshipsByOfferIdHex: {[id: string]: Menteeship} = {};
+
   // offers: Offer[] = [];
-  httpServer;
-  wsServer;
+  // TODO: any fix
+  httpServer: any;
+
+  wsServer: any;
 
   constructor(public port: number) {
     super()
     this.bootstrap()
   }
 
-  bootstrap() {
-    this.httpServer = http.createServer((request, response) => {
+  bootstrap(): void {
+    this.httpServer = http.createServer((_request, response) => {
       response.writeHead(404)
       response.end()
     })
@@ -32,7 +37,7 @@ export class SignalingServer extends EventEmitter {
       autoAcceptConnections: true
     })
 
-    this.wsServer.on('connect', (wsConnection) => {
+    this.wsServer.on('connect', (wsConnection: WsConnection) => {
       const menteeship = new Menteeship(this, wsConnection)
       this.menteeships.push(menteeship)
 
@@ -41,12 +46,6 @@ export class SignalingServer extends EventEmitter {
         const offerIdHex = offer.getId().getHex()
 
         this.menteeshipsByOfferIdHex[offerIdHex] = menteeship
-
-        // this.offers = this.offers.filter((_offer) => {
-        //   return !offer.clientNonce.equals(_offer.clientNonce)
-        // })
-        //
-        // this.offers.unshift(offer)
 
         this.menteeships.sort(() => {
           return Math.random() - .5
@@ -64,5 +63,9 @@ export class SignalingServer extends EventEmitter {
         this.menteeshipsByOfferIdHex[answer.offerId.getHex()].sendAnswer(answer)
       })
     })
+  }
+
+  destroy(): void {
+    this.wsServer.shutDown()
   }
 }

@@ -1,13 +1,9 @@
-import * as SimplePeer from 'simple-peer'
-import * as wrtc from 'wrtc'
 import { Client } from './Client'
 import { Bytes } from './Bytes'
-import { Offer } from './Offer'
-import { Answer } from './Answer'
-import * as delay from 'delay'
-import * as EventEmitter from 'events'
+import EventEmitter from 'events'
 import { FriendMessage } from './FriendMessage'
-import { getSimplePeerConfig, getNow } from '../utils'
+import { getNow } from '../utils'
+import { SimplePeer } from 'simple-peer'
 
 export enum FRIEND_STATUS {
   DEFAULT = 0,
@@ -17,8 +13,11 @@ export enum FRIEND_STATUS {
 }
 
 export class Friend extends EventEmitter {
+
   status: FRIEND_STATUS = FRIEND_STATUS.DEFAULT;
+
   peerClientNonce: Bytes;
+
   createdAt: number;
 
   constructor(public client: Client, public simplePeer: SimplePeer) {
@@ -27,7 +26,7 @@ export class Friend extends EventEmitter {
     this.setSimplePeerListeners()
   }
 
-  setStatus(status: FRIEND_STATUS) {
+  setStatus(status: FRIEND_STATUS): void {
     if (this.status !== undefined && status <= this.status) {
       throw new Error('Can only increase status')
     }
@@ -42,7 +41,7 @@ export class Friend extends EventEmitter {
     })
   }
 
-  private setSimplePeerListeners() {
+  private setSimplePeerListeners(): void {
     this.simplePeer.on('connect', () => {
       this.setStatus(FRIEND_STATUS.CONNECTED)
     })
@@ -51,7 +50,7 @@ export class Friend extends EventEmitter {
       this.handleMessage(friendMessage)
     })
 
-    this.simplePeer.once('error', (error) => {
+    this.simplePeer.once('error', () => {
       this.destroy()
     })
     this.simplePeer.once('close', () => {
@@ -59,7 +58,7 @@ export class Friend extends EventEmitter {
     })
   }
 
-  destroy() {
+  destroy(): void {
     this.removeAllListeners()
     if (this.simplePeer) {
       this.destroySimplePeer()
@@ -68,7 +67,7 @@ export class Friend extends EventEmitter {
     this.client.createFriend()
   }
 
-  destroySimplePeer() {
+  destroySimplePeer(): void {
     if (!this.simplePeer) {
       throw new Error('Cannot destory simplePeer, simplePeer not set')
     }
@@ -76,18 +75,18 @@ export class Friend extends EventEmitter {
     this.simplePeer.destroy()
   }
 
-  send(bytes: Bytes) {
+  send(bytes: Bytes): void {
     if (this.status !== FRIEND_STATUS.CONNECTED) {
       throw new Error('Cannot send unless FRIEND_STATUS.CONNECTED')
     }
     this.simplePeer.send(bytes.uint8Array)
   }
 
-  sendMessage(friendMessage: FriendMessage) {
+  sendMessage(friendMessage: FriendMessage): void {
     this.send(friendMessage.getEncoding())
   }
 
-  getStatusPojo() {
+  getStatusPojo(): any {
     return {
       createdAgo: (getNow() - this.createdAt),
       status: this.status,
@@ -95,7 +94,7 @@ export class Friend extends EventEmitter {
     }
   }
 
-  handleMessage(friendMessage: FriendMessage) {
+  handleMessage(friendMessage: FriendMessage): void {
     if (friendMessage.getIsReceived()) {
       return
     }

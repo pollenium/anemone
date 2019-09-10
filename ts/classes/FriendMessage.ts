@@ -1,8 +1,8 @@
 import { Bytes } from './Bytes'
 import { FRIEND_MESSAGE_KEY, friendMessageTemplate } from '../templates/friendMessage'
-import { getNow, calculateEra, getTimestamp, getMaxHash } from '../utils'
+import { getNow, calculateEra, getMaxHash } from '../utils'
 import { Client } from './Client'
-import * as Bn from 'bn.js'
+import Bn from 'bn.js'
 
 export class FriendMessage {
 
@@ -16,7 +16,7 @@ export class FriendMessage {
     public applicationData: Bytes
   ) {}
 
-  getEncoding() {
+  getEncoding(): Bytes {
     return new Bytes(
       friendMessageTemplate.encode({
         key: FRIEND_MESSAGE_KEY.V0,
@@ -31,15 +31,15 @@ export class FriendMessage {
     )
   }
 
-  getId() {
+  getId(): Bytes {
     return this.getEncoding().getHash()
   }
 
-  getEra() {
+  getEra(): number {
     return calculateEra(this.timestamp.getNumber())
   }
 
-  getIsReceived() {
+  getIsReceived(): boolean {
     const era = this.getEra()
     const idHex = this.getId().getHex()
     if (this.client.friendMessageIsReceivedByIdHexByEra[era] === undefined) {
@@ -48,7 +48,7 @@ export class FriendMessage {
     return this.client.friendMessageIsReceivedByIdHexByEra[era][idHex] === true
   }
 
-  markIsReceived() {
+  markIsReceived(): void {
     const era = this.getEra()
     const idHex = this.getId().getHex()
     if (this.client.friendMessageIsReceivedByIdHexByEra[era] === undefined) {
@@ -83,16 +83,16 @@ export class FriendMessage {
     return true
   }
 
-  broadcast() {
+  broadcast(): void {
     this.markIsReceived()
     this.client.getFriends().forEach((friend) => {
       friend.send(this.getEncoding())
     })
   }
 
-  static fromHenpojo(client: Client, henpojo): FriendMessage {
+  static fromHenpojo(client: Client, henpojo: any): FriendMessage {
     switch (henpojo.key) {
-      case FRIEND_MESSAGE_KEY.V0:
+      case FRIEND_MESSAGE_KEY.V0: {
         const v0Henpojo = henpojo.value
         return new FriendMessage(
           client,
@@ -103,7 +103,9 @@ export class FriendMessage {
           new Bytes(v0Henpojo.applicationId),
           new Bytes(v0Henpojo.applicationData),
         )
-        break;
+      }
+      default:
+        throw new Error('Unhandled FRIEND_MESSAGE_KEY')
     }
   }
 

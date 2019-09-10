@@ -1,57 +1,57 @@
-import * as request from 'request-promise'
 import { Friend, FRIEND_STATUS } from './Friend'
 import { Extrovert } from './Extrovert'
 import { Introvert } from './Introvert'
 import { SignalingClient } from './SignalingClient'
-import * as EventEmitter from 'events'
+import EventEmitter from 'events'
 import { Bytes } from './Bytes'
 import { Offer } from './Offer'
 import { Answer } from './Answer'
-import { Db } from './Db'
 import { ClientOptions } from '../interfaces/ClientOptions'
-import * as delay from 'delay'
-import { FriendMessage } from './FriendMessage'
-import { FRIEND_MESSAGE_KEY } from '../templates/friendMessage'
-import { getTimestamp } from '../utils'
-import * as Bn from 'bn.js'
-
-export class DefaultClientOptions {
-  signalingServerUrls = [];
-  signalTimeout = 2;
-  friendsMax = 6;
-  friendMessageLatencyTolerance = 30;
-}
+import delay from 'delay'
+import Bn from 'bn.js'
+import { ClientDefaultOptions } from './ClientDefaultOptions'
 
 export class Client extends EventEmitter {
 
   options: ClientOptions;
+
   nonce: Bytes;
-  bootstrapPromise;
+
+  bootstrapPromise: Promise<void>;
+
   signalingClients: SignalingClient[] = [];
+
   extroverts: Extrovert[] = [];
+
   introverts: Introvert[] = [];
+
   offers: Offer[] = [];
+
   answer: Answer[] = [];
+
   signalingClientsByOfferIdHex: { [id: string]: SignalingClient } = {};
+
   friendStatusByClientNonceHex: { [id: string]: FRIEND_STATUS } = {};
+
   offersReceivedByClientNonceHex: { [id: string]: number } = {};
+
   friendMessageIsReceivedByIdHexByEra: { [era: number]: { [friendMessageIdHex: string]: boolean }} = {};
-  db: Db;
+
   signalTimeoutMs: number;
+
   friendMessageLatencyToleranceBn: Bn;
 
 
   constructor(options: ClientOptions) {
     super()
-    this.options = Object.assign(new DefaultClientOptions, options)
+    this.options = Object.assign(new ClientDefaultOptions, options)
     this.signalTimeoutMs = this.options.signalTimeout * 1000
     this.friendMessageLatencyToleranceBn = new Bn(this.options.friendMessageLatencyTolerance)
     this.nonce = Bytes.random(32)
-    this.db = new Db
     this.bootstrap()
   }
 
-  async bootstrap() {
+  async bootstrap(): Promise<void> {
     for (let i = 0; i < this.options.signalingServerUrls.length; i++) {
       const signalingServerUrl = this.options.signalingServerUrls[i]
       this.addSignalingClient(signalingServerUrl)
@@ -60,13 +60,13 @@ export class Client extends EventEmitter {
     this.loopCreateFriend(5000)
   }
 
-  async loopCreateFriend(timeout: number) {
+  async loopCreateFriend(timeout: number): Promise<void> {
     this.createFriend()
     await delay(timeout)
     this.loopCreateFriend(timeout)
   }
 
-  createFriend() {
+  createFriend(): void {
     if (this.extroverts.length + this.introverts.length >= this.options.friendsMax) {
       return
     }
@@ -78,7 +78,7 @@ export class Client extends EventEmitter {
     }
   }
 
-  addSignalingClient(signalingServerUrl: String) {
+  addSignalingClient(signalingServerUrl: string): void {
     const signalingClient = new SignalingClient(signalingServerUrl)
     this.signalingClients.push(signalingClient)
 
@@ -91,18 +91,18 @@ export class Client extends EventEmitter {
     })
   }
 
-  popConnectableOffer() {
+  popConnectableOffer(): null | Offer {
     const connectableOfferIndex = this.offers.findIndex((offer) => {
       return this.getIsConnectableByClientNonce(offer.clientNonce)
     })
     if (connectableOfferIndex === -1) {
       return null
-    } else {
-      return this.offers.splice(connectableOfferIndex, 1)[0]
     }
+      return this.offers.splice(connectableOfferIndex, 1)[0]
+
   }
 
-  async fetchExtrovertsByOfferIdHex () {
+  async fetchExtrovertsByOfferIdHex(): Promise<{[id: string]: Extrovert}> {
     const extrovertsByOfferIdHex: {[id: string]: Extrovert} = {}
     await Promise.all(this.extroverts.map(async (extrovert) => {
       const offer = await extrovert.fetchOffer()
@@ -111,7 +111,7 @@ export class Client extends EventEmitter {
     return extrovertsByOfferIdHex
   }
 
-  handleOffer(signalingClient: SignalingClient, offer: Offer) {
+  handleOffer(signalingClient: SignalingClient, offer: Offer): void {
 
     if (
       this.offersReceivedByClientNonceHex[offer.clientNonce.getHex()] === undefined
@@ -143,7 +143,7 @@ export class Client extends EventEmitter {
     return friends
   }
 
-  async handleAnswer(signalingClient: SignalingClient, answer: Answer) {
+  async handleAnswer(signalingClient: SignalingClient, answer: Answer): Promise<void> {
 
     const extrovertsByOfferIdHex = await this.fetchExtrovertsByOfferIdHex()
     const extrovert = extrovertsByOfferIdHex[answer.offerId.getHex()]
@@ -158,7 +158,6 @@ export class Client extends EventEmitter {
 
     if (extrovert.status === FRIEND_STATUS.DEFAULT) {
       extrovert.handleAnswer(answer)
-    } else {
     }
   }
 
@@ -166,12 +165,12 @@ export class Client extends EventEmitter {
     const friendStatus = this.friendStatusByClientNonceHex[clientNonce.getHex()]
     if (friendStatus === undefined) {
       return FRIEND_STATUS.DEFAULT
-    } else {
-      return friendStatus
     }
+      return friendStatus
+
   }
 
-  getIsConnectableByClientNonce(clientNonce): boolean {
+  getIsConnectableByClientNonce(clientNonce: Bytes): boolean {
     if (clientNonce.equals(this.nonce)) {
       return false
     }
@@ -182,14 +181,16 @@ export class Client extends EventEmitter {
       case FRIEND_STATUS.CONNECTING:
       case FRIEND_STATUS.CONNECTED:
         return false;
+      default:
+        throw new Error('Unkown FRIEND_STATUS')
     }
   }
 
-  setFriendStatusByClientNonce(clientNonce: Bytes, friendStatus: FRIEND_STATUS) {
+  setFriendStatusByClientNonce(clientNonce: Bytes, friendStatus: FRIEND_STATUS): void {
     this.friendStatusByClientNonceHex[clientNonce.getHex()] = friendStatus
   }
 
-  async fetchStatusPojo() {
+  async fetchStatusPojo(): Promise<any> {
     const offersCountByClientNonceHex = {}
     const offerIdHexByClientNonceHex = {}
     const isConnectableByClientNonceHex = {}
@@ -216,9 +217,9 @@ export class Client extends EventEmitter {
       nonceHex: this.nonce.getHex(),
       friendStatusByClientNonceHex: this.friendStatusByClientNonceHex,
       offersCount: this.offers.length,
-      offersCountByClientNonceHex: offersCountByClientNonceHex,
-      offerIdHexByClientNonceHex: offerIdHexByClientNonceHex,
-      isConnectableByClientNonceHex: isConnectableByClientNonceHex,
+      offersCountByClientNonceHex,
+      offerIdHexByClientNonceHex,
+      isConnectableByClientNonceHex,
       offersReceivedByClientNonceHex: this.offersReceivedByClientNonceHex,
       extroverts: await Promise.all(this.extroverts.map((extrovert) => {
         return extrovert.fetchStatusPojo()

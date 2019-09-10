@@ -4,7 +4,7 @@ import { SIGNALING_MESSAGE_KEY, signalingMessageTemplate } from '../templates/si
 export class Answer {
   constructor(public clientNonce: Bytes, public offerId: Bytes, public sdpb: Bytes) {}
 
-  getEncoding() {
+  getEncoding(): Bytes {
     return new Bytes(
       signalingMessageTemplate.encode({
         key: SIGNALING_MESSAGE_KEY.ANSWER,
@@ -17,7 +17,7 @@ export class Answer {
     )
   }
 
-  static fromHenpojo(henpojo) {
+  static fromHenpojo(henpojo: any): Answer {
     return new Answer(
       new Bytes(henpojo.clientNonce),
       new Bytes(henpojo.offerId),

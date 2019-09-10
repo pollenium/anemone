@@ -1,27 +1,21 @@
-import * as EventEmitter from 'events'
-import { wsConnection as WsConnection } from 'websocket'
+import EventEmitter from 'events'
+import { connection as WsConnection } from 'websocket'
 import { SignalingServer } from './SignalingServer'
 import { Bytes } from './Bytes'
 import { Offer } from './Offer'
 import { Answer } from './Answer'
 import { SIGNALING_MESSAGE_KEY, signalingMessageTemplate } from '../templates/signalingMessage'
 
-let debugId = 0;
-
 export class Menteeship extends EventEmitter {
 
-  debugId: number = debugId++;
-  bootstrapPromise;
+  bootstrapPromise: Promise<void>;
 
   constructor(public signalingServer: SignalingServer, public wsConnection: WsConnection) {
     super()
     this.bootstrapPromise = this.bootstrap()
   }
 
-  async bootstrap() {
-    // this.signalingServer.offers.forEach((offer) => {
-    //   this.sendOffer(offer)
-    // })
+  async bootstrap(): Promise<void> {
     this.wsConnection.on('message', (message) => {
       if (message.type !== 'binary') {
         return
@@ -34,19 +28,21 @@ export class Menteeship extends EventEmitter {
         case SIGNALING_MESSAGE_KEY.ANSWER:
           this.emit('answer', Answer.fromHenpojo(signalingMessageHenpojo.value))
           break;
+        default:
+          throw new Error('Unhandled SIGNALING_MESSAGE_KEY')
       }
     })
   }
 
-  async send(bytes: Bytes) {
+  send(bytes: Bytes): void {
     this.wsConnection.sendBytes(bytes.getBuffer())
   }
 
-  async sendOffer(offer: Offer) {
+  async sendOffer(offer: Offer): Promise<void> {
     await this.send(offer.getEncoding())
   }
 
-  async sendAnswer(answer: Answer) {
+  async sendAnswer(answer: Answer): Promise<void> {
     await this.send(answer.getEncoding())
   }
 }

@@ -1,25 +1,24 @@
-import { client as WsClient, wsConnection as WsConnection } from 'websocket'
-import * as EventEmitter from 'events'
+import { client as WsClient, connection as WsConnection } from 'websocket'
+import EventEmitter from 'events'
 import { Bytes } from './Bytes'
 import { Offer } from './Offer'
 import { Answer } from './Answer'
 import { SIGNALING_MESSAGE_KEY, signalingMessageTemplate } from '../templates/signalingMessage'
 
-let debugId = 0;
-
 export class SignalingClient extends EventEmitter {
 
-  debugId: number = debugId++;
-  bootstrapPromise;
-  wsClient;
-  wsConnectionPromise;
+  bootstrapPromise: Promise<void>;
 
-  constructor(public signalingServerUrl: String) {
+  wsClient: WsClient;
+
+  wsConnectionPromise: Promise<WsConnection>;
+
+  constructor(public signalingServerUrl: string) {
     super()
     this.bootstrapPromise = this.bootstrap()
   }
 
-  async bootstrap() {
+  async bootstrap(): Promise<void> {
     this.wsClient = new WsClient()
     this.wsConnectionPromise = this.fetchConnection()
 
@@ -32,13 +31,17 @@ export class SignalingClient extends EventEmitter {
 
       const signalingMessageHenpojo = signalingMessageTemplate.decode(new Uint8Array(message.binaryData))
       switch(signalingMessageHenpojo.key) {
-        case SIGNALING_MESSAGE_KEY.OFFER:
+        case SIGNALING_MESSAGE_KEY.OFFER: {
           const offer = Offer.fromHenpojo(signalingMessageHenpojo.value)
           this.emit('offer', offer)
           break;
-        case SIGNALING_MESSAGE_KEY.ANSWER:
+        }
+        case SIGNALING_MESSAGE_KEY.ANSWER: {
           this.emit('answer', Answer.fromHenpojo(signalingMessageHenpojo.value))
           break;
+        }
+        default:
+          throw new Error('Unhandled key')
       }
     })
 
@@ -49,16 +52,16 @@ export class SignalingClient extends EventEmitter {
       return this.wsConnectionPromise
     }
 
-    const wsConnectionPromise: Promise<WsConnection> = new Promise((resolve, reject) => {
-      this.wsClient.once('connectFailed', (error) => {
+    const wsConnectionPromise: Promise<WsConnection> = new Promise((resolve, reject): void => {
+      this.wsClient.once('connectFailed', (error: Error) => {
         reject(error)
       })
-      this.wsClient.once('connect', (wsConnection) => {
+      this.wsClient.once('connect', (wsConnection: WsConnection) => {
         resolve(wsConnection)
       })
     })
 
-    this.wsClient.once('close', (wsConnection) => {
+    this.wsClient.once('close', () => {
       delete this.wsConnectionPromise
       this.wsConnectionPromise = this.fetchConnection()
     })
@@ -68,16 +71,16 @@ export class SignalingClient extends EventEmitter {
     return wsConnectionPromise
   }
 
-  async send(bytes: Bytes) {
+  async send(bytes: Bytes): Promise<void> {
     const wsConnection = await this.fetchConnection()
     wsConnection.sendBytes(bytes.getBuffer())
   }
 
-  async sendOffer(offer: Offer) {
+  async sendOffer(offer: Offer): Promise<void> {
     await this.send(offer.getEncoding())
   }
 
-  async sendAnswer(answer: Answer) {
+  async sendAnswer(answer: Answer): Promise<void> {
     await this.send(answer.getEncoding())
   }
 

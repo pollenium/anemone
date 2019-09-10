@@ -1,7 +1,7 @@
-import * as Split from 'hendricks/lib/Split'
-import * as Dictionary from 'hendricks/lib/Dictionary'
-import * as Fixed from 'hendricks/lib/Fixed'
-import * as Dynamic from 'hendricks/lib/Dynamic'
+import Split from 'hendricks/lib/Split'
+import Dictionary from 'hendricks/lib/Dictionary'
+import Fixed from 'hendricks/lib/Fixed'
+import Dynamic from 'hendricks/lib/Dynamic'
 
 const fixed32 = new Fixed(32)
 const dynamic2 = new Dynamic(2)

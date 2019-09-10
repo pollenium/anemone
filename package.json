@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "description": "",
   "scripts": {
-    "test": "npm run-script build && mocha --bail --exit --timeout 0",
-    "build": "rm -rf ./js/* && eslint && tsc"
+    "test": "mocha --bail --exit --timeout 0",
+    "build": "rm -rf ./js/* && eslint && tsc",
+    "start": "grunt"
   },
   "author": "",
   "license": "ISC",
@@ -13,6 +14,7 @@
     "bignumber.js": "^9.0.0",
     "bluebird-stub": "0.0.0",
     "bn.js": "^5.0.0",
+    "delay": "^4.3.0",
     "freeice": "^2.2.2",
     "hendricks": "^4.0.0",
     "localStorage": "^1.0.4",
@@ -21,18 +23,17 @@
     "rlp": "^2.2.3",
     "simple-peer": "^9.4.0",
     "ts-loader": "^6.0.4",
-    "typescript": "^3.5.2",
     "websocket": "^1.0.29",
     "wrtc": "^0.4.1"
   },
   "devDependencies": {
     "@types/bn.js": "^4.11.5",
     "@types/node": "^12.6.2",
+    "@types/websocket": "0.0.40",
     "@typescript-eslint/eslint-plugin": "^2.1.0",
     "@typescript-eslint/parser": "^2.1.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
-    "delay": "^4.3.0",
     "eslint": "^6.1.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-prettier": "^6.2.0",
@@ -41,9 +42,16 @@
     "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-react": "^7.14.3",
     "eslint-plugin-react-hooks": "^1.7.0",
+    "eslint-watch": "^6.0.0",
+    "grunt": "^1.0.4",
+    "grunt-contrib-watch": "^1.1.0",
+    "grunt-eslint": "^22.0.0",
+    "grunt-run": "^0.8.1",
+    "grunt-ts": "^6.0.0-beta.22",
+    "load-grunt-tasks": "^5.1.0",
     "mocha": "^6.1.4",
     "prettier": "^1.18.2",
     "tiny-worker": "^2.2.0",
-    "ts": "^0.2.2"
+    "typescript": "^3.6.2"
   }
 }

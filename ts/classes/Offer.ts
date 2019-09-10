@@ -4,7 +4,7 @@ import { SIGNALING_MESSAGE_KEY, signalingMessageTemplate } from '../templates/si
 export class Offer {
   constructor(public clientNonce: Bytes, public sdpb: Bytes) {}
 
-  getEncoding() {
+  getEncoding(): Bytes {
     return new Bytes(
       signalingMessageTemplate.encode({
         key: SIGNALING_MESSAGE_KEY.OFFER,
@@ -16,11 +16,11 @@ export class Offer {
     )
   }
 
-  getId() {
+  getId(): Bytes {
     return this.getEncoding().getHash()
   }
 
-  static fromHenpojo(henpojo) {
+  static fromHenpojo(henpojo: any): Offer {
     return new Offer(
       new Bytes(henpojo.clientNonce),
       new Bytes(henpojo.sdpb)

@@ -1,9 +1,9 @@
 import { Friend, FRIEND_STATUS } from './Friend'
 import { Offer } from './Offer'
 import { Answer } from './Answer'
-import * as SimplePeer from 'simple-peer'
+import SimplePeer, { SignalData as SimplePeerSignalData } from 'simple-peer'
 import { getNow, getSimplePeerConfig } from '../utils'
-import * as delay from 'delay'
+import delay from 'delay'
 import { Bytes } from './Bytes'
 import * as wrtc from 'wrtc'
 import { Client } from './Client'
@@ -11,7 +11,9 @@ import { Client } from './Client'
 export class Extrovert extends Friend {
 
   answers: Answer[] = [];
+
   offerSdpPromise: Promise<string>;
+
   offersSentAt: number;
 
   constructor(client: Client) {
@@ -23,7 +25,7 @@ export class Extrovert extends Friend {
     this.loopUploadOffer(1000)
   }
 
-  private async loopUploadOffer(timeout: number) {
+  private async loopUploadOffer(timeout: number): Promise<void> {
     await this.uploadOffer()
     await delay(timeout)
     if (this.status === FRIEND_STATUS.DEFAULT) {
@@ -31,7 +33,7 @@ export class Extrovert extends Friend {
     }
   }
 
-  private async uploadOffer() {
+  private async uploadOffer(): Promise<void> {
     this.offersSentAt = getNow()
     const offer = await this.fetchOffer()
     this.client.signalingClients.forEach((signalingClient) => {
@@ -43,8 +45,8 @@ export class Extrovert extends Friend {
     if (this.offerSdpPromise) {
       return this.offerSdpPromise
     }
-    this.offerSdpPromise = new Promise((resolve) => {
-      this.simplePeer.once('signal', (offer) => {
+    this.offerSdpPromise = new Promise((resolve): void => {
+      this.simplePeer.once('signal', (offer: SimplePeerSignalData) => {
         resolve(offer.sdp)
 
         setTimeout(() => {
@@ -58,24 +60,24 @@ export class Extrovert extends Friend {
     return this.offerSdpPromise
   }
 
-  private async fetchOfferSdpb() {
+  private async fetchOfferSdpb(): Promise<Bytes> {
     const offerSdp = await this.fetchOfferSdp()
     return Bytes.fromUtf8(offerSdp)
   }
 
-  async fetchOffer() {
+  async fetchOffer(): Promise<Offer> {
     return new Offer(
       this.client.nonce,
       await this.fetchOfferSdpb()
     )
   }
 
-  async fetchOfferId() {
+  async fetchOfferId(): Promise<Bytes> {
     const offer = await this.fetchOffer()
     return offer.getId()
   }
 
-  async handleAnswer(answer: Answer) {
+  async handleAnswer(answer: Answer): Promise<void> {
     if (this.status !== FRIEND_STATUS.DEFAULT) {
       throw new Error('Must be in FRIEND_STATUS.DEFAULT')
     }
@@ -91,14 +93,16 @@ export class Extrovert extends Friend {
       sdp: answer.sdpb.getUtf8()
     })
 
-    delay(this.client.signalTimeoutMs).then(() => {
-      if (this.status === FRIEND_STATUS.CONNECTING) {
-        this.destroy()
-      }
-    })
+    await delay(this.client.signalTimeoutMs)
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
+    if (this.status === FRIEND_STATUS.CONNECTING) {
+      this.destroy()
+    }
   }
 
-  async fetchStatusPojo() {
+  async fetchStatusPojo(): Promise<any> {
     const offer = await this.fetchOffer()
     return Object.assign(super.getStatusPojo(), {
       offerSentAgo: (getNow() - this.offersSentAt),
@@ -106,7 +110,7 @@ export class Extrovert extends Friend {
     })
   }
 
-  destroy() {
+  destroy(): void {
     const friendIndex = this.client.extroverts.indexOf(this)
     this.client.extroverts.splice(friendIndex, 1)
     super.destroy()

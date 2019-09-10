@@ -1,5 +1,5 @@
 import * as crypto from 'crypto'
-import * as Bn from 'bn.js'
+import Bn from 'bn.js'
 
 export class Bytes {
   constructor(public uint8Array: Uint8Array) {}
@@ -20,8 +20,8 @@ export class Bytes {
     return true
   }
 
-  slice(...args): Bytes {
-    return new Bytes(this.uint8Array.slice(...args))
+  slice(start: number, end: number): Bytes {
+    return new Bytes(this.uint8Array.slice(start, end))
   }
 
   getHash(): Bytes {
@@ -40,11 +40,11 @@ export class Bytes {
     return this.getBuffer().toString('utf8')
   }
 
-  getBuffer() {
+  getBuffer(): Buffer {
     return Buffer.from(this.uint8Array)
   }
 
-  getPaddedLeft(length: number) {
+  getPaddedLeft(length: number): Bytes {
     if (this.getLength() > length) {
       throw new Error(`Cannot pad, bytes.length (${this.getLength()}) > length (${length})`)
     }
@@ -53,14 +53,14 @@ export class Bytes {
     return new Bytes(uint8Array)
   }
 
-  prependByte(byte: number) {
+  prependByte(byte: number): Bytes {
     const uint8Array = new Uint8Array(this.uint8Array.length + 1)
     uint8Array[0] = byte
     uint8Array.set(this.uint8Array, 1)
     return new Bytes(uint8Array)
   }
 
-  append(bytes: Bytes) {
+  append(bytes: Bytes): Bytes {
     const uint8Array = new Uint8Array(this.getLength() + bytes.getLength())
     uint8Array.set(this.uint8Array)
     uint8Array.set(bytes.uint8Array, this.getLength())
@@ -87,19 +87,19 @@ export class Bytes {
     return new Bytes(new Uint8Array(buffer))
   }
 
-  static fromHex(hex: string) {
+  static fromHex(hex: string): Bytes {
     return Bytes.fromBuffer(Buffer.from(hex, 'hex'))
   }
 
-  static fromBn(bn: Bn) {
+  static fromBn(bn: Bn): Bytes {
     return Bytes.fromHex(bn.toString(16))
   }
 
-  static fromNumber(number: number) {
+  static fromNumber(number: number): Bytes {
     return Bytes.fromBn(new Bn(number))
   }
 
-  static random(length: number) {
+  static random(length: number): Bytes {
     return Bytes.fromBuffer(crypto.randomBytes(length))
   }
 }

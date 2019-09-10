@@ -18,14 +18,15 @@ module.exports =  {
     '@typescript-eslint/no-explicit-any': 0,
     '@typescript-eslint/explicit-member-accessibility': 0,
     '@typescript-eslint/no-unused-vars': [2, { 'varsIgnorePattern': '^_' , 'argsIgnorePattern': '^_'}],
-    // 'no-unused-vars': [2, { "argsIgnorePattern": "^_" }],
+    'no-unused-vars': [2, { "argsIgnorePattern": "^_" }],
     'no-console': 2,
     'no-underscore-dangle': 0,
     'import/prefer-default-export': 0,
     "class-methods-use-this": 0,
     "no-alert": 0,
     "no-plusplus": 0,
-    "no-return-await": 0 // temp
+    "import/order": 0,
+    "no-useless-constructor": 0
   },
   // "env": {
   //   "browser": true,
@@ -33,4 +34,11 @@ module.exports =  {
   // "globals": {
   //
   // }
+  settings: {
+    'import/resolver': {
+      node: {
+        extensions: ['.ts', '.js']
+      }
+    }
+  }
 };

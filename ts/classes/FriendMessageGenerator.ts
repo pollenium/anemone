@@ -11,6 +11,7 @@ const nullNonce = (new Uint8Array(32)).fill(0)
 export class FriendMessageGenerator {
 
   friendMessagePromise: Promise<FriendMessage>
+
   worker: Worker;
 
   constructor(public client: Client, public applicationId: Bytes, public applicationData: Bytes, public difficulty: number) {
@@ -31,11 +32,11 @@ export class FriendMessageGenerator {
   }
 
   private fetchNonce(timestamp: Bytes): Promise<Bytes> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject): void => {
 
       const worker = new this.client.options.Worker(`${__dirname}/../../hashcash.js`)
 
-      const onMessage = async (event) => {
+      const onMessage = async (event: any): Promise<void> => {
         worker.terminate()
         const hashcashResolution: HashcashResolution = event.data
         // worker.removeEventListener('message', onMessage)
@@ -46,11 +47,13 @@ export class FriendMessageGenerator {
           case HASHCASH_RESOLUTION_KEY.TIMEOUT_ERROR:
             resolve(await this.fetchNonce(timestamp))
             break;
+          default:
+            throw new Error('Unhandled HASHCASH_RESOLUTION_KEY')
         }
       }
 
       worker.addEventListener('message', onMessage)
-      worker.onerror = (error) => {
+      worker.onerror = (error: ErrorEvent): void => {
         // worker.removeEventListener('message', onMessage)
         reject(error)
       }
@@ -60,14 +63,14 @@ export class FriendMessageGenerator {
       const hashcashRequest: HashcashRequest = {
         noncelessPrehashHex: noncelessPrehash.getHex(),
         difficulty: this.difficulty,
-        timeoutAt: timeoutAt
+        timeoutAt
       }
       worker.postMessage(hashcashRequest)
     })
 
   }
 
-  private async fetchFriendMessage(): Promise<FriendMessage> {
+  async fetchFriendMessage(): Promise<FriendMessage> {
     const timestamp = getTimestamp()
     const nonce = await this.fetchNonce(timestamp)
     return new FriendMessage(
