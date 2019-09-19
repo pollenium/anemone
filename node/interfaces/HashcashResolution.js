@@ -1,0 +1,8 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var HASHCASH_RESOLUTION_KEY;
+(function (HASHCASH_RESOLUTION_KEY) {
+    HASHCASH_RESOLUTION_KEY[HASHCASH_RESOLUTION_KEY["NONCE_HEX"] = 0] = "NONCE_HEX";
+    HASHCASH_RESOLUTION_KEY[HASHCASH_RESOLUTION_KEY["TIMEOUT_ERROR"] = 1] = "TIMEOUT_ERROR";
+})(HASHCASH_RESOLUTION_KEY = exports.HASHCASH_RESOLUTION_KEY || (exports.HASHCASH_RESOLUTION_KEY = {}));
+//# sourceMappingURL=HashcashResolution.js.map

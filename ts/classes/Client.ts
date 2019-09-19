@@ -6,6 +6,7 @@ import EventEmitter from 'events'
 import { Bytes } from './Bytes'
 import { Offer } from './Offer'
 import { Answer } from './Answer'
+import { FlushOffer } from './FlushOffer'
 import { ClientOptions } from '../interfaces/ClientOptions'
 import delay from 'delay'
 import Bn from 'bn.js'
@@ -16,8 +17,6 @@ export class Client extends EventEmitter {
   options: ClientOptions;
 
   nonce: Bytes;
-
-  bootstrapPromise: Promise<void>;
 
   signalingClients: SignalingClient[] = [];
 
@@ -35,6 +34,8 @@ export class Client extends EventEmitter {
 
   offersReceivedByClientNonceHex: { [id: string]: number } = {};
 
+  isFlushedOfferByOfferIdHex: { [id: string]: boolean } = {}
+
   friendMessageIsReceivedByIdHexByEra: { [era: number]: { [friendMessageIdHex: string]: boolean }} = {};
 
   signalTimeoutMs: number;
@@ -51,35 +52,55 @@ export class Client extends EventEmitter {
     this.bootstrap()
   }
 
-  async bootstrap(): Promise<void> {
+  private async bootstrap(): Promise<void> {
     for (let i = 0; i < this.options.signalingServerUrls.length; i++) {
       const signalingServerUrl = this.options.signalingServerUrls[i]
       this.addSignalingClient(signalingServerUrl)
     }
-    await delay(1000)
-    this.loopCreateFriend(5000)
+
+    await this.loopCreateFriend()
   }
 
-  async loopCreateFriend(timeout: number): Promise<void> {
-    this.createFriend()
-    await delay(timeout)
-    this.loopCreateFriend(timeout)
-  }
-
-  createFriend(): void {
+  private async loopCreateFriend(): Promise<void> {
     if (this.extroverts.length + this.introverts.length >= this.options.friendsMax) {
       return
     }
+    await this.createFriend()
+    this.loopCreateFriend()
+  }
+
+  getFriendsCount(): number {
+    return this.introverts.length + this.extroverts.length
+  }
+
+  async createFriend(): Promise<void> {
+
+    if (this.getFriendsCount() === this.options.friendsMax) {
+      return
+    }
+
     const offer = this.popConnectableOffer()
-    if (offer === null) {
-      this.extroverts.push(new Extrovert(this))
-    } else {
+    if (offer !== null) {
       this.introverts.push(new Introvert(this, offer))
     }
+
+    await delay(this.options.bootstrapOffersTimeout * 1000)
+
+    if (this.getFriendsCount() === this.options.friendsMax) {
+      return
+    }
+
+    const offer2 = this.popConnectableOffer()
+    if (offer2 === null) {
+      this.extroverts.push(new Extrovert(this))
+    } else {
+      this.introverts.push(new Introvert(this, offer2))
+    }
+
   }
 
   addSignalingClient(signalingServerUrl: string): void {
-    const signalingClient = new SignalingClient(signalingServerUrl)
+    const signalingClient = new SignalingClient(this, signalingServerUrl)
     this.signalingClients.push(signalingClient)
 
     signalingClient.on('offer', (offer) => {
@@ -89,6 +110,11 @@ export class Client extends EventEmitter {
     signalingClient.on('answer', (answer) => {
       this.handleAnswer(signalingClient, answer)
     })
+
+    signalingClient.on('flushOffer', (flushOffer) => {
+      this.handleFlushOffer(signalingClient, flushOffer)
+    })
+
   }
 
   popConnectableOffer(): null | Offer {
@@ -98,7 +124,14 @@ export class Client extends EventEmitter {
     if (connectableOfferIndex === -1) {
       return null
     }
-      return this.offers.splice(connectableOfferIndex, 1)[0]
+
+    const offer = this.offers.splice(connectableOfferIndex, 1)[0]
+
+    if (this.isFlushedOfferByOfferIdHex[offer.getId().getHex()]) {
+      return this.popConnectableOffer()
+    }
+
+    return offer
 
   }
 
@@ -112,6 +145,10 @@ export class Client extends EventEmitter {
   }
 
   handleOffer(signalingClient: SignalingClient, offer: Offer): void {
+
+    if (this.isFlushedOfferByOfferIdHex[offer.getId().getHex()]) {
+      return
+    }
 
     if (
       this.offersReceivedByClientNonceHex[offer.clientNonce.getHex()] === undefined
@@ -134,6 +171,23 @@ export class Client extends EventEmitter {
       return !offer.clientNonce.equals(_offer.clientNonce)
     })
     this.offers.unshift(offer)
+
+    this.createFriend()
+  }
+
+  handleFlushOffer(signalingClient: SignalingClient, flushOffer: FlushOffer): void {
+
+    this.isFlushedOfferByOfferIdHex[flushOffer.offerId.getHex()] = true
+
+    this.offers = this.offers.filter((_offer) => {
+      return !flushOffer.offerId.equals(_offer.getId())
+    })
+
+    this.introverts.forEach((introvert) => {
+      if (introvert.offer.getId().equals(flushOffer.offerId)) {
+        introvert.destroy()
+      }
+    })
   }
 
   getFriends(): Friend[] {
@@ -190,44 +244,21 @@ export class Client extends EventEmitter {
     this.friendStatusByClientNonceHex[clientNonce.getHex()] = friendStatus
   }
 
-  async fetchStatusPojo(): Promise<any> {
-    const offersCountByClientNonceHex = {}
-    const offerIdHexByClientNonceHex = {}
-    const isConnectableByClientNonceHex = {}
-
-    this.offers.forEach((offer) => {
-      // if(!this.getIsConnectableByClientNonce(offer.clientNonce)) {
-      //   return
-      // }
-      const clientNonceHex = offer.clientNonce.getHex()
-      if (offersCountByClientNonceHex[clientNonceHex] === undefined) {
-        offersCountByClientNonceHex[clientNonceHex] = 1
-        offerIdHexByClientNonceHex[clientNonceHex] = offer.getId().getHex()
-        isConnectableByClientNonceHex[clientNonceHex] = this.getIsConnectableByClientNonce(offer.clientNonce)
-      } else {
-        offersCountByClientNonceHex[clientNonceHex] += 1
-      }
-    })
-
-    Object.keys(this.offersReceivedByClientNonceHex).forEach((clientNonceHex) => {
-      isConnectableByClientNonceHex[clientNonceHex] = this.getIsConnectableByClientNonce(Bytes.fromHex(clientNonceHex))
-    })
-
-    return {
-      nonceHex: this.nonce.getHex(),
-      friendStatusByClientNonceHex: this.friendStatusByClientNonceHex,
-      offersCount: this.offers.length,
-      offersCountByClientNonceHex,
-      offerIdHexByClientNonceHex,
-      isConnectableByClientNonceHex,
-      offersReceivedByClientNonceHex: this.offersReceivedByClientNonceHex,
-      extroverts: await Promise.all(this.extroverts.map((extrovert) => {
-        return extrovert.fetchStatusPojo()
-      })),
-      introverts: this.introverts.map((introvert) => {
-        return introvert.getStatusPojo()
-      })
+  getIsFullyConnected(): boolean {
+    if (this.extroverts.length + this.introverts.length < this.options.friendsMax) {
+      return false
     }
+    for (let i = 0; i < this.extroverts.length; i++) {
+      if (this.extroverts[i].status !== FRIEND_STATUS.CONNECTED) {
+        return false
+      }
+    }
+    for (let i = 0; i < this.introverts.length; i++) {
+      if (this.introverts[i].status !== FRIEND_STATUS.CONNECTED) {
+        return false
+      }
+    }
+    return true
   }
 
 }

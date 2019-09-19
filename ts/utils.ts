@@ -2,11 +2,11 @@ import { Bytes } from './classes/Bytes'
 import Bn from 'bn.js'
 
 export const stunServers = [
-  // 'stun.l.google.com:19302',
-  // 'stun1.l.google.com:19302',
-  // 'stun2.l.google.com:19302',
-  // 'stun3.l.google.com:19302',
-  // 'stun4.l.google.com:19302',
+  'stun.l.google.com:19302',
+  'stun1.l.google.com:19302',
+  'stun2.l.google.com:19302',
+  'stun3.l.google.com:19302',
+  'stun4.l.google.com:19302',
   'global.stun.twilio.com:3478?transport=udp'
 ]
 
@@ -21,6 +21,7 @@ export function calculateEra(time: number): number {
 }
 
 export function getSimplePeerConfig() {
+  // return {}
   return {
     iceServers: stunServers.sort(() => {
       return Math.random() - .5

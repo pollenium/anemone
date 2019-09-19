@@ -68,9 +68,6 @@ export class Friend extends EventEmitter {
   }
 
   destroySimplePeer(): void {
-    if (!this.simplePeer) {
-      throw new Error('Cannot destory simplePeer, simplePeer not set')
-    }
     this.simplePeer.removeAllListeners()
     this.simplePeer.destroy()
   }
@@ -84,14 +81,6 @@ export class Friend extends EventEmitter {
 
   sendMessage(friendMessage: FriendMessage): void {
     this.send(friendMessage.getEncoding())
-  }
-
-  getStatusPojo(): any {
-    return {
-      createdAgo: (getNow() - this.createdAt),
-      status: this.status,
-      peerClientNonceHex: this.peerClientNonce ? this.peerClientNonce.getHex() : null
-    }
   }
 
   handleMessage(friendMessage: FriendMessage): void {

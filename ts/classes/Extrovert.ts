@@ -1,11 +1,11 @@
 import { Friend, FRIEND_STATUS } from './Friend'
 import { Offer } from './Offer'
+import { FlushOffer } from './FlushOffer'
 import { Answer } from './Answer'
 import SimplePeer, { SignalData as SimplePeerSignalData } from 'simple-peer'
 import { getNow, getSimplePeerConfig } from '../utils'
 import delay from 'delay'
 import { Bytes } from './Bytes'
-import * as wrtc from 'wrtc'
 import { Client } from './Client'
 
 export class Extrovert extends Friend {
@@ -19,7 +19,8 @@ export class Extrovert extends Friend {
   constructor(client: Client) {
     super(client, new SimplePeer({
       initiator: true,
-      wrtc,
+      trickle: false,
+      wrtc: client.options.wrtc,
       config: getSimplePeerConfig()
     }))
     this.loopUploadOffer(1000)
@@ -46,14 +47,14 @@ export class Extrovert extends Friend {
       return this.offerSdpPromise
     }
     this.offerSdpPromise = new Promise((resolve): void => {
-      this.simplePeer.once('signal', (offer: SimplePeerSignalData) => {
-        resolve(offer.sdp)
+      this.simplePeer.once('signal', (signal: SimplePeerSignalData) => {
+        resolve(signal.sdp)
 
         setTimeout(() => {
           if (this.status === FRIEND_STATUS.DEFAULT) {
             this.destroy()
           }
-        }, 10 * 1000)
+        }, this.client.signalTimeoutMs * 2)
 
       })
     })
@@ -78,6 +79,7 @@ export class Extrovert extends Friend {
   }
 
   async handleAnswer(answer: Answer): Promise<void> {
+
     if (this.status !== FRIEND_STATUS.DEFAULT) {
       throw new Error('Must be in FRIEND_STATUS.DEFAULT')
     }
@@ -102,15 +104,16 @@ export class Extrovert extends Friend {
     }
   }
 
-  async fetchStatusPojo(): Promise<any> {
+  async uploadFlushOffer(): Promise<void> {
     const offer = await this.fetchOffer()
-    return Object.assign(super.getStatusPojo(), {
-      offerSentAgo: (getNow() - this.offersSentAt),
-      offerIdHex: offer.getId().getHex()
+    const flushOffer = new FlushOffer(offer.getId())
+    this.client.signalingClients.forEach((signalingClient) => {
+      signalingClient.sendFlushOffer(flushOffer)
     })
   }
 
-  destroy(): void {
+  async destroy(): Promise<void> {
+    await this.uploadFlushOffer()
     const friendIndex = this.client.extroverts.indexOf(this)
     this.client.extroverts.splice(friendIndex, 1)
     super.destroy()

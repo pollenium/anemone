@@ -5,7 +5,6 @@ import SimplePeer, { SignalData as SimplePeerSignalData } from 'simple-peer'
 import { getSimplePeerConfig } from '../utils'
 import delay from 'delay'
 import { Bytes } from './Bytes'
-import * as wrtc from 'wrtc'
 import { Client } from './Client'
 
 
@@ -14,7 +13,8 @@ export class Introvert extends Friend {
   constructor(client: Client, public offer: Offer) {
     super(client, new SimplePeer({
       initiator: false,
-      wrtc,
+      trickle: false,
+      wrtc: client.options.wrtc,
       config: getSimplePeerConfig()
     }))
     this.peerClientNonce = offer.clientNonce

@@ -1,3 +1,5 @@
 node_modules
-js
+build
 .tscache
+tscommand-*
+test/e2e/browser/e2e.js

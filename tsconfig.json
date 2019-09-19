@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "rootDir": "ts",
-    "outDir": "js",
-    "lib": ["es5", "es6", "dom"],
+    "outDir": "node",
+    "lib": ["es5", "es6", "webworker"],
     "esModuleInterop": true,
     "types": ["node"],
     "typeRoots": [

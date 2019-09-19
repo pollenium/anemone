@@ -34,12 +34,11 @@ export class FriendMessageGenerator {
   private fetchNonce(timestamp: Bytes): Promise<Bytes> {
     return new Promise((resolve, reject): void => {
 
-      const worker = new this.client.options.Worker(`${__dirname}/../../hashcash.js`)
+      const worker = new this.client.options.Worker(this.client.options.hashcashWorkerUrl, [], {esm: true})
 
       const onMessage = async (event: any): Promise<void> => {
         worker.terminate()
         const hashcashResolution: HashcashResolution = event.data
-        // worker.removeEventListener('message', onMessage)
         switch(hashcashResolution.key) {
           case HASHCASH_RESOLUTION_KEY.NONCE_HEX:
             resolve(Bytes.fromHex(hashcashResolution.value))

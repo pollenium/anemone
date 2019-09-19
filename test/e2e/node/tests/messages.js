@@ -1,8 +1,6 @@
-const stubs = require('./stubs')
-const Bytes = require('../js/classes/Bytes').Bytes
-const FriendMessageGenerator = require('../js/classes/FriendMessageGenerator').FriendMessageGenerator
-const FriendMessage = require('../js/classes/FriendMessage').FriendMessage
-const params = require('./params')
+const stubs = require('../stubs')
+const params = require('../params')
+const utils = require('../utils')
 
 const friendMessages = []
 const expectedReceivalsCount = params.friendMessagesCount * (params.clientsCount - 1)
@@ -21,10 +19,10 @@ describe('friend messages', () => {
   for (let i = 0; i < params.friendMessagesCount; i++) {
     it(`should create friendMessages #${i}`, async () => {
       const client = clients[Math.floor(Math.random() * clients.length)]
-      const friendMessageGenerator = new FriendMessageGenerator(
+      const friendMessageGenerator = new utils.pollenium.FriendMessageGenerator(
         client,
-        Bytes.random(32),
-        Bytes.random(32),
+        utils.pollenium.Bytes.random(32),
+        utils.pollenium.Bytes.random(32),
         6
       )
       const friendMessage = await friendMessageGenerator.fetchFriendMessage()

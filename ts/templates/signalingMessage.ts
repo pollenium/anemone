@@ -8,12 +8,14 @@ const dynamic2 = new Dynamic(2)
 
 export enum SIGNALING_MESSAGE_KEY {
   OFFER = 'OFFER',
-  ANSWER = 'ANSWER'
+  ANSWER = 'ANSWER',
+  FLUSH_OFFER = 'FLUSH_OFFER'
 }
 
 export const signalingMessageTemplate = new Split([
   SIGNALING_MESSAGE_KEY.OFFER,
-  SIGNALING_MESSAGE_KEY.ANSWER
+  SIGNALING_MESSAGE_KEY.ANSWER,
+  SIGNALING_MESSAGE_KEY.FLUSH_OFFER
 ], [
   new Dictionary([
     'clientNonce',
@@ -30,5 +32,10 @@ export const signalingMessageTemplate = new Split([
     fixed32,
     fixed32,
     dynamic2
+  ]),
+  new Dictionary([
+    'offerId'
+  ], [
+    fixed32,
   ])
 ])

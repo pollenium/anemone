@@ -3,13 +3,19 @@
   "version": "0.0.0",
   "description": "",
   "scripts": {
-    "test": "mocha --bail --exit --timeout 0",
-    "build": "rm -rf ./js/* && eslint && tsc",
-    "start": "grunt"
+    "test": "mocha --bail --exit --timeout 0 ./test/e2e/node/index.js",
+    "browserify": "browserify ./node/index.js --standalone pollenium > browser/index.js",
+    "browserify-hashcash-worker": "browserify ./node/hashcash-worker.js > browser/hashcash-worker.js",
+    "browserify-test": "browserify test/e2e/node/index.js > test/e2e/browser/index.js",
+    "open-browser-test": "open -a /Applications/Google\\ Chrome.app/ '--args --incognito http://localhost:8080/test/browser.html",
+    "start": "grunt --stack"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/bn.js": "^4.11.5",
+    "@types/node": "^12.7.4",
+    "@types/websocket": "0.0.40",
     "bignumber": "^1.1.0",
     "bignumber.js": "^9.0.0",
     "bluebird-stub": "0.0.0",
@@ -21,19 +27,17 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "rlp": "^2.2.3",
+    "server-destroy": "^1.0.1",
     "simple-peer": "^9.4.0",
     "ts-loader": "^6.0.4",
-    "websocket": "^1.0.29",
-    "wrtc": "^0.4.1",
-    "@types/bn.js": "^4.11.5",
-    "@types/node": "^12.7.4",
-    "@types/websocket": "0.0.40"
+    "websocket": "^1.0.29"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.1.0",
     "@typescript-eslint/parser": "^2.1.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
+    "chrome-launcher": "^0.11.2",
     "eslint": "^6.1.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-prettier": "^6.2.0",
@@ -44,14 +48,21 @@
     "eslint-plugin-react-hooks": "^1.7.0",
     "eslint-watch": "^6.0.0",
     "grunt": "^1.0.4",
+    "grunt-contrib-clean": "^2.0.0",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-eslint": "^22.0.0",
+    "grunt-force-task": "^2.0.0",
+    "grunt-mkdir": "^1.0.0",
     "grunt-run": "^0.8.1",
     "grunt-ts": "^6.0.0-beta.22",
+    "isomorphic-ws": "^4.0.1",
     "load-grunt-tasks": "^5.1.0",
     "mocha": "^6.1.4",
     "prettier": "^1.18.2",
+    "prompt-promise": "^1.0.3",
     "tiny-worker": "^2.2.0",
-    "typescript": "^3.6.2"
+    "typescript": "^3.6.2",
+    "wrtc": "^0.4.1",
+    "ws": "^7.1.2"
   }
 }
