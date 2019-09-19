@@ -1,5 +1,4 @@
 node_modules
-build
 .tscache
 tscommand-*
 test/e2e/browser/index.js
