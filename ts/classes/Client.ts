@@ -92,9 +92,15 @@ export class Client extends EventEmitter {
 
     const offer2 = this.popConnectableOffer()
     if (offer2 === null) {
-      this.extroverts.push(new Extrovert(this))
+      const extrovert = new Extrovert(this)
+      this.extroverts.push(extrovert)
+      this.emit('extrovert', extrovert)
+      this.emit('friend', extrovert)
     } else {
-      this.introverts.push(new Introvert(this, offer2))
+      const introvert = new Introvert(this, offer2)
+      this.introverts.push(introvert)
+      this.emit('introvert', introvert)
+      this.emit('friend', introvert)
     }
 
   }

@@ -22668,7 +22668,7 @@ var Client = (function (_super) {
     };
     Client.prototype.createFriend = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var offer, offer2;
+            var offer, offer2, extrovert, introvert;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -22687,10 +22687,16 @@ var Client = (function (_super) {
                         }
                         offer2 = this.popConnectableOffer();
                         if (offer2 === null) {
-                            this.extroverts.push(new Extrovert_1.Extrovert(this));
+                            extrovert = new Extrovert_1.Extrovert(this);
+                            this.extroverts.push(extrovert);
+                            this.emit('extrovert', extrovert);
+                            this.emit('friend', extrovert);
                         }
                         else {
-                            this.introverts.push(new Introvert_1.Introvert(this, offer2));
+                            introvert = new Introvert_1.Introvert(this, offer2);
+                            this.introverts.push(introvert);
+                            this.emit('introvert', introvert);
+                            this.emit('friend', introvert);
                         }
                         return [2];
                 }
