@@ -23215,11 +23215,14 @@ var Friend = (function (_super) {
         });
     };
     Friend.prototype.destroy = function () {
-        this.removeAllListeners();
+        var _this = this;
         if (this.simplePeer) {
             this.destroySimplePeer();
         }
         this.setStatus(FRIEND_STATUS.DESTROYED);
+        setTimeout(function () {
+            _this.removeAllListeners();
+        });
         this.client.createFriend();
     };
     Friend.prototype.destroySimplePeer = function () {

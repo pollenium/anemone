@@ -55,6 +55,7 @@
     "grunt-mkdir": "^1.0.0",
     "grunt-run": "^0.8.1",
     "grunt-ts": "^6.0.0-beta.22",
+    "http-server": "^0.11.1",
     "isomorphic-ws": "^4.0.1",
     "load-grunt-tasks": "^5.1.0",
     "mocha": "^6.1.4",

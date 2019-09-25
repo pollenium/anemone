@@ -1,6 +1,7 @@
 const chromeLauncher = require('chrome-launcher')
 const delay = require('delay')
 const prompt = require('prompt-promise')
+const httpServerLib = require('http-server')
 
 let signalingServers
 
@@ -101,14 +102,20 @@ module.exports = (grunt) => {
 
   grunt.registerTask('test-browser', 'open browser test in chrome', async function() {
     const done = this.async()
+
+    const port = 5555
+    const httpServer = httpServerLib.createServer().listen(port)
+
+
     const chrome = await chromeLauncher.launch({
-      startingUrl: 'http://localhost:8080/test/e2e/browser',
+      startingUrl: `http://localhost:${port}/test/e2e/browser`,
       chromeFlags: ['--args', '--incognito']
     })
 
     const response = await prompt('browser test succeeded? (y/n): ')
+    httpServer.close()
     await chrome.kill()
-    
+
     if (response == 'y') {
       done()
     } else {

@@ -59,11 +59,14 @@ export class Friend extends EventEmitter {
   }
 
   destroy(): void {
-    this.removeAllListeners()
     if (this.simplePeer) {
       this.destroySimplePeer()
     }
     this.setStatus(FRIEND_STATUS.DESTROYED)
+    setTimeout(() => {
+      // keep async so that client can listen for destroy event
+      this.removeAllListeners()
+    })
     this.client.createFriend()
   }
 
