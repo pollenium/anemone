@@ -8,6 +8,7 @@
     "browserify-hashcash-worker": "browserify ./node/hashcash-worker.js > browser/hashcash-worker.js",
     "browserify-test": "browserify test/e2e/node/index.js > test/e2e/browser/index.js",
     "open-browser-test": "open -a /Applications/Google\\ Chrome.app/ '--args --incognito http://localhost:8080/test/browser.html",
+    "build": "grunt build",
     "start": "grunt --stack"
   },
   "author": "",

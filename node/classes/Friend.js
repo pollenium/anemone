@@ -54,7 +54,14 @@ var Friend = (function (_super) {
     };
     Friend.prototype.setSimplePeerListeners = function () {
         var _this = this;
+        this.simplePeer.on('iceStateChange', function (iceConnectionState) {
+            if (iceConnectionState === 'disconnected') {
+                console.log('disconnected');
+                _this.destroy();
+            }
+        });
         this.simplePeer.on('connect', function () {
+            console.log('connect');
             _this.setStatus(FRIEND_STATUS.CONNECTED);
         });
         this.simplePeer.on('data', function (friendMessageEncodingBuffer) {
@@ -62,9 +69,11 @@ var Friend = (function (_super) {
             _this.handleMessage(friendMessage);
         });
         this.simplePeer.once('error', function () {
+            console.log('error');
             _this.destroy();
         });
         this.simplePeer.once('close', function () {
+            console.log('close');
             _this.destroy();
         });
     };

@@ -42,6 +42,12 @@ export class Friend extends EventEmitter {
   }
 
   private setSimplePeerListeners(): void {
+    this.simplePeer.on('iceStateChange', (iceConnectionState) => {
+      if (iceConnectionState === 'disconnected') {
+        this.destroy()
+      }
+    })
+
     this.simplePeer.on('connect', () => {
       this.setStatus(FRIEND_STATUS.CONNECTED)
     })

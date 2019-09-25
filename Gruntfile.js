@@ -23,7 +23,7 @@ module.exports = (grunt) => {
         'test/**/*',
         '!test/e2e/browser/index.js'
       ],
-      tasks: ['build'],
+      tasks: ['build', 'test'],
       options: {
         spawn: false,
         interrupt: true
@@ -90,7 +90,6 @@ module.exports = (grunt) => {
     'run:browserify',
     'run:browserify-hashcash-worker',
     'run:browserify-test',
-    'test'
   ])
 
   grunt.registerTask('test', [
@@ -104,8 +103,9 @@ module.exports = (grunt) => {
     const done = this.async()
 
     const port = 5555
-    const httpServer = httpServerLib.createServer().listen(port)
+    const httpServer = httpServerLib.createServer()
 
+    httpServer.listen(port)
 
     const chrome = await chromeLauncher.launch({
       startingUrl: `http://localhost:${port}/test/e2e/browser`,
