@@ -19,6 +19,9 @@ var Offer = (function () {
     Offer.prototype.getId = function () {
         return this.getEncoding().getHash();
     };
+    Offer.prototype.getDistance = function (clientNonce) {
+        return this.clientNonce.getXor(clientNonce);
+    };
     Offer.fromHenpojo = function (henpojo) {
         return new Offer(new Bytes_1.Bytes(henpojo.clientNonce), new Bytes_1.Bytes(henpojo.sdpb));
     };

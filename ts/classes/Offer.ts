@@ -20,6 +20,10 @@ export class Offer {
     return this.getEncoding().getHash()
   }
 
+  getDistance(clientNonce: Bytes): Bytes {
+    return this.clientNonce.getXor(clientNonce)
+  }
+
   static fromHenpojo(henpojo: any): Offer {
     return new Offer(
       new Bytes(henpojo.clientNonce),

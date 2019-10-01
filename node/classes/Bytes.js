@@ -74,6 +74,16 @@ var Bytes = (function () {
     Bytes.prototype.getNumber = function () {
         return this.getBn().toNumber();
     };
+    Bytes.prototype.getXor = function (bytes) {
+        if (this.getLength() !== bytes.getLength()) {
+            throw new Error('Cannot xor, length mismatch');
+        }
+        var xorUint8Array = new Uint8Array(bytes.getLength());
+        for (var i = 0; i < bytes.getLength(); i++) {
+            xorUint8Array[i] = this.uint8Array[i] ^ bytes.uint8Array[i];
+        }
+        return new Bytes(xorUint8Array);
+    };
     Bytes.prototype.compare = function (bytes) {
         return this.getBuffer().compare(bytes.getBuffer());
     };

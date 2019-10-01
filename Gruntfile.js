@@ -95,7 +95,7 @@ module.exports = (grunt) => {
   grunt.registerTask('test', [
     'test-cleanup',
     'servers',
-    'test-browser',
+    // 'test-browser',
     'run:npm-test',
   ])
 

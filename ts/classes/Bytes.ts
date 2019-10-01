@@ -75,6 +75,21 @@ export class Bytes {
     return this.getBn().toNumber()
   }
 
+  getXor(bytes: Bytes): Bytes {
+    if (this.getLength() !== bytes.getLength()) {
+      throw new Error('Cannot xor, length mismatch')
+    }
+
+    const xorUint8Array = new Uint8Array(bytes.getLength())
+
+    for (let i = 0; i < bytes.getLength(); i++) {
+      // eslint-disable-next-line no-bitwise
+      xorUint8Array[i] = this.uint8Array[i] ^ bytes.uint8Array[i]
+    }
+
+    return new Bytes(xorUint8Array)
+  }
+
   compare(bytes: Bytes): number {
     return this.getBuffer().compare(bytes.getBuffer())
   }

@@ -22517,6 +22517,16 @@ var Bytes = (function () {
     Bytes.prototype.getNumber = function () {
         return this.getBn().toNumber();
     };
+    Bytes.prototype.getXor = function (bytes) {
+        if (this.getLength() !== bytes.getLength()) {
+            throw new Error('Cannot xor, length mismatch');
+        }
+        var xorUint8Array = new Uint8Array(bytes.getLength());
+        for (var i = 0; i < bytes.getLength(); i++) {
+            xorUint8Array[i] = this.uint8Array[i] ^ bytes.uint8Array[i];
+        }
+        return new Bytes(xorUint8Array);
+    };
     Bytes.prototype.compare = function (bytes) {
         return this.getBuffer().compare(bytes.getBuffer());
     };
@@ -22778,6 +22788,22 @@ var Client = (function (_super) {
         });
         this.offers.unshift(offer);
         this.createFriend();
+    };
+    Client.prototype.getPeeredFriends = function () {
+        return this.getFriends().filter(function (friend) {
+            return friend.peerClientNonce !== undefined;
+        });
+    };
+    Client.prototype.getWorstFriend = function () {
+        var peeredFriends = this.getPeeredFriends();
+        if (peeredFriends.length === 0) {
+            return null;
+        }
+        return peeredFriends.sort(function (friendA, friendB) {
+            var distanceA = friendA.getDistance();
+            var distanceB = friendB.getDistance();
+            return distanceB.compare(distanceA);
+        })[0];
     };
     Client.prototype.handleFlushOffer = function (signalingClient, flushOffer) {
         this.isFlushedOfferByOfferIdHex[flushOffer.offerId.getHex()] = true;
@@ -23198,16 +23224,20 @@ var Friend = (function (_super) {
             status: this.status
         });
     };
+    Friend.prototype.getDistance = function () {
+        if (this.peerClientNonce === undefined) {
+            throw new Error('peerClientNonce not yet established');
+        }
+        return this.peerClientNonce.getXor(this.client.nonce);
+    };
     Friend.prototype.setSimplePeerListeners = function () {
         var _this = this;
         this.simplePeer.on('iceStateChange', function (iceConnectionState) {
             if (iceConnectionState === 'disconnected') {
-                console.log('disconnected');
                 _this.destroy();
             }
         });
         this.simplePeer.on('connect', function () {
-            console.log('connect');
             _this.setStatus(FRIEND_STATUS.CONNECTED);
         });
         this.simplePeer.on('data', function (friendMessageEncodingBuffer) {
@@ -23215,11 +23245,9 @@ var Friend = (function (_super) {
             _this.handleMessage(friendMessage);
         });
         this.simplePeer.once('error', function () {
-            console.log('error');
             _this.destroy();
         });
         this.simplePeer.once('close', function () {
-            console.log('close');
             _this.destroy();
         });
     };
@@ -23648,6 +23676,9 @@ var Offer = (function () {
     };
     Offer.prototype.getId = function () {
         return this.getEncoding().getHash();
+    };
+    Offer.prototype.getDistance = function (clientNonce) {
+        return this.clientNonce.getXor(clientNonce);
     };
     Offer.fromHenpojo = function (henpojo) {
         return new Offer(new Bytes_1.Bytes(henpojo.clientNonce), new Bytes_1.Bytes(henpojo.sdpb));

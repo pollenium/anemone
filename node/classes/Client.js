@@ -233,6 +233,22 @@ var Client = (function (_super) {
         this.offers.unshift(offer);
         this.createFriend();
     };
+    Client.prototype.getPeeredFriends = function () {
+        return this.getFriends().filter(function (friend) {
+            return friend.peerClientNonce !== undefined;
+        });
+    };
+    Client.prototype.getWorstFriend = function () {
+        var peeredFriends = this.getPeeredFriends();
+        if (peeredFriends.length === 0) {
+            return null;
+        }
+        return peeredFriends.sort(function (friendA, friendB) {
+            var distanceA = friendA.getDistance();
+            var distanceB = friendB.getDistance();
+            return distanceB.compare(distanceA);
+        })[0];
+    };
     Client.prototype.handleFlushOffer = function (signalingClient, flushOffer) {
         this.isFlushedOfferByOfferIdHex[flushOffer.offerId.getHex()] = true;
         this.offers = this.offers.filter(function (_offer) {

@@ -176,9 +176,45 @@ export class Client extends EventEmitter {
     this.offers = this.offers.filter((_offer) => {
       return !offer.clientNonce.equals(_offer.clientNonce)
     })
+
     this.offers.unshift(offer)
 
+    // this.offers = this.offers.sort((offerA, offerB) => {
+    //   const distanceA = offerA.getDistance(this.nonce)
+    //   const distanceB = offerB.getDistance(this.nonce)
+    //   return distanceA.compare(distanceB)
+    // })
+
+    // const peeredFriends = this.getPeeredFriends()
+    // if (peeredFriends.length === this.options.friendsMax) {
+    //   const offerDistance = offer.getDistance(this.nonce)
+    //   const worstFriend = this.getWorstFriend()
+    //   const worstFriendDistance = worstFriend.getDistance()
+    //   if (worstFriendDistance.compare(offerDistance) === 1) {
+    //     worstFriend.destroy()
+    //   }
+    // }
+
     this.createFriend()
+  }
+
+  private getPeeredFriends(): Friend[] {
+    return this.getFriends().filter((friend) => {
+      return friend.peerClientNonce !== undefined
+    })
+  }
+
+  private getWorstFriend(): null | Friend {
+    const peeredFriends = this.getPeeredFriends()
+    if (peeredFriends.length === 0) {
+      return null
+    }
+
+    return peeredFriends.sort((friendA, friendB) => {
+      const distanceA = friendA.getDistance()
+      const distanceB = friendB.getDistance()
+      return distanceB.compare(distanceA)
+    })[0]
   }
 
   handleFlushOffer(signalingClient: SignalingClient, flushOffer: FlushOffer): void {

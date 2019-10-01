@@ -41,6 +41,13 @@ export class Friend extends EventEmitter {
     })
   }
 
+  getDistance(): Bytes {
+    if (this.peerClientNonce === undefined) {
+      throw new Error('peerClientNonce not yet established')
+    }
+    return this.peerClientNonce.getXor(this.client.nonce)
+  }
+
   private setSimplePeerListeners(): void {
     this.simplePeer.on('iceStateChange', (iceConnectionState) => {
       if (iceConnectionState === 'disconnected') {
