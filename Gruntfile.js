@@ -51,9 +51,9 @@ module.exports = (grunt) => {
       }
     },
     run: {
-      'npm-test': {
+      'npm-test-node': {
         cmd: 'npm',
-        args: ['test']
+        args: ['run', 'test-node']
       },
       browserify: {
         cmd: 'npm',
@@ -95,8 +95,8 @@ module.exports = (grunt) => {
   grunt.registerTask('test', [
     'test-cleanup',
     'servers',
-    // 'test-browser',
-    'run:npm-test',
+    'test-browser',
+    'run:npm-test-node',
   ])
 
   grunt.registerTask('test-browser', 'open browser test in chrome', async function() {

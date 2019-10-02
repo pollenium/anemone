@@ -9,13 +9,24 @@ describe('clients', () => {
   let signalingServers
 
   async function logClients() {
-    return
     console.log(JSON.stringify(await Promise.all(clients.map(async (client) => {
+      if (client.getIsFullyConnected()) {
+        return {
+          nonce: client.nonce.getHex(),
+          isFullyConnected: true
+        }
+      }
       return {
         nonce: client.nonce.getHex(),
+        bootstrapOffersTimeout: client.options.bootstrapOffersTimeout,
         offersCount: client.offers.length,
         extroverts: await Promise.all(client.extroverts.map(async (extrovert) => {
           const offer = await extrovert.fetchOffer()
+          if (extrovert.status === 2) {
+            return {
+              status: 2
+            }
+          }
           return {
             createdAgo: utils.pollenium.utils.getNow() - extrovert.createdAt,
             // offerSdp: offer ? offer.sdpb.getUtf8(): null,
@@ -25,6 +36,11 @@ describe('clients', () => {
           }
         })),
         introverts: client.introverts.map((introvert) => {
+          if (introvert.status === 2) {
+            return {
+              status: 2
+            }
+          }
           return {
             createdAgo: utils.pollenium.utils.getNow() - introvert.createdAt,
             // offerSdp: introvert.offer.sdpb.getUtf8(),

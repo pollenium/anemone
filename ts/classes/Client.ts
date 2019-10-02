@@ -179,22 +179,23 @@ export class Client extends EventEmitter {
 
     this.offers.unshift(offer)
 
-    // this.offers = this.offers.sort((offerA, offerB) => {
-    //   const distanceA = offerA.getDistance(this.nonce)
-    //   const distanceB = offerB.getDistance(this.nonce)
-    //   return distanceA.compare(distanceB)
-    // })
+    this.offers = this.offers.sort((offerA, offerB) => {
+      const distanceA = offerA.getDistance(this.nonce)
+      const distanceB = offerB.getDistance(this.nonce)
+      return distanceB.compare(distanceA)
+    })
 
-    // const peeredFriends = this.getPeeredFriends()
-    // if (peeredFriends.length === this.options.friendsMax) {
-    //   const offerDistance = offer.getDistance(this.nonce)
-    //   const worstFriend = this.getWorstFriend()
-    //   const worstFriendDistance = worstFriend.getDistance()
-    //   if (worstFriendDistance.compare(offerDistance) === 1) {
-    //     worstFriend.destroy()
-    //   }
-    // }
-
+    if (this.getIsConnectableByClientNonce(offer.clientNonce)) {
+      const peeredFriends = this.getPeeredFriends()
+      if (peeredFriends.length === this.options.friendsMax) {
+        const offerDistance = offer.getDistance(this.nonce)
+        const worstFriend = this.getWorstFriend()
+        const worstFriendDistance = worstFriend.getDistance()
+        if (worstFriendDistance.compare(offerDistance) === 1) {
+          worstFriend.destroy()
+        }
+      }
+    }
     this.createFriend()
   }
 
@@ -213,7 +214,7 @@ export class Client extends EventEmitter {
     return peeredFriends.sort((friendA, friendB) => {
       const distanceA = friendA.getDistance()
       const distanceB = friendB.getDistance()
-      return distanceB.compare(distanceA)
+      return distanceA.compare(distanceB)
     })[0]
   }
 

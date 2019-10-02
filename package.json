@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "description": "",
   "scripts": {
-    "test": "mocha --bail --exit --timeout 0 ./test/e2e/node/index.js",
+    "test": "grunt test",
+    "test-node": "mocha --bail --exit --timeout 0 ./test/e2e/node/index.js",
     "browserify": "browserify ./node/index.js --standalone pollenium > browser/index.js",
     "browserify-hashcash-worker": "browserify ./node/hashcash-worker.js > browser/hashcash-worker.js",
     "browserify-test": "browserify test/e2e/node/index.js > test/e2e/browser/index.js",

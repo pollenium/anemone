@@ -22769,6 +22769,7 @@ var Client = (function (_super) {
         });
     };
     Client.prototype.handleOffer = function (signalingClient, offer) {
+        var _this = this;
         if (this.isFlushedOfferByOfferIdHex[offer.getId().getHex()]) {
             return;
         }
@@ -22787,6 +22788,22 @@ var Client = (function (_super) {
             return !offer.clientNonce.equals(_offer.clientNonce);
         });
         this.offers.unshift(offer);
+        this.offers = this.offers.sort(function (offerA, offerB) {
+            var distanceA = offerA.getDistance(_this.nonce);
+            var distanceB = offerB.getDistance(_this.nonce);
+            return distanceB.compare(distanceA);
+        });
+        if (this.getIsConnectableByClientNonce(offer.clientNonce)) {
+            var peeredFriends = this.getPeeredFriends();
+            if (peeredFriends.length === this.options.friendsMax) {
+                var offerDistance = offer.getDistance(this.nonce);
+                var worstFriend = this.getWorstFriend();
+                var worstFriendDistance = worstFriend.getDistance();
+                if (worstFriendDistance.compare(offerDistance) === 1) {
+                    worstFriend.destroy();
+                }
+            }
+        }
         this.createFriend();
     };
     Client.prototype.getPeeredFriends = function () {
@@ -22802,7 +22819,7 @@ var Client = (function (_super) {
         return peeredFriends.sort(function (friendA, friendB) {
             var distanceA = friendA.getDistance();
             var distanceB = friendB.getDistance();
-            return distanceB.compare(distanceA);
+            return distanceA.compare(distanceB);
         })[0];
     };
     Client.prototype.handleFlushOffer = function (signalingClient, flushOffer) {
