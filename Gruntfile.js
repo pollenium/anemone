@@ -145,10 +145,8 @@ module.exports = (grunt) => {
     const SignalingServer = require('./node/classes/SignalingServer').SignalingServer
     signalingServers = params.signalingServerPorts.map((port) => {
       console.log(`start server ${port}`)
-      return new SignalingServer(port, false)
+      return new SignalingServer(port)
     })
-
-    console.log('x', signalingServers)
 
     await delay(1000)
 
