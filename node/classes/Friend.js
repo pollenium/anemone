@@ -111,9 +111,13 @@ var Friend = (function (_super) {
         friendMessage.markIsReceived();
         this.client.emit('friend.message', friendMessage);
         this.client.getFriends().forEach(function (friend) {
-            if (friend !== _this) {
-                friend.sendMessage(friendMessage);
+            if (friend === _this) {
+                return;
             }
+            if (friend.status !== FRIEND_STATUS.CONNECTED) {
+                return;
+            }
+            friend.sendMessage(friendMessage);
         });
     };
     return Friend;

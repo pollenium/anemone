@@ -25,14 +25,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var websocket_1 = require("websocket");
 var http = __importStar(require("http"));
+var https = __importStar(require("https"));
 var Menteeship_1 = require("./Menteeship");
 var events_1 = __importDefault(require("events"));
 var server_destroy_1 = __importDefault(require("server-destroy"));
 var SignalingServer = (function (_super) {
     __extends(SignalingServer, _super);
-    function SignalingServer(port) {
+    function SignalingServer(port, isTls) {
+        if (isTls === void 0) { isTls = false; }
         var _this = _super.call(this) || this;
         _this.port = port;
+        _this.isTls = isTls;
         _this.menteeships = [];
         _this.menteeshipsByOfferIdHex = {};
         _this.bootstrap();
@@ -40,14 +43,15 @@ var SignalingServer = (function (_super) {
     }
     SignalingServer.prototype.bootstrap = function () {
         var _this = this;
-        this.httpServer = http.createServer(function (_request, response) {
+        var httpx = this.isTls ? http : https;
+        this.httpxServer = httpx.createServer(function (_request, response) {
             response.writeHead(404);
             response.end();
         });
-        server_destroy_1.default(this.httpServer);
-        this.httpServer.listen(this.port, function () { });
+        server_destroy_1.default(this.httpxServer);
+        this.httpxServer.listen(this.port, function () { });
         this.wsServer = new websocket_1.server({
-            httpServer: this.httpServer,
+            httpServer: this.httpxServer,
             autoAcceptConnections: true
         });
         this.wsServer.on('connect', function (wsConnection) {
@@ -80,7 +84,7 @@ var SignalingServer = (function (_super) {
     };
     SignalingServer.prototype.destroy = function () {
         this.wsServer.shutDown();
-        this.httpServer.destroy();
+        this.httpxServer.destroy();
     };
     return SignalingServer;
 }(events_1.default));

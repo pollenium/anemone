@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Bytes_1 = require("./Bytes");
+var Friend_1 = require("./Friend");
 var friendMessage_1 = require("../templates/friendMessage");
 var utils_1 = require("../utils");
 var bn_js_1 = __importDefault(require("bn.js"));
@@ -79,6 +80,9 @@ var FriendMessage = (function () {
         var _this = this;
         this.markIsReceived();
         this.client.getFriends().forEach(function (friend) {
+            if (friend.status !== Friend_1.FRIEND_STATUS.CONNECTED) {
+                return;
+            }
             friend.send(_this.getEncoding());
         });
     };

@@ -107,9 +107,13 @@ export class Friend extends EventEmitter {
     friendMessage.markIsReceived()
     this.client.emit('friend.message', friendMessage)
     this.client.getFriends().forEach((friend) => {
-      if (friend !== this) {
-        friend.sendMessage(friendMessage)
+      if (friend === this) {
+        return
       }
+      if (friend.status !== FRIEND_STATUS.CONNECTED) {
+        return
+      }
+      friend.sendMessage(friendMessage)
     })
   }
 

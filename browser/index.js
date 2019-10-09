@@ -23300,9 +23300,13 @@ var Friend = (function (_super) {
         friendMessage.markIsReceived();
         this.client.emit('friend.message', friendMessage);
         this.client.getFriends().forEach(function (friend) {
-            if (friend !== _this) {
-                friend.sendMessage(friendMessage);
+            if (friend === _this) {
+                return;
             }
+            if (friend.status !== FRIEND_STATUS.CONNECTED) {
+                return;
+            }
+            friend.sendMessage(friendMessage);
         });
     };
     return Friend;
@@ -23316,6 +23320,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Bytes_1 = require("./Bytes");
+var Friend_1 = require("./Friend");
 var friendMessage_1 = require("../templates/friendMessage");
 var utils_1 = require("../utils");
 var bn_js_1 = __importDefault(require("bn.js"));
@@ -23391,6 +23396,9 @@ var FriendMessage = (function () {
         var _this = this;
         this.markIsReceived();
         this.client.getFriends().forEach(function (friend) {
+            if (friend.status !== Friend_1.FRIEND_STATUS.CONNECTED) {
+                return;
+            }
             friend.send(_this.getEncoding());
         });
     };
@@ -23411,7 +23419,7 @@ var FriendMessage = (function () {
 }());
 exports.FriendMessage = FriendMessage;
 
-},{"../templates/friendMessage":169,"../utils":171,"./Bytes":156,"bn.js":184}],163:[function(require,module,exports){
+},{"../templates/friendMessage":169,"../utils":171,"./Bytes":156,"./Friend":161,"bn.js":184}],163:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }

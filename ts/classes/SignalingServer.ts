@@ -1,5 +1,6 @@
 import { server as WsServer, connection as WsConnection } from 'websocket'
 import * as http from 'http'
+import * as https from 'https'
 import { Menteeship } from './Menteeship'
 import EventEmitter from 'events'
 import { Offer } from './Offer'
@@ -13,25 +14,26 @@ export class SignalingServer extends EventEmitter {
 
   // offers: Offer[] = [];
   // TODO: any fix
-  httpServer: any;
+  httpxServer: any;
 
   wsServer: any;
 
-  constructor(public port: number) {
+  constructor(public port: number, public isTls: boolean = false) {
     super()
     this.bootstrap()
   }
 
   bootstrap(): void {
-    this.httpServer = http.createServer((_request, response) => {
+    // const httpx = this.isTls ? https : http
+    this.httpxServer = http.createServer((_request, response) => {
       response.writeHead(404)
       response.end()
     })
-    enableHttpServerDestroy(this.httpServer)
-    this.httpServer.listen(this.port, () => {})
+    enableHttpServerDestroy(this.httpxServer)
+    this.httpxServer.listen(this.port, () => {})
 
     this.wsServer = new WsServer({
-      httpServer: this.httpServer,
+      httpServer: this.httpxServer,
       autoAcceptConnections: true
     })
 
@@ -73,6 +75,6 @@ export class SignalingServer extends EventEmitter {
 
   destroy(): void {
     this.wsServer.shutDown()
-    this.httpServer.destroy()
+    this.httpxServer.destroy()
   }
 }

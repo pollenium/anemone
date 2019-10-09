@@ -1,4 +1,5 @@
 import { Bytes } from './Bytes'
+import { FRIEND_STATUS } from './Friend'
 import { FRIEND_MESSAGE_KEY, friendMessageTemplate } from '../templates/friendMessage'
 import { getNow, calculateEra, getMaxHash } from '../utils'
 import { Client } from './Client'
@@ -86,6 +87,9 @@ export class FriendMessage {
   broadcast(): void {
     this.markIsReceived()
     this.client.getFriends().forEach((friend) => {
+      if (friend.status !== FRIEND_STATUS.CONNECTED) {
+        return
+      }
       friend.send(this.getEncoding())
     })
   }
