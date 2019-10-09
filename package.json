@@ -1,7 +1,7 @@
 {
   "name": "pollenium-anemone",
   "version": "0.0.0",
-  "description": "",
+  "description": "Pollenium client/server for ts, node, and browser",
   "scripts": {
     "test": "grunt test",
     "test-node": "mocha --bail --exit --timeout 0 ./test/e2e/node/index.js",
