@@ -23,6 +23,7 @@
     "bluebird-stub": "0.0.0",
     "bn.js": "^5.0.0",
     "delay": "^4.3.0",
+    "express": "^4.17.1",
     "freeice": "^2.2.2",
     "hendricks": "^4.0.0",
     "localStorage": "^1.0.4",
