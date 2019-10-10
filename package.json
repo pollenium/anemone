@@ -1,6 +1,6 @@
 {
   "name": "pollenium-anemone",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Pollenium client/server for ts, node, and browser",
   "scripts": {
     "test": "grunt test",
