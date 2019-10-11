@@ -70,9 +70,11 @@ var Menteeship = (function (_super) {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
-                this.wsConnection.binaryType = 'arrayBuffer';
                 this.wsConnection.on('message', function (message) {
-                    var signalingMessageHenpojo = signalingMessage_1.signalingMessageTemplate.decode(new Uint8Array(message));
+                    if (message.type !== 'binary') {
+                        return;
+                    }
+                    var signalingMessageHenpojo = signalingMessage_1.signalingMessageTemplate.decode(new Uint8Array(message.binaryData));
                     switch (signalingMessageHenpojo.key) {
                         case signalingMessage_1.SIGNALING_MESSAGE_KEY.OFFER:
                             _this.emit('offer', Offer_1.Offer.fromHenpojo(signalingMessageHenpojo.value));
@@ -92,7 +94,7 @@ var Menteeship = (function (_super) {
         });
     };
     Menteeship.prototype.send = function (bytes) {
-        this.wsConnection.send(bytes.uint8Array);
+        this.wsConnection.sendBytes(bytes.getBuffer());
     };
     Menteeship.prototype.sendOffer = function (offer) {
         return __awaiter(this, void 0, void 0, function () {

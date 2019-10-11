@@ -1,9 +1,9 @@
-import { Server as WsServer, WsConnection } from 'ws'
+import { server as WsServer, connection as WsConnection } from 'websocket'
+import * as http from 'http'
 import { Menteeship } from './Menteeship'
 import EventEmitter from 'events'
 import { Offer } from './Offer'
-
-import express = require('express')
+import enableHttpServerDestroy from 'server-destroy'
 
 export class SignalingServer extends EventEmitter {
 
@@ -13,7 +13,7 @@ export class SignalingServer extends EventEmitter {
 
   // offers: Offer[] = [];
   // TODO: any fix
-  expressServer: any;
+  httpServer: any;
 
   wsServer: any;
 
@@ -23,13 +23,19 @@ export class SignalingServer extends EventEmitter {
   }
 
   bootstrap(): void {
-    this.expressServer = express().listen(this.port)
+    this.httpServer = http.createServer((_request, response) => {
+      response.writeHead(404)
+      response.end()
+    })
+    enableHttpServerDestroy(this.httpServer)
+    this.httpServer.listen(this.port, () => {})
 
     this.wsServer = new WsServer({
-      server: this.expressServer
+      httpServer: this.httpServer,
+      autoAcceptConnections: true
     })
 
-    this.wsServer.on('connection', (wsConnection: WsConnection) => {
+    this.wsServer.on('connect', (wsConnection: WsConnection) => {
       const menteeship = new Menteeship(this, wsConnection)
       this.menteeships.push(menteeship)
 
@@ -67,6 +73,6 @@ export class SignalingServer extends EventEmitter {
 
   destroy(): void {
     this.wsServer.shutDown()
-    this.expressServer.destroy()
+    this.httpServer.destroy()
   }
 }

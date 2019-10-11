@@ -1,5 +1,5 @@
 import EventEmitter from 'events'
-import WsConnection from 'ws'
+import { connection as WsConnection } from 'websocket'
 import { SignalingServer } from './SignalingServer'
 import { Bytes } from './Bytes'
 import { Offer } from './Offer'
@@ -17,9 +17,11 @@ export class Menteeship extends EventEmitter {
   }
 
   async bootstrap(): Promise<void> {
-    this.wsConnection.binaryType = 'arrayBuffer'
     this.wsConnection.on('message', (message) => {
-      const signalingMessageHenpojo = signalingMessageTemplate.decode(new Uint8Array(message))
+      if (message.type !== 'binary') {
+        return
+      }
+      const signalingMessageHenpojo = signalingMessageTemplate.decode(new Uint8Array(message.binaryData))
 
       switch(signalingMessageHenpojo.key) {
         case SIGNALING_MESSAGE_KEY.OFFER:
@@ -38,7 +40,7 @@ export class Menteeship extends EventEmitter {
   }
 
   send(bytes: Bytes): void {
-    this.wsConnection.send(bytes.uint8Array)
+    this.wsConnection.sendBytes(bytes.getBuffer())
   }
 
   async sendOffer(offer: Offer): Promise<void> {
