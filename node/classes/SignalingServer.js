@@ -12,22 +12,13 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var websocket_1 = require("websocket");
-var http = __importStar(require("http"));
+var ws_1 = require("ws");
 var Menteeship_1 = require("./Menteeship");
 var events_1 = __importDefault(require("events"));
-var server_destroy_1 = __importDefault(require("server-destroy"));
 var express = require("express");
 var SignalingServer = (function (_super) {
     __extends(SignalingServer, _super);
@@ -41,14 +32,11 @@ var SignalingServer = (function (_super) {
     }
     SignalingServer.prototype.bootstrap = function () {
         var _this = this;
-        this.httpServer = http.createServer(express());
-        server_destroy_1.default(this.httpServer);
-        this.httpServer.listen(this.port, function () { });
-        this.wsServer = new websocket_1.server({
-            httpServer: this.httpServer,
-            autoAcceptConnections: true
+        this.expressServer = express().listen(this.port);
+        this.wsServer = new ws_1.Server({
+            server: this.expressServer
         });
-        this.wsServer.on('connect', function (wsConnection) {
+        this.wsServer.on('connection', function (wsConnection) {
             var menteeship = new Menteeship_1.Menteeship(_this, wsConnection);
             _this.menteeships.push(menteeship);
             menteeship.on('offer', function (offer) {
@@ -78,7 +66,7 @@ var SignalingServer = (function (_super) {
     };
     SignalingServer.prototype.destroy = function () {
         this.wsServer.shutDown();
-        this.httpServer.destroy();
+        this.expressServer.destroy();
     };
     return SignalingServer;
 }(events_1.default));
