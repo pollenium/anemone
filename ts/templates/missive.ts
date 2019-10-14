@@ -8,12 +8,12 @@ const fixed5 = new Fixed(5)
 const fixed32 = new Fixed(32)
 const dynamic2 = new Dynamic(2)
 
-export enum FRIEND_MESSAGE_KEY {
+export enum MISSIVE_KEY {
   V0 = 'V0'
 }
 
 
-export const friendMessageTemplate = new Split(['V0'], [
+export const missiveTemplate = new Split(['V0'], [
   new Dictionary([
     'timestamp',
     'difficulty',

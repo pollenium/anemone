@@ -1,15 +1,15 @@
 import { Bytes } from './Bytes'
 import { FRIEND_STATUS } from './Friend'
-import { FRIEND_MESSAGE_KEY, friendMessageTemplate } from '../templates/friendMessage'
+import { MISSIVE_KEY, missiveTemplate } from '../templates/missive'
 import { getNow, calculateEra, getMaxHash } from '../utils'
 import { Client } from './Client'
 import Bn from 'bn.js'
 
-export class FriendMessage {
+export class Missive {
 
   constructor(
     public client: Client,
-    public version: FRIEND_MESSAGE_KEY,
+    public version: MISSIVE_KEY,
     public timestamp: Bytes,
     public difficulty: number,
     public nonce: Bytes,
@@ -19,8 +19,8 @@ export class FriendMessage {
 
   getEncoding(): Bytes {
     return new Bytes(
-      friendMessageTemplate.encode({
-        key: FRIEND_MESSAGE_KEY.V0,
+      missiveTemplate.encode({
+        key: MISSIVE_KEY.V0,
         value: {
           timestamp: this.timestamp.uint8Array,
           difficulty: new Uint8Array([this.difficulty]),
@@ -43,19 +43,19 @@ export class FriendMessage {
   getIsReceived(): boolean {
     const era = this.getEra()
     const idHex = this.getId().getHex()
-    if (this.client.friendMessageIsReceivedByIdHexByEra[era] === undefined) {
+    if (this.client.missiveIsReceivedByIdHexByEra[era] === undefined) {
       return false
     }
-    return this.client.friendMessageIsReceivedByIdHexByEra[era][idHex] === true
+    return this.client.missiveIsReceivedByIdHexByEra[era][idHex] === true
   }
 
   markIsReceived(): void {
     const era = this.getEra()
     const idHex = this.getId().getHex()
-    if (this.client.friendMessageIsReceivedByIdHexByEra[era] === undefined) {
-      this.client.friendMessageIsReceivedByIdHexByEra[era] = {}
+    if (this.client.missiveIsReceivedByIdHexByEra[era] === undefined) {
+      this.client.missiveIsReceivedByIdHexByEra[era] = {}
     }
-    this.client.friendMessageIsReceivedByIdHexByEra[era][idHex] = true
+    this.client.missiveIsReceivedByIdHexByEra[era][idHex] = true
   }
 
   getMaxHash(): Bytes {
@@ -63,13 +63,13 @@ export class FriendMessage {
   }
 
   getIsValid(): boolean {
-    if (this.version !== FRIEND_MESSAGE_KEY.V0) {
+    if (this.version !== MISSIVE_KEY.V0) {
       return false
     }
     const now = getNow()
     const nowBn = new Bn(now)
     const timestampBn = this.timestamp.getBn()
-    if (timestampBn.lt(nowBn.sub(this.client.friendMessageLatencyToleranceBn))) {
+    if (timestampBn.lt(nowBn.sub(this.client.missiveLatencyToleranceBn))) {
       return false
     }
     if (timestampBn.gt(nowBn)) {
@@ -94,11 +94,11 @@ export class FriendMessage {
     })
   }
 
-  static fromHenpojo(client: Client, henpojo: any): FriendMessage {
+  static fromHenpojo(client: Client, henpojo: any): Missive {
     switch (henpojo.key) {
-      case FRIEND_MESSAGE_KEY.V0: {
+      case MISSIVE_KEY.V0: {
         const v0Henpojo = henpojo.value
-        return new FriendMessage(
+        return new Missive(
           client,
           henpojo.key,
           new Bytes(v0Henpojo.timestamp),
@@ -109,12 +109,12 @@ export class FriendMessage {
         )
       }
       default:
-        throw new Error('Unhandled FRIEND_MESSAGE_KEY')
+        throw new Error('Unhandled MISSIVE_KEY')
     }
   }
 
-  static fromEncoding(client: Client, encoding: Bytes): FriendMessage {
-    return FriendMessage.fromHenpojo(client, friendMessageTemplate.decode(encoding.uint8Array))
+  static fromEncoding(client: Client, encoding: Bytes): Missive {
+    return Missive.fromHenpojo(client, missiveTemplate.decode(encoding.uint8Array))
   }
 
 }

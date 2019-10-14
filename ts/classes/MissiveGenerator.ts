@@ -1,16 +1,16 @@
 import { Client } from './Client'
 import { Bytes } from './Bytes'
-import { FriendMessage } from './FriendMessage'
+import { Missive } from './Missive'
 import { getTimestamp, getNow } from '../utils'
-import { friendMessageTemplate, FRIEND_MESSAGE_KEY } from '../templates/friendMessage'
+import { missiveTemplate, MISSIVE_KEY } from '../templates/missive'
 import { HashcashRequest } from '../interfaces/HashcashRequest'
 import { HashcashResolution, HASHCASH_RESOLUTION_KEY } from '../interfaces/HashcashResolution'
 
 const nullNonce = (new Uint8Array(32)).fill(0)
 
-export class FriendMessageGenerator {
+export class MissiveGenerator {
 
-  friendMessagePromise: Promise<FriendMessage>
+  missivePromise: Promise<Missive>
 
   worker: Worker;
 
@@ -18,8 +18,8 @@ export class FriendMessageGenerator {
   }
 
   private getNoncelessPrehash(timestamp: Bytes): Bytes {
-    const encoding = friendMessageTemplate.encode({
-      key: FRIEND_MESSAGE_KEY.V0,
+    const encoding = missiveTemplate.encode({
+      key: MISSIVE_KEY.V0,
       value: {
         nonce: nullNonce,
         difficulty: new Uint8Array([this.difficulty]),
@@ -69,12 +69,12 @@ export class FriendMessageGenerator {
 
   }
 
-  async fetchFriendMessage(): Promise<FriendMessage> {
+  async fetchMissive(): Promise<Missive> {
     const timestamp = getTimestamp()
     const nonce = await this.fetchNonce(timestamp)
-    return new FriendMessage(
+    return new Missive(
       this.client,
-      FRIEND_MESSAGE_KEY.V0,
+      MISSIVE_KEY.V0,
       timestamp,
       this.difficulty,
       nonce,

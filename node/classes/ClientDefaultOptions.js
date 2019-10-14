@@ -5,7 +5,7 @@ var ClientDefaultOptions = (function () {
         this.signalingServerUrls = [];
         this.signalTimeout = 5;
         this.friendsMax = 6;
-        this.friendMessageLatencyTolerance = 30;
+        this.missiveLatencyTolerance = 30;
         this.bootstrapOffersTimeout = 10;
     }
     return ClientDefaultOptions;

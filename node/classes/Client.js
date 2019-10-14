@@ -74,10 +74,10 @@ var Client = (function (_super) {
         _this.friendStatusByClientNonceHex = {};
         _this.offersReceivedByClientNonceHex = {};
         _this.isFlushedOfferByOfferIdHex = {};
-        _this.friendMessageIsReceivedByIdHexByEra = {};
+        _this.missiveIsReceivedByIdHexByEra = {};
         _this.options = Object.assign(new ClientDefaultOptions_1.ClientDefaultOptions, options);
         _this.signalTimeoutMs = _this.options.signalTimeout * 1000;
-        _this.friendMessageLatencyToleranceBn = new bn_js_1.default(_this.options.friendMessageLatencyTolerance);
+        _this.missiveLatencyToleranceBn = new bn_js_1.default(_this.options.missiveLatencyTolerance);
         _this.nonce = Bytes_1.Bytes.random(32);
         _this.bootstrap();
         return _this;

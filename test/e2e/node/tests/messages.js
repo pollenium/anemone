@@ -2,12 +2,12 @@ const stubs = require('../stubs')
 const params = require('../params')
 const utils = require('../utils')
 
-const friendMessages = []
-const expectedReceivalsCount = params.friendMessagesCount * (params.clientsCount - 1)
+const missives = []
+const expectedReceivalsCount = params.missivesCount * (params.clientsCount - 1)
 
 require('./clients')
 
-describe('friend messages', () => {
+describe('missives', () => {
   let clients
 
   before(async () => {
@@ -16,23 +16,23 @@ describe('friend messages', () => {
   it('should have clients', () => {
     clients.length.should.equal(7)
   })
-  for (let i = 0; i < params.friendMessagesCount; i++) {
-    it(`should create friendMessages #${i}`, async () => {
+  for (let i = 0; i < params.missivesCount; i++) {
+    it(`should create missives #${i}`, async () => {
       const client = clients[Math.floor(Math.random() * clients.length)]
-      const friendMessageGenerator = new utils.pollenium.FriendMessageGenerator(
+      const missiveGenerator = new utils.pollenium.MissiveGenerator(
         client,
         utils.pollenium.Bytes.random(32),
         utils.pollenium.Bytes.random(32),
         6
       )
-      const friendMessage = await friendMessageGenerator.fetchFriendMessage()
-      friendMessages.push(friendMessage)
+      const missive = await missiveGenerator.fetchMissive()
+      missives.push(missive)
     })
   }
   it(`should send message and be received ${expectedReceivalsCount} times`, (done) => {
     let i = 0
     clients.forEach((client) => {
-      client.on('friend.message', (_friendMessage) => {
+      client.on('friend.missive', (_missive) => {
         i++
         if (i === expectedReceivalsCount) {
           setTimeout(() => {
@@ -45,8 +45,8 @@ describe('friend messages', () => {
         }
       })
     })
-    friendMessages.forEach((friendMessage) => {
-      friendMessage.broadcast()
+    missives.forEach((missive) => {
+      missive.broadcast()
     })
 
   })

@@ -6,7 +6,7 @@ export interface ClientOptions {
   bootstrapOffersTimeout: number;
   signalTimeout: number;
   friendsMax: number;
-  friendMessageLatencyTolerance: number;
+  missiveLatencyTolerance: number;
   Worker: ConstructableWorker;
   WebSocket: ConstructableWebSocket;
   wrtc?: any;

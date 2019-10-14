@@ -36,18 +36,18 @@ export class Client extends EventEmitter {
 
   isFlushedOfferByOfferIdHex: { [id: string]: boolean } = {}
 
-  friendMessageIsReceivedByIdHexByEra: { [era: number]: { [friendMessageIdHex: string]: boolean }} = {};
+  missiveIsReceivedByIdHexByEra: { [era: number]: { [missiveIdHex: string]: boolean }} = {};
 
   signalTimeoutMs: number;
 
-  friendMessageLatencyToleranceBn: Bn;
+  missiveLatencyToleranceBn: Bn;
 
 
   constructor(options: ClientOptions) {
     super()
     this.options = Object.assign(new ClientDefaultOptions, options)
     this.signalTimeoutMs = this.options.signalTimeout * 1000
-    this.friendMessageLatencyToleranceBn = new Bn(this.options.friendMessageLatencyTolerance)
+    this.missiveLatencyToleranceBn = new Bn(this.options.missiveLatencyTolerance)
     this.nonce = Bytes.random(32)
     this.bootstrap()
   }

@@ -2,7 +2,7 @@ const utils = require('../utils')
 
 let client
 
-describe('friendMessageGenerator', () => {
+describe('missiveGenerator', () => {
 
   it('should create client', () => {
     client = new utils.pollenium.Client({
@@ -14,15 +14,15 @@ describe('friendMessageGenerator', () => {
   })
 
   for (let difficulty = 0; difficulty <= 6; difficulty++) {
-    let friendMessage
-    it(`should generate friend message with difficulty ${difficulty}`, async () => {
+    let missive
+    it(`should generate missive with difficulty ${difficulty}`, async () => {
       const applicationId = utils.pollenium.Bytes.random(32)
       const applicationData = utils.pollenium.Bytes.random(64)
-      const friendMessageGenerator = new utils.pollenium.FriendMessageGenerator(client, applicationId, applicationData, difficulty)
-      friendMessage = await friendMessageGenerator.fetchFriendMessage()
+      const missiveGenerator = new utils.pollenium.MissiveGenerator(client, applicationId, applicationData, difficulty)
+      missive = await missiveGenerator.fetchMissive()
     })
     it('should be valid', () => {
-      friendMessage.getIsValid().should.equal(true)
+      missive.getIsValid().should.equal(true)
     })
   }
 

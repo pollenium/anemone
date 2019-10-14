@@ -22630,10 +22630,10 @@ var Client = (function (_super) {
         _this.friendStatusByClientNonceHex = {};
         _this.offersReceivedByClientNonceHex = {};
         _this.isFlushedOfferByOfferIdHex = {};
-        _this.friendMessageIsReceivedByIdHexByEra = {};
+        _this.missiveIsReceivedByIdHexByEra = {};
         _this.options = Object.assign(new ClientDefaultOptions_1.ClientDefaultOptions, options);
         _this.signalTimeoutMs = _this.options.signalTimeout * 1000;
-        _this.friendMessageLatencyToleranceBn = new bn_js_1.default(_this.options.friendMessageLatencyTolerance);
+        _this.missiveLatencyToleranceBn = new bn_js_1.default(_this.options.missiveLatencyTolerance);
         _this.nonce = Bytes_1.Bytes.random(32);
         _this.bootstrap();
         return _this;
@@ -22907,7 +22907,7 @@ var Client = (function (_super) {
 }(events_1.default));
 exports.Client = Client;
 
-},{"./Bytes":156,"./ClientDefaultOptions":158,"./Extrovert":159,"./Friend":161,"./Introvert":164,"./SignalingClient":166,"bn.js":184,"delay":186,"events":82}],158:[function(require,module,exports){
+},{"./Bytes":156,"./ClientDefaultOptions":158,"./Extrovert":159,"./Friend":161,"./Introvert":162,"./SignalingClient":166,"bn.js":184,"delay":186,"events":82}],158:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var ClientDefaultOptions = (function () {
@@ -22915,7 +22915,7 @@ var ClientDefaultOptions = (function () {
         this.signalingServerUrls = [];
         this.signalTimeout = 5;
         this.friendsMax = 6;
-        this.friendMessageLatencyTolerance = 30;
+        this.missiveLatencyTolerance = 30;
         this.bootstrapOffersTimeout = 10;
     }
     return ClientDefaultOptions;
@@ -23207,7 +23207,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var Bytes_1 = require("./Bytes");
 var events_1 = __importDefault(require("events"));
-var FriendMessage_1 = require("./FriendMessage");
+var Missive_1 = require("./Missive");
 var utils_1 = require("../utils");
 var FRIEND_STATUS;
 (function (FRIEND_STATUS) {
@@ -23257,9 +23257,9 @@ var Friend = (function (_super) {
         this.simplePeer.on('connect', function () {
             _this.setStatus(FRIEND_STATUS.CONNECTED);
         });
-        this.simplePeer.on('data', function (friendMessageEncodingBuffer) {
-            var friendMessage = FriendMessage_1.FriendMessage.fromEncoding(_this.client, Bytes_1.Bytes.fromBuffer(friendMessageEncodingBuffer));
-            _this.handleMessage(friendMessage);
+        this.simplePeer.on('data', function (missiveEncodingBuffer) {
+            var missive = Missive_1.Missive.fromEncoding(_this.client, Bytes_1.Bytes.fromBuffer(missiveEncodingBuffer));
+            _this.handleMessage(missive);
         });
         this.simplePeer.once('error', function () {
             _this.destroy();
@@ -23289,16 +23289,16 @@ var Friend = (function (_super) {
         }
         this.simplePeer.send(bytes.uint8Array);
     };
-    Friend.prototype.sendMessage = function (friendMessage) {
-        this.send(friendMessage.getEncoding());
+    Friend.prototype.sendMessage = function (missive) {
+        this.send(missive.getEncoding());
     };
-    Friend.prototype.handleMessage = function (friendMessage) {
+    Friend.prototype.handleMessage = function (missive) {
         var _this = this;
-        if (friendMessage.getIsReceived()) {
+        if (missive.getIsReceived()) {
             return;
         }
-        friendMessage.markIsReceived();
-        this.client.emit('friend.message', friendMessage);
+        missive.markIsReceived();
+        this.client.emit('friend.message', missive);
         this.client.getFriends().forEach(function (friend) {
             if (friend === _this) {
                 return;
@@ -23306,249 +23306,14 @@ var Friend = (function (_super) {
             if (friend.status !== FRIEND_STATUS.CONNECTED) {
                 return;
             }
-            friend.sendMessage(friendMessage);
+            friend.sendMessage(missive);
         });
     };
     return Friend;
 }(events_1.default));
 exports.Friend = Friend;
 
-},{"../utils":171,"./Bytes":156,"./FriendMessage":162,"events":82}],162:[function(require,module,exports){
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var Bytes_1 = require("./Bytes");
-var Friend_1 = require("./Friend");
-var friendMessage_1 = require("../templates/friendMessage");
-var utils_1 = require("../utils");
-var bn_js_1 = __importDefault(require("bn.js"));
-var FriendMessage = (function () {
-    function FriendMessage(client, version, timestamp, difficulty, nonce, applicationId, applicationData) {
-        this.client = client;
-        this.version = version;
-        this.timestamp = timestamp;
-        this.difficulty = difficulty;
-        this.nonce = nonce;
-        this.applicationId = applicationId;
-        this.applicationData = applicationData;
-    }
-    FriendMessage.prototype.getEncoding = function () {
-        return new Bytes_1.Bytes(friendMessage_1.friendMessageTemplate.encode({
-            key: friendMessage_1.FRIEND_MESSAGE_KEY.V0,
-            value: {
-                timestamp: this.timestamp.uint8Array,
-                difficulty: new Uint8Array([this.difficulty]),
-                applicationId: this.applicationId.uint8Array,
-                nonce: this.nonce.uint8Array,
-                applicationData: this.applicationData.uint8Array
-            }
-        }));
-    };
-    FriendMessage.prototype.getId = function () {
-        return this.getEncoding().getHash();
-    };
-    FriendMessage.prototype.getEra = function () {
-        return utils_1.calculateEra(this.timestamp.getNumber());
-    };
-    FriendMessage.prototype.getIsReceived = function () {
-        var era = this.getEra();
-        var idHex = this.getId().getHex();
-        if (this.client.friendMessageIsReceivedByIdHexByEra[era] === undefined) {
-            return false;
-        }
-        return this.client.friendMessageIsReceivedByIdHexByEra[era][idHex] === true;
-    };
-    FriendMessage.prototype.markIsReceived = function () {
-        var era = this.getEra();
-        var idHex = this.getId().getHex();
-        if (this.client.friendMessageIsReceivedByIdHexByEra[era] === undefined) {
-            this.client.friendMessageIsReceivedByIdHexByEra[era] = {};
-        }
-        this.client.friendMessageIsReceivedByIdHexByEra[era][idHex] = true;
-    };
-    FriendMessage.prototype.getMaxHash = function () {
-        return utils_1.getMaxHash(this.difficulty, this.getEncoding().getLength());
-    };
-    FriendMessage.prototype.getIsValid = function () {
-        if (this.version !== friendMessage_1.FRIEND_MESSAGE_KEY.V0) {
-            return false;
-        }
-        var now = utils_1.getNow();
-        var nowBn = new bn_js_1.default(now);
-        var timestampBn = this.timestamp.getBn();
-        if (timestampBn.lt(nowBn.sub(this.client.friendMessageLatencyToleranceBn))) {
-            return false;
-        }
-        if (timestampBn.gt(nowBn)) {
-            return false;
-        }
-        if (this.getIsReceived()) {
-            return false;
-        }
-        if (this.getId().getBn().gt(this.getMaxHash().getBn())) {
-            return false;
-        }
-        return true;
-    };
-    FriendMessage.prototype.broadcast = function () {
-        var _this = this;
-        this.markIsReceived();
-        this.client.getFriends().forEach(function (friend) {
-            if (friend.status !== Friend_1.FRIEND_STATUS.CONNECTED) {
-                return;
-            }
-            friend.send(_this.getEncoding());
-        });
-    };
-    FriendMessage.fromHenpojo = function (client, henpojo) {
-        switch (henpojo.key) {
-            case friendMessage_1.FRIEND_MESSAGE_KEY.V0: {
-                var v0Henpojo = henpojo.value;
-                return new FriendMessage(client, henpojo.key, new Bytes_1.Bytes(v0Henpojo.timestamp), v0Henpojo.difficulty[0], new Bytes_1.Bytes(v0Henpojo.nonce), new Bytes_1.Bytes(v0Henpojo.applicationId), new Bytes_1.Bytes(v0Henpojo.applicationData));
-            }
-            default:
-                throw new Error('Unhandled FRIEND_MESSAGE_KEY');
-        }
-    };
-    FriendMessage.fromEncoding = function (client, encoding) {
-        return FriendMessage.fromHenpojo(client, friendMessage_1.friendMessageTemplate.decode(encoding.uint8Array));
-    };
-    return FriendMessage;
-}());
-exports.FriendMessage = FriendMessage;
-
-},{"../templates/friendMessage":169,"../utils":171,"./Bytes":156,"./Friend":161,"bn.js":184}],163:[function(require,module,exports){
-"use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var Bytes_1 = require("./Bytes");
-var FriendMessage_1 = require("./FriendMessage");
-var utils_1 = require("../utils");
-var friendMessage_1 = require("../templates/friendMessage");
-var HashcashResolution_1 = require("../interfaces/HashcashResolution");
-var nullNonce = (new Uint8Array(32)).fill(0);
-var FriendMessageGenerator = (function () {
-    function FriendMessageGenerator(client, applicationId, applicationData, difficulty) {
-        this.client = client;
-        this.applicationId = applicationId;
-        this.applicationData = applicationData;
-        this.difficulty = difficulty;
-    }
-    FriendMessageGenerator.prototype.getNoncelessPrehash = function (timestamp) {
-        var encoding = friendMessage_1.friendMessageTemplate.encode({
-            key: friendMessage_1.FRIEND_MESSAGE_KEY.V0,
-            value: {
-                nonce: nullNonce,
-                difficulty: new Uint8Array([this.difficulty]),
-                timestamp: timestamp.uint8Array,
-                applicationId: this.applicationId.uint8Array,
-                applicationData: this.applicationData.uint8Array
-            }
-        });
-        return new Bytes_1.Bytes(encoding.slice(0, encoding.length - 32));
-    };
-    FriendMessageGenerator.prototype.fetchNonce = function (timestamp) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var worker = new _this.client.options.Worker(_this.client.options.hashcashWorkerUrl, [], { esm: true });
-            var onMessage = function (event) { return __awaiter(_this, void 0, void 0, function () {
-                var hashcashResolution, _a, _b;
-                return __generator(this, function (_c) {
-                    switch (_c.label) {
-                        case 0:
-                            worker.terminate();
-                            hashcashResolution = event.data;
-                            _a = hashcashResolution.key;
-                            switch (_a) {
-                                case HashcashResolution_1.HASHCASH_RESOLUTION_KEY.NONCE_HEX: return [3, 1];
-                                case HashcashResolution_1.HASHCASH_RESOLUTION_KEY.TIMEOUT_ERROR: return [3, 2];
-                            }
-                            return [3, 4];
-                        case 1:
-                            resolve(Bytes_1.Bytes.fromHex(hashcashResolution.value));
-                            return [3, 5];
-                        case 2:
-                            _b = resolve;
-                            return [4, this.fetchNonce(timestamp)];
-                        case 3:
-                            _b.apply(void 0, [_c.sent()]);
-                            return [3, 5];
-                        case 4: throw new Error('Unhandled HASHCASH_RESOLUTION_KEY');
-                        case 5: return [2];
-                    }
-                });
-            }); };
-            worker.addEventListener('message', onMessage);
-            worker.onerror = function (error) {
-                reject(error);
-            };
-            var timeoutAt = utils_1.getNow() + 5;
-            var noncelessPrehash = _this.getNoncelessPrehash(timestamp);
-            var hashcashRequest = {
-                noncelessPrehashHex: noncelessPrehash.getHex(),
-                difficulty: _this.difficulty,
-                timeoutAt: timeoutAt
-            };
-            worker.postMessage(hashcashRequest);
-        });
-    };
-    FriendMessageGenerator.prototype.fetchFriendMessage = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var timestamp, nonce;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        timestamp = utils_1.getTimestamp();
-                        return [4, this.fetchNonce(timestamp)];
-                    case 1:
-                        nonce = _a.sent();
-                        return [2, new FriendMessage_1.FriendMessage(this.client, friendMessage_1.FRIEND_MESSAGE_KEY.V0, timestamp, this.difficulty, nonce, this.applicationId, this.applicationData)];
-                }
-            });
-        });
-    };
-    return FriendMessageGenerator;
-}());
-exports.FriendMessageGenerator = FriendMessageGenerator;
-
-},{"../interfaces/HashcashResolution":168,"../templates/friendMessage":169,"../utils":171,"./Bytes":156,"./FriendMessage":162}],164:[function(require,module,exports){
+},{"../utils":171,"./Bytes":156,"./Missive":163,"events":82}],162:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -23680,7 +23445,242 @@ var Introvert = (function (_super) {
 }(Friend_1.Friend));
 exports.Introvert = Introvert;
 
-},{"../utils":171,"./Answer":155,"./Bytes":156,"./Friend":161,"delay":186,"simple-peer":212}],165:[function(require,module,exports){
+},{"../utils":171,"./Answer":155,"./Bytes":156,"./Friend":161,"delay":186,"simple-peer":212}],163:[function(require,module,exports){
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var Bytes_1 = require("./Bytes");
+var Friend_1 = require("./Friend");
+var missive_1 = require("../templates/missive");
+var utils_1 = require("../utils");
+var bn_js_1 = __importDefault(require("bn.js"));
+var Missive = (function () {
+    function Missive(client, version, timestamp, difficulty, nonce, applicationId, applicationData) {
+        this.client = client;
+        this.version = version;
+        this.timestamp = timestamp;
+        this.difficulty = difficulty;
+        this.nonce = nonce;
+        this.applicationId = applicationId;
+        this.applicationData = applicationData;
+    }
+    Missive.prototype.getEncoding = function () {
+        return new Bytes_1.Bytes(missive_1.missiveTemplate.encode({
+            key: missive_1.MISSIVE_KEY.V0,
+            value: {
+                timestamp: this.timestamp.uint8Array,
+                difficulty: new Uint8Array([this.difficulty]),
+                applicationId: this.applicationId.uint8Array,
+                nonce: this.nonce.uint8Array,
+                applicationData: this.applicationData.uint8Array
+            }
+        }));
+    };
+    Missive.prototype.getId = function () {
+        return this.getEncoding().getHash();
+    };
+    Missive.prototype.getEra = function () {
+        return utils_1.calculateEra(this.timestamp.getNumber());
+    };
+    Missive.prototype.getIsReceived = function () {
+        var era = this.getEra();
+        var idHex = this.getId().getHex();
+        if (this.client.missiveIsReceivedByIdHexByEra[era] === undefined) {
+            return false;
+        }
+        return this.client.missiveIsReceivedByIdHexByEra[era][idHex] === true;
+    };
+    Missive.prototype.markIsReceived = function () {
+        var era = this.getEra();
+        var idHex = this.getId().getHex();
+        if (this.client.missiveIsReceivedByIdHexByEra[era] === undefined) {
+            this.client.missiveIsReceivedByIdHexByEra[era] = {};
+        }
+        this.client.missiveIsReceivedByIdHexByEra[era][idHex] = true;
+    };
+    Missive.prototype.getMaxHash = function () {
+        return utils_1.getMaxHash(this.difficulty, this.getEncoding().getLength());
+    };
+    Missive.prototype.getIsValid = function () {
+        if (this.version !== missive_1.MISSIVE_KEY.V0) {
+            return false;
+        }
+        var now = utils_1.getNow();
+        var nowBn = new bn_js_1.default(now);
+        var timestampBn = this.timestamp.getBn();
+        if (timestampBn.lt(nowBn.sub(this.client.missiveLatencyToleranceBn))) {
+            return false;
+        }
+        if (timestampBn.gt(nowBn)) {
+            return false;
+        }
+        if (this.getIsReceived()) {
+            return false;
+        }
+        if (this.getId().getBn().gt(this.getMaxHash().getBn())) {
+            return false;
+        }
+        return true;
+    };
+    Missive.prototype.broadcast = function () {
+        var _this = this;
+        this.markIsReceived();
+        this.client.getFriends().forEach(function (friend) {
+            if (friend.status !== Friend_1.FRIEND_STATUS.CONNECTED) {
+                return;
+            }
+            friend.send(_this.getEncoding());
+        });
+    };
+    Missive.fromHenpojo = function (client, henpojo) {
+        switch (henpojo.key) {
+            case missive_1.MISSIVE_KEY.V0: {
+                var v0Henpojo = henpojo.value;
+                return new Missive(client, henpojo.key, new Bytes_1.Bytes(v0Henpojo.timestamp), v0Henpojo.difficulty[0], new Bytes_1.Bytes(v0Henpojo.nonce), new Bytes_1.Bytes(v0Henpojo.applicationId), new Bytes_1.Bytes(v0Henpojo.applicationData));
+            }
+            default:
+                throw new Error('Unhandled MISSIVE_KEY');
+        }
+    };
+    Missive.fromEncoding = function (client, encoding) {
+        return Missive.fromHenpojo(client, missive_1.missiveTemplate.decode(encoding.uint8Array));
+    };
+    return Missive;
+}());
+exports.Missive = Missive;
+
+},{"../templates/missive":169,"../utils":171,"./Bytes":156,"./Friend":161,"bn.js":184}],164:[function(require,module,exports){
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var Bytes_1 = require("./Bytes");
+var Missive_1 = require("./Missive");
+var utils_1 = require("../utils");
+var missive_1 = require("../templates/missive");
+var HashcashResolution_1 = require("../interfaces/HashcashResolution");
+var nullNonce = (new Uint8Array(32)).fill(0);
+var MissiveGenerator = (function () {
+    function MissiveGenerator(client, applicationId, applicationData, difficulty) {
+        this.client = client;
+        this.applicationId = applicationId;
+        this.applicationData = applicationData;
+        this.difficulty = difficulty;
+    }
+    MissiveGenerator.prototype.getNoncelessPrehash = function (timestamp) {
+        var encoding = missive_1.missiveTemplate.encode({
+            key: missive_1.MISSIVE_KEY.V0,
+            value: {
+                nonce: nullNonce,
+                difficulty: new Uint8Array([this.difficulty]),
+                timestamp: timestamp.uint8Array,
+                applicationId: this.applicationId.uint8Array,
+                applicationData: this.applicationData.uint8Array
+            }
+        });
+        return new Bytes_1.Bytes(encoding.slice(0, encoding.length - 32));
+    };
+    MissiveGenerator.prototype.fetchNonce = function (timestamp) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var worker = new _this.client.options.Worker(_this.client.options.hashcashWorkerUrl, [], { esm: true });
+            var onMessage = function (event) { return __awaiter(_this, void 0, void 0, function () {
+                var hashcashResolution, _a, _b;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            worker.terminate();
+                            hashcashResolution = event.data;
+                            _a = hashcashResolution.key;
+                            switch (_a) {
+                                case HashcashResolution_1.HASHCASH_RESOLUTION_KEY.NONCE_HEX: return [3, 1];
+                                case HashcashResolution_1.HASHCASH_RESOLUTION_KEY.TIMEOUT_ERROR: return [3, 2];
+                            }
+                            return [3, 4];
+                        case 1:
+                            resolve(Bytes_1.Bytes.fromHex(hashcashResolution.value));
+                            return [3, 5];
+                        case 2:
+                            _b = resolve;
+                            return [4, this.fetchNonce(timestamp)];
+                        case 3:
+                            _b.apply(void 0, [_c.sent()]);
+                            return [3, 5];
+                        case 4: throw new Error('Unhandled HASHCASH_RESOLUTION_KEY');
+                        case 5: return [2];
+                    }
+                });
+            }); };
+            worker.addEventListener('message', onMessage);
+            worker.onerror = function (error) {
+                reject(error);
+            };
+            var timeoutAt = utils_1.getNow() + 5;
+            var noncelessPrehash = _this.getNoncelessPrehash(timestamp);
+            var hashcashRequest = {
+                noncelessPrehashHex: noncelessPrehash.getHex(),
+                difficulty: _this.difficulty,
+                timeoutAt: timeoutAt
+            };
+            worker.postMessage(hashcashRequest);
+        });
+    };
+    MissiveGenerator.prototype.fetchMissive = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var timestamp, nonce;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        timestamp = utils_1.getTimestamp();
+                        return [4, this.fetchNonce(timestamp)];
+                    case 1:
+                        nonce = _a.sent();
+                        return [2, new Missive_1.Missive(this.client, missive_1.MISSIVE_KEY.V0, timestamp, this.difficulty, nonce, this.applicationId, this.applicationData)];
+                }
+            });
+        });
+    };
+    return MissiveGenerator;
+}());
+exports.MissiveGenerator = MissiveGenerator;
+
+},{"../interfaces/HashcashResolution":168,"../templates/missive":169,"../utils":171,"./Bytes":156,"./Missive":163}],165:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Bytes_1 = require("./Bytes");
@@ -23896,11 +23896,11 @@ var Client_1 = require("./classes/Client");
 exports.Client = Client_1.Client;
 var Bytes_1 = require("./classes/Bytes");
 exports.Bytes = Bytes_1.Bytes;
-var FriendMessageGenerator_1 = require("./classes/FriendMessageGenerator");
-exports.FriendMessageGenerator = FriendMessageGenerator_1.FriendMessageGenerator;
+var MissiveGenerator_1 = require("./classes/MissiveGenerator");
+exports.MissiveGenerator = MissiveGenerator_1.MissiveGenerator;
 exports.utils = _utils;
 
-},{"./classes/Bytes":156,"./classes/Client":157,"./classes/FriendMessageGenerator":163,"./utils":171}],168:[function(require,module,exports){
+},{"./classes/Bytes":156,"./classes/Client":157,"./classes/MissiveGenerator":164,"./utils":171}],168:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var HASHCASH_RESOLUTION_KEY;
@@ -23923,11 +23923,11 @@ var fixed1 = new Fixed_1.default(1);
 var fixed5 = new Fixed_1.default(5);
 var fixed32 = new Fixed_1.default(32);
 var dynamic2 = new Dynamic_1.default(2);
-var FRIEND_MESSAGE_KEY;
-(function (FRIEND_MESSAGE_KEY) {
-    FRIEND_MESSAGE_KEY["V0"] = "V0";
-})(FRIEND_MESSAGE_KEY = exports.FRIEND_MESSAGE_KEY || (exports.FRIEND_MESSAGE_KEY = {}));
-exports.friendMessageTemplate = new Split_1.default(['V0'], [
+var MISSIVE_KEY;
+(function (MISSIVE_KEY) {
+    MISSIVE_KEY["V0"] = "V0";
+})(MISSIVE_KEY = exports.MISSIVE_KEY || (exports.MISSIVE_KEY = {}));
+exports.missiveTemplate = new Split_1.default(['V0'], [
     new Dictionary_1.default([
         'timestamp',
         'difficulty',

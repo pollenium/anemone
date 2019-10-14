@@ -1,7 +1,7 @@
 import { Client } from './Client'
 import { Bytes } from './Bytes'
 import EventEmitter from 'events'
-import { FriendMessage } from './FriendMessage'
+import { Missive } from './Missive'
 import { getNow } from '../utils'
 import { SimplePeer } from 'simple-peer'
 
@@ -58,9 +58,9 @@ export class Friend extends EventEmitter {
     this.simplePeer.on('connect', () => {
       this.setStatus(FRIEND_STATUS.CONNECTED)
     })
-    this.simplePeer.on('data', (friendMessageEncodingBuffer: Buffer) => {
-      const friendMessage = FriendMessage.fromEncoding(this.client, Bytes.fromBuffer(friendMessageEncodingBuffer))
-      this.handleMessage(friendMessage)
+    this.simplePeer.on('data', (missiveEncodingBuffer: Buffer) => {
+      const missive = Missive.fromEncoding(this.client, Bytes.fromBuffer(missiveEncodingBuffer))
+      this.handleMessage(missive)
     })
 
     this.simplePeer.once('error', () => {
@@ -95,17 +95,17 @@ export class Friend extends EventEmitter {
     this.simplePeer.send(bytes.uint8Array)
   }
 
-  sendMessage(friendMessage: FriendMessage): void {
-    this.send(friendMessage.getEncoding())
+  sendMessage(missive: Missive): void {
+    this.send(missive.getEncoding())
   }
 
-  handleMessage(friendMessage: FriendMessage): void {
-    if (friendMessage.getIsReceived()) {
+  handleMessage(missive: Missive): void {
+    if (missive.getIsReceived()) {
       return
     }
 
-    friendMessage.markIsReceived()
-    this.client.emit('friend.message', friendMessage)
+    missive.markIsReceived()
+    this.client.emit('friend.message', missive)
     this.client.getFriends().forEach((friend) => {
       if (friend === this) {
         return
@@ -113,7 +113,7 @@ export class Friend extends EventEmitter {
       if (friend.status !== FRIEND_STATUS.CONNECTED) {
         return
       }
-      friend.sendMessage(friendMessage)
+      friend.sendMessage(missive)
     })
   }
 

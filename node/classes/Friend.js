@@ -18,7 +18,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var Bytes_1 = require("./Bytes");
 var events_1 = __importDefault(require("events"));
-var FriendMessage_1 = require("./FriendMessage");
+var Missive_1 = require("./Missive");
 var utils_1 = require("../utils");
 var FRIEND_STATUS;
 (function (FRIEND_STATUS) {
@@ -68,9 +68,9 @@ var Friend = (function (_super) {
         this.simplePeer.on('connect', function () {
             _this.setStatus(FRIEND_STATUS.CONNECTED);
         });
-        this.simplePeer.on('data', function (friendMessageEncodingBuffer) {
-            var friendMessage = FriendMessage_1.FriendMessage.fromEncoding(_this.client, Bytes_1.Bytes.fromBuffer(friendMessageEncodingBuffer));
-            _this.handleMessage(friendMessage);
+        this.simplePeer.on('data', function (missiveEncodingBuffer) {
+            var missive = Missive_1.Missive.fromEncoding(_this.client, Bytes_1.Bytes.fromBuffer(missiveEncodingBuffer));
+            _this.handleMessage(missive);
         });
         this.simplePeer.once('error', function () {
             _this.destroy();
@@ -100,16 +100,16 @@ var Friend = (function (_super) {
         }
         this.simplePeer.send(bytes.uint8Array);
     };
-    Friend.prototype.sendMessage = function (friendMessage) {
-        this.send(friendMessage.getEncoding());
+    Friend.prototype.sendMessage = function (missive) {
+        this.send(missive.getEncoding());
     };
-    Friend.prototype.handleMessage = function (friendMessage) {
+    Friend.prototype.handleMessage = function (missive) {
         var _this = this;
-        if (friendMessage.getIsReceived()) {
+        if (missive.getIsReceived()) {
             return;
         }
-        friendMessage.markIsReceived();
-        this.client.emit('friend.message', friendMessage);
+        missive.markIsReceived();
+        this.client.emit('friend.message', missive);
         this.client.getFriends().forEach(function (friend) {
             if (friend === _this) {
                 return;
@@ -117,7 +117,7 @@ var Friend = (function (_super) {
             if (friend.status !== FRIEND_STATUS.CONNECTED) {
                 return;
             }
-            friend.sendMessage(friendMessage);
+            friend.sendMessage(missive);
         });
     };
     return Friend;

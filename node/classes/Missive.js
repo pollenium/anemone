@@ -5,11 +5,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var Bytes_1 = require("./Bytes");
 var Friend_1 = require("./Friend");
-var friendMessage_1 = require("../templates/friendMessage");
+var missive_1 = require("../templates/missive");
 var utils_1 = require("../utils");
 var bn_js_1 = __importDefault(require("bn.js"));
-var FriendMessage = (function () {
-    function FriendMessage(client, version, timestamp, difficulty, nonce, applicationId, applicationData) {
+var Missive = (function () {
+    function Missive(client, version, timestamp, difficulty, nonce, applicationId, applicationData) {
         this.client = client;
         this.version = version;
         this.timestamp = timestamp;
@@ -18,9 +18,9 @@ var FriendMessage = (function () {
         this.applicationId = applicationId;
         this.applicationData = applicationData;
     }
-    FriendMessage.prototype.getEncoding = function () {
-        return new Bytes_1.Bytes(friendMessage_1.friendMessageTemplate.encode({
-            key: friendMessage_1.FRIEND_MESSAGE_KEY.V0,
+    Missive.prototype.getEncoding = function () {
+        return new Bytes_1.Bytes(missive_1.missiveTemplate.encode({
+            key: missive_1.MISSIVE_KEY.V0,
             value: {
                 timestamp: this.timestamp.uint8Array,
                 difficulty: new Uint8Array([this.difficulty]),
@@ -30,39 +30,39 @@ var FriendMessage = (function () {
             }
         }));
     };
-    FriendMessage.prototype.getId = function () {
+    Missive.prototype.getId = function () {
         return this.getEncoding().getHash();
     };
-    FriendMessage.prototype.getEra = function () {
+    Missive.prototype.getEra = function () {
         return utils_1.calculateEra(this.timestamp.getNumber());
     };
-    FriendMessage.prototype.getIsReceived = function () {
+    Missive.prototype.getIsReceived = function () {
         var era = this.getEra();
         var idHex = this.getId().getHex();
-        if (this.client.friendMessageIsReceivedByIdHexByEra[era] === undefined) {
+        if (this.client.missiveIsReceivedByIdHexByEra[era] === undefined) {
             return false;
         }
-        return this.client.friendMessageIsReceivedByIdHexByEra[era][idHex] === true;
+        return this.client.missiveIsReceivedByIdHexByEra[era][idHex] === true;
     };
-    FriendMessage.prototype.markIsReceived = function () {
+    Missive.prototype.markIsReceived = function () {
         var era = this.getEra();
         var idHex = this.getId().getHex();
-        if (this.client.friendMessageIsReceivedByIdHexByEra[era] === undefined) {
-            this.client.friendMessageIsReceivedByIdHexByEra[era] = {};
+        if (this.client.missiveIsReceivedByIdHexByEra[era] === undefined) {
+            this.client.missiveIsReceivedByIdHexByEra[era] = {};
         }
-        this.client.friendMessageIsReceivedByIdHexByEra[era][idHex] = true;
+        this.client.missiveIsReceivedByIdHexByEra[era][idHex] = true;
     };
-    FriendMessage.prototype.getMaxHash = function () {
+    Missive.prototype.getMaxHash = function () {
         return utils_1.getMaxHash(this.difficulty, this.getEncoding().getLength());
     };
-    FriendMessage.prototype.getIsValid = function () {
-        if (this.version !== friendMessage_1.FRIEND_MESSAGE_KEY.V0) {
+    Missive.prototype.getIsValid = function () {
+        if (this.version !== missive_1.MISSIVE_KEY.V0) {
             return false;
         }
         var now = utils_1.getNow();
         var nowBn = new bn_js_1.default(now);
         var timestampBn = this.timestamp.getBn();
-        if (timestampBn.lt(nowBn.sub(this.client.friendMessageLatencyToleranceBn))) {
+        if (timestampBn.lt(nowBn.sub(this.client.missiveLatencyToleranceBn))) {
             return false;
         }
         if (timestampBn.gt(nowBn)) {
@@ -76,7 +76,7 @@ var FriendMessage = (function () {
         }
         return true;
     };
-    FriendMessage.prototype.broadcast = function () {
+    Missive.prototype.broadcast = function () {
         var _this = this;
         this.markIsReceived();
         this.client.getFriends().forEach(function (friend) {
@@ -86,20 +86,20 @@ var FriendMessage = (function () {
             friend.send(_this.getEncoding());
         });
     };
-    FriendMessage.fromHenpojo = function (client, henpojo) {
+    Missive.fromHenpojo = function (client, henpojo) {
         switch (henpojo.key) {
-            case friendMessage_1.FRIEND_MESSAGE_KEY.V0: {
+            case missive_1.MISSIVE_KEY.V0: {
                 var v0Henpojo = henpojo.value;
-                return new FriendMessage(client, henpojo.key, new Bytes_1.Bytes(v0Henpojo.timestamp), v0Henpojo.difficulty[0], new Bytes_1.Bytes(v0Henpojo.nonce), new Bytes_1.Bytes(v0Henpojo.applicationId), new Bytes_1.Bytes(v0Henpojo.applicationData));
+                return new Missive(client, henpojo.key, new Bytes_1.Bytes(v0Henpojo.timestamp), v0Henpojo.difficulty[0], new Bytes_1.Bytes(v0Henpojo.nonce), new Bytes_1.Bytes(v0Henpojo.applicationId), new Bytes_1.Bytes(v0Henpojo.applicationData));
             }
             default:
-                throw new Error('Unhandled FRIEND_MESSAGE_KEY');
+                throw new Error('Unhandled MISSIVE_KEY');
         }
     };
-    FriendMessage.fromEncoding = function (client, encoding) {
-        return FriendMessage.fromHenpojo(client, friendMessage_1.friendMessageTemplate.decode(encoding.uint8Array));
+    Missive.fromEncoding = function (client, encoding) {
+        return Missive.fromHenpojo(client, missive_1.missiveTemplate.decode(encoding.uint8Array));
     };
-    return FriendMessage;
+    return Missive;
 }());
-exports.FriendMessage = FriendMessage;
-//# sourceMappingURL=FriendMessage.js.map
+exports.Missive = Missive;
+//# sourceMappingURL=Missive.js.map

@@ -5,7 +5,7 @@ export class ClientDefaultOptions {
 
   friendsMax = 6;
 
-  friendMessageLatencyTolerance = 30;
+  missiveLatencyTolerance = 30;
 
   bootstrapOffersTimeout = 10;
 }
