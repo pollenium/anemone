@@ -1,6 +1,6 @@
 import { Client } from './Client'
 import { Bytes } from './Bytes'
-import { Missive } from './Missive'
+import { Missive, MISSIVE_COVER } from './Missive'
 import { getTimestamp, getNow } from '../utils'
 import { missiveTemplate, MISSIVE_KEY } from '../templates/missive'
 import { HashcashRequest } from '../interfaces/HashcashRequest'
@@ -62,6 +62,8 @@ export class MissiveGenerator {
       const hashcashRequest: HashcashRequest = {
         noncelessPrehashHex: noncelessPrehash.getHex(),
         difficulty: this.difficulty,
+        cover: MISSIVE_COVER.V0,
+        applicationDataLength: this.applicationData.getLength(),
         timeoutAt
       }
       worker.postMessage(hashcashRequest)

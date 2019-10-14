@@ -102,6 +102,8 @@ var MissiveGenerator = (function () {
             var hashcashRequest = {
                 noncelessPrehashHex: noncelessPrehash.getHex(),
                 difficulty: _this.difficulty,
+                cover: Missive_1.MISSIVE_COVER.V0,
+                applicationDataLength: _this.applicationData.getLength(),
                 timeoutAt: timeoutAt
             };
             worker.postMessage(hashcashRequest);

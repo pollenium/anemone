@@ -22535,7 +22535,7 @@ onmessage = function (event) {
     var hashcashRequest = event.data;
     var noncelessPrehash = Bytes_1.Bytes.fromHex(hashcashRequest.noncelessPrehashHex);
     try {
-        var nonce = utils_1.getNonce(noncelessPrehash, hashcashRequest.difficulty, hashcashRequest.timeoutAt);
+        var nonce = utils_1.getNonce(noncelessPrehash, hashcashRequest.difficulty, hashcashRequest.cover, hashcashRequest.applicationDataLength, hashcashRequest.timeoutAt);
         postMessage({
             key: HashcashResolution_1.HASHCASH_RESOLUTION_KEY.NONCE_HEX,
             value: nonce.getHex()
@@ -22598,15 +22598,15 @@ function getTimestamp() {
 }
 exports.getTimestamp = getTimestamp;
 exports.twoBn = new bn_js_1.default(2);
-function getMaxHash(difficulty, encodingLength) {
-    var powBn = new bn_js_1.default(256 - difficulty);
-    var encodingLengthBn = new bn_js_1.default(encodingLength);
-    var maxHashBn = exports.twoBn.pow(powBn).divRound(encodingLengthBn);
+function getMaxHash(difficulty, cover, applicationDataLength) {
+    var powBn = new bn_js_1.default(255 - difficulty);
+    var divisor = new bn_js_1.default(cover + applicationDataLength);
+    var maxHashBn = exports.twoBn.pow(powBn).divRound(divisor);
     return Bytes_1.Bytes.fromBn(maxHashBn);
 }
 exports.getMaxHash = getMaxHash;
-function getNonce(noncelessPrehash, difficulty, timeoutAt) {
-    var maxHashBn = getMaxHash(difficulty, noncelessPrehash.getLength() + 32).getBn();
+function getNonce(noncelessPrehash, difficulty, cover, applicationDataLength, timeoutAt) {
+    var maxHashBn = getMaxHash(difficulty, cover, applicationDataLength).getBn();
     while (true) {
         if (getNow() > timeoutAt) {
             throw new Error('Timeout');

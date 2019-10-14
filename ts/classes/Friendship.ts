@@ -105,7 +105,7 @@ export class Friendship extends EventEmitter {
     }
 
     missive.markIsReceived()
-    this.client.emit('friendship.message', missive)
+    this.client.emit('friendship.missive', missive)
     this.client.getFriendships().forEach((friendship) => {
       if (friendship === this) {
         return

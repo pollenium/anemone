@@ -8,6 +8,10 @@ var Friendship_1 = require("./Friendship");
 var missive_1 = require("../templates/missive");
 var utils_1 = require("../utils");
 var bn_js_1 = __importDefault(require("bn.js"));
+var MISSIVE_COVER;
+(function (MISSIVE_COVER) {
+    MISSIVE_COVER[MISSIVE_COVER["V0"] = 69] = "V0";
+})(MISSIVE_COVER = exports.MISSIVE_COVER || (exports.MISSIVE_COVER = {}));
 var Missive = (function () {
     function Missive(client, version, timestamp, difficulty, nonce, applicationId, applicationData) {
         this.client = client;
@@ -17,6 +21,7 @@ var Missive = (function () {
         this.nonce = nonce;
         this.applicationId = applicationId;
         this.applicationData = applicationData;
+        this.cover = MISSIVE_COVER.V0;
     }
     Missive.prototype.getEncoding = function () {
         return new Bytes_1.Bytes(missive_1.missiveTemplate.encode({
@@ -53,7 +58,7 @@ var Missive = (function () {
         this.client.missiveIsReceivedByIdHexByEra[era][idHex] = true;
     };
     Missive.prototype.getMaxHash = function () {
-        return utils_1.getMaxHash(this.difficulty, this.getEncoding().getLength());
+        return utils_1.getMaxHash(this.difficulty, this.cover, this.applicationData.getLength());
     };
     Missive.prototype.getIsValid = function () {
         if (this.version !== missive_1.MISSIVE_KEY.V0) {

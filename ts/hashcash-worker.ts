@@ -13,6 +13,8 @@ onmessage = (event): void => {
     const nonce = getNonce(
       noncelessPrehash,
       hashcashRequest.difficulty,
+      hashcashRequest.cover,
+      hashcashRequest.applicationDataLength,
       hashcashRequest.timeoutAt
     )
     // eslint-disable-next-line no-undef

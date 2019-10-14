@@ -109,7 +109,7 @@ var Friendship = (function (_super) {
             return;
         }
         missive.markIsReceived();
-        this.client.emit('friendship.message', missive);
+        this.client.emit('friendship.missive', missive);
         this.client.getFriendships().forEach(function (friendship) {
             if (friendship === _this) {
                 return;

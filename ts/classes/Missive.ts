@@ -5,7 +5,13 @@ import { getNow, calculateEra, getMaxHash } from '../utils'
 import { Client } from './Client'
 import Bn from 'bn.js'
 
+export enum MISSIVE_COVER {
+  V0 = 69
+}
+
 export class Missive {
+
+  public cover: MISSIVE_COVER;
 
   constructor(
     public client: Client,
@@ -15,7 +21,9 @@ export class Missive {
     public nonce: Bytes,
     public applicationId: Bytes,
     public applicationData: Bytes
-  ) {}
+  ) {
+    this.cover = MISSIVE_COVER.V0
+  }
 
   getEncoding(): Bytes {
     return new Bytes(
@@ -59,7 +67,7 @@ export class Missive {
   }
 
   getMaxHash(): Bytes {
-    return getMaxHash(this.difficulty, this.getEncoding().getLength())
+    return getMaxHash(this.difficulty, this.cover, this.applicationData.getLength())
   }
 
   getIsValid(): boolean {

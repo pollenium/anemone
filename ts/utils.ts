@@ -39,15 +39,21 @@ export function getTimestamp(): Bytes {
 
 export const twoBn = new Bn(2)
 
-export function getMaxHash(difficulty: number, encodingLength: number): Bytes {
-  const powBn = new Bn(256 - difficulty)
-  const encodingLengthBn = new Bn(encodingLength)
-  const maxHashBn = twoBn.pow(powBn).divRound(encodingLengthBn)
+export function getMaxHash(difficulty: number, cover: number, applicationDataLength: number): Bytes {
+  const powBn = new Bn(255 - difficulty)
+  const divisor = new Bn(cover + applicationDataLength)
+  const maxHashBn = twoBn.pow(powBn).divRound(divisor)
   return Bytes.fromBn(maxHashBn)
 }
 
-export function getNonce(noncelessPrehash: Bytes, difficulty: number, timeoutAt: number): Bytes {
-  const maxHashBn = getMaxHash(difficulty, noncelessPrehash.getLength() + 32).getBn()
+export function getNonce(
+  noncelessPrehash: Bytes,
+  difficulty: number,
+  cover: number,
+  applicationDataLength: number,
+  timeoutAt: number
+): Bytes {
+  const maxHashBn = getMaxHash(difficulty, cover, applicationDataLength).getBn()
 
   // eslint-disable-next-line no-constant-condition
   while(true) {
