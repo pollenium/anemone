@@ -5,7 +5,7 @@ export interface ClientOptions {
   signalingServerUrls: string[];
   bootstrapOffersTimeout: number;
   signalTimeout: number;
-  friendsMax: number;
+  friendshipsMax: number;
   missiveLatencyTolerance: number;
   Worker: ConstructableWorker;
   WebSocket: ConstructableWebSocket;

@@ -52,7 +52,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Friend_1 = require("./Friend");
+var Friendship_1 = require("./Friendship");
 var Answer_1 = require("./Answer");
 var simple_peer_1 = __importDefault(require("simple-peer"));
 var utils_1 = require("../utils");
@@ -107,12 +107,12 @@ var Introvert = (function (_super) {
                     case 0: return [4, this.fetchAnswer()];
                     case 1:
                         answer = _a.sent();
-                        this.setStatus(Friend_1.FRIEND_STATUS.CONNECTING);
+                        this.setStatus(Friendship_1.FRIENDSHIP_STATUS.CONNECTING);
                         this.client.signalingClientsByOfferIdHex[this.offer.getId().getHex()].sendAnswer(answer);
                         return [4, delay_1.default(this.client.signalTimeoutMs * 2)];
                     case 2:
                         _a.sent();
-                        if (this.status === Friend_1.FRIEND_STATUS.CONNECTING) {
+                        if (this.status === Friendship_1.FRIENDSHIP_STATUS.CONNECTING) {
                             this.destroy();
                         }
                         return [2];
@@ -121,11 +121,11 @@ var Introvert = (function (_super) {
         });
     };
     Introvert.prototype.destroy = function () {
-        var friendIndex = this.client.introverts.indexOf(this);
-        this.client.introverts.splice(friendIndex, 1);
+        var friendshipIndex = this.client.introverts.indexOf(this);
+        this.client.introverts.splice(friendshipIndex, 1);
         _super.prototype.destroy.call(this);
     };
     return Introvert;
-}(Friend_1.Friend));
+}(Friendship_1.Friendship));
 exports.Introvert = Introvert;
 //# sourceMappingURL=Introvert.js.map

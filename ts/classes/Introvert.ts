@@ -1,4 +1,4 @@
-import { Friend, FRIEND_STATUS } from './Friend'
+import { Friendship, FRIENDSHIP_STATUS } from './Friendship'
 import { Offer } from './Offer'
 import { Answer } from './Answer'
 import SimplePeer, { SignalData as SimplePeerSignalData } from 'simple-peer'
@@ -8,7 +8,7 @@ import { Bytes } from './Bytes'
 import { Client } from './Client'
 
 
-export class Introvert extends Friend {
+export class Introvert extends Friendship {
 
   constructor(client: Client, public offer: Offer) {
     super(client, new SimplePeer({
@@ -45,20 +45,20 @@ export class Introvert extends Friend {
 
     const answer = await this.fetchAnswer()
 
-    this.setStatus(FRIEND_STATUS.CONNECTING)
+    this.setStatus(FRIENDSHIP_STATUS.CONNECTING)
 
     this.client.signalingClientsByOfferIdHex[this.offer.getId().getHex()].sendAnswer(answer)
 
     await delay(this.client.signalTimeoutMs * 2)
 
-    if (this.status === FRIEND_STATUS.CONNECTING) {
+    if (this.status === FRIENDSHIP_STATUS.CONNECTING) {
       this.destroy()
     }
   }
 
   destroy(): void {
-    const friendIndex = this.client.introverts.indexOf(this)
-    this.client.introverts.splice(friendIndex, 1)
+    const friendshipIndex = this.client.introverts.indexOf(this)
+    this.client.introverts.splice(friendshipIndex, 1)
     super.destroy()
   }
 

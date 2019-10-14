@@ -3,7 +3,7 @@ export class ClientDefaultOptions {
 
   signalTimeout = 5;
 
-  friendsMax = 6;
+  friendshipsMax = 6;
 
   missiveLatencyTolerance = 30;
 

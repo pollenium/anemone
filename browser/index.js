@@ -22608,7 +22608,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Friend_1 = require("./Friend");
+var Friendship_1 = require("./Friendship");
 var Extrovert_1 = require("./Extrovert");
 var Introvert_1 = require("./Introvert");
 var SignalingClient_1 = require("./SignalingClient");
@@ -22627,7 +22627,7 @@ var Client = (function (_super) {
         _this.offers = [];
         _this.answer = [];
         _this.signalingClientsByOfferIdHex = {};
-        _this.friendStatusByClientNonceHex = {};
+        _this.friendshipStatusByClientNonceHex = {};
         _this.offersReceivedByClientNonceHex = {};
         _this.isFlushedOfferByOfferIdHex = {};
         _this.missiveIsReceivedByIdHexByEra = {};
@@ -22648,7 +22648,7 @@ var Client = (function (_super) {
                             signalingServerUrl = this.options.signalingServerUrls[i];
                             this.addSignalingClient(signalingServerUrl);
                         }
-                        return [4, this.loopCreateFriend()];
+                        return [4, this.loopCreateFriendship()];
                     case 1:
                         _a.sent();
                         return [2];
@@ -22656,33 +22656,33 @@ var Client = (function (_super) {
             });
         });
     };
-    Client.prototype.loopCreateFriend = function () {
+    Client.prototype.loopCreateFriendship = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (this.extroverts.length + this.introverts.length >= this.options.friendsMax) {
+                        if (this.extroverts.length + this.introverts.length >= this.options.friendshipsMax) {
                             return [2];
                         }
-                        return [4, this.createFriend()];
+                        return [4, this.createFriendship()];
                     case 1:
                         _a.sent();
-                        this.loopCreateFriend();
+                        this.loopCreateFriendship();
                         return [2];
                 }
             });
         });
     };
-    Client.prototype.getFriendsCount = function () {
+    Client.prototype.getFriendshipsCount = function () {
         return this.introverts.length + this.extroverts.length;
     };
-    Client.prototype.createFriend = function () {
+    Client.prototype.createFriendship = function () {
         return __awaiter(this, void 0, void 0, function () {
             var offer, offer2, extrovert, introvert;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (this.getFriendsCount() === this.options.friendsMax) {
+                        if (this.getFriendshipsCount() === this.options.friendshipsMax) {
                             return [2];
                         }
                         offer = this.popConnectableOffer();
@@ -22692,7 +22692,7 @@ var Client = (function (_super) {
                         return [4, delay_1.default(this.options.bootstrapOffersTimeout * 1000)];
                     case 1:
                         _a.sent();
-                        if (this.getFriendsCount() === this.options.friendsMax) {
+                        if (this.getFriendshipsCount() === this.options.friendshipsMax) {
                             return [2];
                         }
                         offer2 = this.popConnectableOffer();
@@ -22700,13 +22700,13 @@ var Client = (function (_super) {
                             extrovert = new Extrovert_1.Extrovert(this);
                             this.extroverts.push(extrovert);
                             this.emit('extrovert', extrovert);
-                            this.emit('friend', extrovert);
+                            this.emit('friendship', extrovert);
                         }
                         else {
                             introvert = new Introvert_1.Introvert(this, offer2);
                             this.introverts.push(introvert);
                             this.emit('introvert', introvert);
-                            this.emit('friend', introvert);
+                            this.emit('friendship', introvert);
                         }
                         return [2];
                 }
@@ -22794,31 +22794,31 @@ var Client = (function (_super) {
             return distanceB.compare(distanceA);
         });
         if (this.getIsConnectableByClientNonce(offer.clientNonce)) {
-            var peeredFriends = this.getPeeredFriends();
-            if (peeredFriends.length === this.options.friendsMax) {
+            var peeredFriendships = this.getPeeredFriendships();
+            if (peeredFriendships.length === this.options.friendshipsMax) {
                 var offerDistance = offer.getDistance(this.nonce);
-                var worstFriend = this.getWorstFriend();
-                var worstFriendDistance = worstFriend.getDistance();
-                if (worstFriendDistance.compare(offerDistance) === 1) {
-                    worstFriend.destroy();
+                var worstFriendship = this.getWorstFriendship();
+                var worstFriendshipDistance = worstFriendship.getDistance();
+                if (worstFriendshipDistance.compare(offerDistance) === 1) {
+                    worstFriendship.destroy();
                 }
             }
         }
-        this.createFriend();
+        this.createFriendship();
     };
-    Client.prototype.getPeeredFriends = function () {
-        return this.getFriends().filter(function (friend) {
-            return friend.peerClientNonce !== undefined;
+    Client.prototype.getPeeredFriendships = function () {
+        return this.getFriendships().filter(function (friendship) {
+            return friendship.peerClientNonce !== undefined;
         });
     };
-    Client.prototype.getWorstFriend = function () {
-        var peeredFriends = this.getPeeredFriends();
-        if (peeredFriends.length === 0) {
+    Client.prototype.getWorstFriendship = function () {
+        var peeredFriendships = this.getPeeredFriendships();
+        if (peeredFriendships.length === 0) {
             return null;
         }
-        return peeredFriends.sort(function (friendA, friendB) {
-            var distanceA = friendA.getDistance();
-            var distanceB = friendB.getDistance();
+        return peeredFriendships.sort(function (friendshipA, friendshipB) {
+            var distanceA = friendshipA.getDistance();
+            var distanceB = friendshipB.getDistance();
             return distanceA.compare(distanceB);
         })[0];
     };
@@ -22833,11 +22833,11 @@ var Client = (function (_super) {
             }
         });
     };
-    Client.prototype.getFriends = function () {
-        var friends = [];
-        friends.push.apply(friends, this.extroverts);
-        friends.push.apply(friends, this.introverts);
-        return friends;
+    Client.prototype.getFriendships = function () {
+        var friendships = [];
+        friendships.push.apply(friendships, this.extroverts);
+        friendships.push.apply(friendships, this.introverts);
+        return friendships;
     };
     Client.prototype.handleAnswer = function (signalingClient, answer) {
         return __awaiter(this, void 0, void 0, function () {
@@ -22854,7 +22854,7 @@ var Client = (function (_super) {
                         if (!this.getIsConnectableByClientNonce(answer.clientNonce)) {
                             return [2];
                         }
-                        if (extrovert.status === Friend_1.FRIEND_STATUS.DEFAULT) {
+                        if (extrovert.status === Friendship_1.FRIENDSHIP_STATUS.DEFAULT) {
                             extrovert.handleAnswer(answer);
                         }
                         return [2];
@@ -22862,42 +22862,42 @@ var Client = (function (_super) {
             });
         });
     };
-    Client.prototype.getFriendStatusByClientNonce = function (clientNonce) {
-        var friendStatus = this.friendStatusByClientNonceHex[clientNonce.getHex()];
-        if (friendStatus === undefined) {
-            return Friend_1.FRIEND_STATUS.DEFAULT;
+    Client.prototype.getFriendshipStatusByClientNonce = function (clientNonce) {
+        var friendshipStatus = this.friendshipStatusByClientNonceHex[clientNonce.getHex()];
+        if (friendshipStatus === undefined) {
+            return Friendship_1.FRIENDSHIP_STATUS.DEFAULT;
         }
-        return friendStatus;
+        return friendshipStatus;
     };
     Client.prototype.getIsConnectableByClientNonce = function (clientNonce) {
         if (clientNonce.equals(this.nonce)) {
             return false;
         }
-        switch (this.getFriendStatusByClientNonce(clientNonce)) {
-            case Friend_1.FRIEND_STATUS.DEFAULT:
-            case Friend_1.FRIEND_STATUS.DESTROYED:
+        switch (this.getFriendshipStatusByClientNonce(clientNonce)) {
+            case Friendship_1.FRIENDSHIP_STATUS.DEFAULT:
+            case Friendship_1.FRIENDSHIP_STATUS.DESTROYED:
                 return true;
-            case Friend_1.FRIEND_STATUS.CONNECTING:
-            case Friend_1.FRIEND_STATUS.CONNECTED:
+            case Friendship_1.FRIENDSHIP_STATUS.CONNECTING:
+            case Friendship_1.FRIENDSHIP_STATUS.CONNECTED:
                 return false;
             default:
-                throw new Error('Unkown FRIEND_STATUS');
+                throw new Error('Unkown FRIENDSHIP_STATUS');
         }
     };
-    Client.prototype.setFriendStatusByClientNonce = function (clientNonce, friendStatus) {
-        this.friendStatusByClientNonceHex[clientNonce.getHex()] = friendStatus;
+    Client.prototype.setFriendshipStatusByClientNonce = function (clientNonce, friendshipStatus) {
+        this.friendshipStatusByClientNonceHex[clientNonce.getHex()] = friendshipStatus;
     };
     Client.prototype.getIsFullyConnected = function () {
-        if (this.extroverts.length + this.introverts.length < this.options.friendsMax) {
+        if (this.extroverts.length + this.introverts.length < this.options.friendshipsMax) {
             return false;
         }
         for (var i = 0; i < this.extroverts.length; i++) {
-            if (this.extroverts[i].status !== Friend_1.FRIEND_STATUS.CONNECTED) {
+            if (this.extroverts[i].status !== Friendship_1.FRIENDSHIP_STATUS.CONNECTED) {
                 return false;
             }
         }
         for (var i = 0; i < this.introverts.length; i++) {
-            if (this.introverts[i].status !== Friend_1.FRIEND_STATUS.CONNECTED) {
+            if (this.introverts[i].status !== Friendship_1.FRIENDSHIP_STATUS.CONNECTED) {
                 return false;
             }
         }
@@ -22907,14 +22907,14 @@ var Client = (function (_super) {
 }(events_1.default));
 exports.Client = Client;
 
-},{"./Bytes":156,"./ClientDefaultOptions":158,"./Extrovert":159,"./Friend":161,"./Introvert":162,"./SignalingClient":166,"bn.js":184,"delay":186,"events":82}],158:[function(require,module,exports){
+},{"./Bytes":156,"./ClientDefaultOptions":158,"./Extrovert":159,"./Friendship":161,"./Introvert":162,"./SignalingClient":166,"bn.js":184,"delay":186,"events":82}],158:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var ClientDefaultOptions = (function () {
     function ClientDefaultOptions() {
         this.signalingServerUrls = [];
         this.signalTimeout = 5;
-        this.friendsMax = 6;
+        this.friendshipsMax = 6;
         this.missiveLatencyTolerance = 30;
         this.bootstrapOffersTimeout = 10;
     }
@@ -22977,7 +22977,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Friend_1 = require("./Friend");
+var Friendship_1 = require("./Friendship");
 var Offer_1 = require("./Offer");
 var FlushOffer_1 = require("./FlushOffer");
 var simple_peer_1 = __importDefault(require("simple-peer"));
@@ -23007,7 +23007,7 @@ var Extrovert = (function (_super) {
                         return [4, delay_1.default(timeout)];
                     case 2:
                         _a.sent();
-                        if (this.status === Friend_1.FRIEND_STATUS.DEFAULT) {
+                        if (this.status === Friendship_1.FRIENDSHIP_STATUS.DEFAULT) {
                             this.loopUploadOffer(timeout);
                         }
                         return [2];
@@ -23044,7 +23044,7 @@ var Extrovert = (function (_super) {
                     _this.simplePeer.once('signal', function (signal) {
                         resolve(signal.sdp);
                         setTimeout(function () {
-                            if (_this.status === Friend_1.FRIEND_STATUS.DEFAULT) {
+                            if (_this.status === Friendship_1.FRIENDSHIP_STATUS.DEFAULT) {
                                 _this.destroy();
                             }
                         }, _this.client.signalTimeoutMs * 2);
@@ -23099,14 +23099,14 @@ var Extrovert = (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (this.status !== Friend_1.FRIEND_STATUS.DEFAULT) {
-                            throw new Error('Must be in FRIEND_STATUS.DEFAULT');
+                        if (this.status !== Friendship_1.FRIENDSHIP_STATUS.DEFAULT) {
+                            throw new Error('Must be in FRIENDSHIP_STATUS.DEFAULT');
                         }
                         if (!this.client.getIsConnectableByClientNonce(answer.clientNonce)) {
                             return [2];
                         }
                         this.peerClientNonce = answer.clientNonce;
-                        this.setStatus(Friend_1.FRIEND_STATUS.CONNECTING);
+                        this.setStatus(Friendship_1.FRIENDSHIP_STATUS.CONNECTING);
                         this.simplePeer.signal({
                             type: 'answer',
                             sdp: answer.sdpb.getUtf8()
@@ -23114,7 +23114,7 @@ var Extrovert = (function (_super) {
                         return [4, delay_1.default(this.client.signalTimeoutMs)];
                     case 1:
                         _a.sent();
-                        if (this.status === Friend_1.FRIEND_STATUS.CONNECTING) {
+                        if (this.status === Friendship_1.FRIENDSHIP_STATUS.CONNECTING) {
                             this.destroy();
                         }
                         return [2];
@@ -23141,14 +23141,14 @@ var Extrovert = (function (_super) {
     };
     Extrovert.prototype.destroy = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var friendIndex;
+            var friendshipIndex;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4, this.uploadFlushOffer()];
                     case 1:
                         _a.sent();
-                        friendIndex = this.client.extroverts.indexOf(this);
-                        this.client.extroverts.splice(friendIndex, 1);
+                        friendshipIndex = this.client.extroverts.indexOf(this);
+                        this.client.extroverts.splice(friendshipIndex, 1);
                         _super.prototype.destroy.call(this);
                         return [2];
                 }
@@ -23156,10 +23156,10 @@ var Extrovert = (function (_super) {
         });
     };
     return Extrovert;
-}(Friend_1.Friend));
+}(Friendship_1.Friendship));
 exports.Extrovert = Extrovert;
 
-},{"../utils":171,"./Bytes":156,"./FlushOffer":160,"./Friend":161,"./Offer":165,"delay":186,"simple-peer":212}],160:[function(require,module,exports){
+},{"../utils":171,"./Bytes":156,"./FlushOffer":160,"./Friendship":161,"./Offer":165,"delay":186,"simple-peer":212}],160:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Bytes_1 = require("./Bytes");
@@ -23209,45 +23209,45 @@ var Bytes_1 = require("./Bytes");
 var events_1 = __importDefault(require("events"));
 var Missive_1 = require("./Missive");
 var utils_1 = require("../utils");
-var FRIEND_STATUS;
-(function (FRIEND_STATUS) {
-    FRIEND_STATUS[FRIEND_STATUS["DEFAULT"] = 0] = "DEFAULT";
-    FRIEND_STATUS[FRIEND_STATUS["CONNECTING"] = 1] = "CONNECTING";
-    FRIEND_STATUS[FRIEND_STATUS["CONNECTED"] = 2] = "CONNECTED";
-    FRIEND_STATUS[FRIEND_STATUS["DESTROYED"] = 3] = "DESTROYED";
-})(FRIEND_STATUS = exports.FRIEND_STATUS || (exports.FRIEND_STATUS = {}));
-var Friend = (function (_super) {
-    __extends(Friend, _super);
-    function Friend(client, simplePeer) {
+var FRIENDSHIP_STATUS;
+(function (FRIENDSHIP_STATUS) {
+    FRIENDSHIP_STATUS[FRIENDSHIP_STATUS["DEFAULT"] = 0] = "DEFAULT";
+    FRIENDSHIP_STATUS[FRIENDSHIP_STATUS["CONNECTING"] = 1] = "CONNECTING";
+    FRIENDSHIP_STATUS[FRIENDSHIP_STATUS["CONNECTED"] = 2] = "CONNECTED";
+    FRIENDSHIP_STATUS[FRIENDSHIP_STATUS["DESTROYED"] = 3] = "DESTROYED";
+})(FRIENDSHIP_STATUS = exports.FRIENDSHIP_STATUS || (exports.FRIENDSHIP_STATUS = {}));
+var Friendship = (function (_super) {
+    __extends(Friendship, _super);
+    function Friendship(client, simplePeer) {
         var _this = _super.call(this) || this;
         _this.client = client;
         _this.simplePeer = simplePeer;
-        _this.status = FRIEND_STATUS.DEFAULT;
+        _this.status = FRIENDSHIP_STATUS.DEFAULT;
         _this.createdAt = utils_1.getNow();
         _this.setSimplePeerListeners();
         return _this;
     }
-    Friend.prototype.setStatus = function (status) {
+    Friendship.prototype.setStatus = function (status) {
         if (this.status !== undefined && status <= this.status) {
             throw new Error('Can only increase status');
         }
         this.status = status;
         if (this.peerClientNonce) {
-            this.client.setFriendStatusByClientNonce(this.peerClientNonce, status);
+            this.client.setFriendshipStatusByClientNonce(this.peerClientNonce, status);
         }
         this.emit('status', status);
-        this.client.emit('friend.status', {
-            friend: this,
+        this.client.emit('friendship.status', {
+            friendship: this,
             status: this.status
         });
     };
-    Friend.prototype.getDistance = function () {
+    Friendship.prototype.getDistance = function () {
         if (this.peerClientNonce === undefined) {
             throw new Error('peerClientNonce not yet established');
         }
         return this.peerClientNonce.getXor(this.client.nonce);
     };
-    Friend.prototype.setSimplePeerListeners = function () {
+    Friendship.prototype.setSimplePeerListeners = function () {
         var _this = this;
         this.simplePeer.on('iceStateChange', function (iceConnectionState) {
             if (iceConnectionState === 'disconnected') {
@@ -23255,7 +23255,7 @@ var Friend = (function (_super) {
             }
         });
         this.simplePeer.on('connect', function () {
-            _this.setStatus(FRIEND_STATUS.CONNECTED);
+            _this.setStatus(FRIENDSHIP_STATUS.CONNECTED);
         });
         this.simplePeer.on('data', function (missiveEncodingBuffer) {
             var missive = Missive_1.Missive.fromEncoding(_this.client, Bytes_1.Bytes.fromBuffer(missiveEncodingBuffer));
@@ -23268,50 +23268,50 @@ var Friend = (function (_super) {
             _this.destroy();
         });
     };
-    Friend.prototype.destroy = function () {
+    Friendship.prototype.destroy = function () {
         var _this = this;
         if (this.simplePeer) {
             this.destroySimplePeer();
         }
-        this.setStatus(FRIEND_STATUS.DESTROYED);
+        this.setStatus(FRIENDSHIP_STATUS.DESTROYED);
         setTimeout(function () {
             _this.removeAllListeners();
         });
-        this.client.createFriend();
+        this.client.createFriendship();
     };
-    Friend.prototype.destroySimplePeer = function () {
+    Friendship.prototype.destroySimplePeer = function () {
         this.simplePeer.removeAllListeners();
         this.simplePeer.destroy();
     };
-    Friend.prototype.send = function (bytes) {
-        if (this.status !== FRIEND_STATUS.CONNECTED) {
-            throw new Error('Cannot send unless FRIEND_STATUS.CONNECTED');
+    Friendship.prototype.send = function (bytes) {
+        if (this.status !== FRIENDSHIP_STATUS.CONNECTED) {
+            throw new Error('Cannot send unless FRIENDSHIP_STATUS.CONNECTED');
         }
         this.simplePeer.send(bytes.uint8Array);
     };
-    Friend.prototype.sendMessage = function (missive) {
+    Friendship.prototype.sendMessage = function (missive) {
         this.send(missive.getEncoding());
     };
-    Friend.prototype.handleMessage = function (missive) {
+    Friendship.prototype.handleMessage = function (missive) {
         var _this = this;
         if (missive.getIsReceived()) {
             return;
         }
         missive.markIsReceived();
-        this.client.emit('friend.message', missive);
-        this.client.getFriends().forEach(function (friend) {
-            if (friend === _this) {
+        this.client.emit('friendship.message', missive);
+        this.client.getFriendships().forEach(function (friendship) {
+            if (friendship === _this) {
                 return;
             }
-            if (friend.status !== FRIEND_STATUS.CONNECTED) {
+            if (friendship.status !== FRIENDSHIP_STATUS.CONNECTED) {
                 return;
             }
-            friend.sendMessage(missive);
+            friendship.sendMessage(missive);
         });
     };
-    return Friend;
+    return Friendship;
 }(events_1.default));
-exports.Friend = Friend;
+exports.Friendship = Friendship;
 
 },{"../utils":171,"./Bytes":156,"./Missive":163,"events":82}],162:[function(require,module,exports){
 "use strict";
@@ -23368,7 +23368,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Friend_1 = require("./Friend");
+var Friendship_1 = require("./Friendship");
 var Answer_1 = require("./Answer");
 var simple_peer_1 = __importDefault(require("simple-peer"));
 var utils_1 = require("../utils");
@@ -23423,12 +23423,12 @@ var Introvert = (function (_super) {
                     case 0: return [4, this.fetchAnswer()];
                     case 1:
                         answer = _a.sent();
-                        this.setStatus(Friend_1.FRIEND_STATUS.CONNECTING);
+                        this.setStatus(Friendship_1.FRIENDSHIP_STATUS.CONNECTING);
                         this.client.signalingClientsByOfferIdHex[this.offer.getId().getHex()].sendAnswer(answer);
                         return [4, delay_1.default(this.client.signalTimeoutMs * 2)];
                     case 2:
                         _a.sent();
-                        if (this.status === Friend_1.FRIEND_STATUS.CONNECTING) {
+                        if (this.status === Friendship_1.FRIENDSHIP_STATUS.CONNECTING) {
                             this.destroy();
                         }
                         return [2];
@@ -23437,22 +23437,22 @@ var Introvert = (function (_super) {
         });
     };
     Introvert.prototype.destroy = function () {
-        var friendIndex = this.client.introverts.indexOf(this);
-        this.client.introverts.splice(friendIndex, 1);
+        var friendshipIndex = this.client.introverts.indexOf(this);
+        this.client.introverts.splice(friendshipIndex, 1);
         _super.prototype.destroy.call(this);
     };
     return Introvert;
-}(Friend_1.Friend));
+}(Friendship_1.Friendship));
 exports.Introvert = Introvert;
 
-},{"../utils":171,"./Answer":155,"./Bytes":156,"./Friend":161,"delay":186,"simple-peer":212}],163:[function(require,module,exports){
+},{"../utils":171,"./Answer":155,"./Bytes":156,"./Friendship":161,"delay":186,"simple-peer":212}],163:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Bytes_1 = require("./Bytes");
-var Friend_1 = require("./Friend");
+var Friendship_1 = require("./Friendship");
 var missive_1 = require("../templates/missive");
 var utils_1 = require("../utils");
 var bn_js_1 = __importDefault(require("bn.js"));
@@ -23527,11 +23527,11 @@ var Missive = (function () {
     Missive.prototype.broadcast = function () {
         var _this = this;
         this.markIsReceived();
-        this.client.getFriends().forEach(function (friend) {
-            if (friend.status !== Friend_1.FRIEND_STATUS.CONNECTED) {
+        this.client.getFriendships().forEach(function (friendship) {
+            if (friendship.status !== Friendship_1.FRIENDSHIP_STATUS.CONNECTED) {
                 return;
             }
-            friend.send(_this.getEncoding());
+            friendship.send(_this.getEncoding());
         });
     };
     Missive.fromHenpojo = function (client, henpojo) {
@@ -23551,7 +23551,7 @@ var Missive = (function () {
 }());
 exports.Missive = Missive;
 
-},{"../templates/missive":169,"../utils":171,"./Bytes":156,"./Friend":161,"bn.js":184}],164:[function(require,module,exports){
+},{"../templates/missive":169,"../utils":171,"./Bytes":156,"./Friendship":161,"bn.js":184}],164:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }

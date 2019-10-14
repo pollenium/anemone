@@ -72,7 +72,7 @@ describe('clients', () => {
         }),
         bootstrapOffersTimeout: (i % 2 === 0) ? 0 : 5,
         signalTimeout: 5, // utils.isBrowser ? 5 : 2,
-        friendsMax: params.friendsCount,
+        friendshipsMax: params.friendshipsCount,
         Worker: utils.Worker,
         WebSocket: utils.WebSocket,
         wrtc: utils.wrtc,
@@ -88,7 +88,7 @@ describe('clients', () => {
       clients.push(client)
     }
   })
-  it('wait for 0 friends to be connecting', (done) => {
+  it('wait for 0 friendships to be connecting', (done) => {
 
     function getIsFullyConnected() {
       for (let i = 0; i < clients.length; i ++) {
@@ -104,20 +104,20 @@ describe('clients', () => {
       done()
     }
 
-    async function onFriendStatus() {
+    async function onFriendshipStatus() {
       if (!getIsFullyConnected()) {
         return
       }
 
       clients.forEach((client) => {
-        client.removeListener('friend.status', onFriendStatus)
+        client.removeListener('friendship.status', onFriendshipStatus)
       })
       clearInterval(interval)
       done()
     }
 
     clients.forEach((client) => {
-      client.on('friend.status', onFriendStatus)
+      client.on('friendship.status', onFriendshipStatus)
     })
 
 

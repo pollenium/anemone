@@ -5,16 +5,16 @@ import { Missive } from './Missive'
 import { getNow } from '../utils'
 import { SimplePeer } from 'simple-peer'
 
-export enum FRIEND_STATUS {
+export enum FRIENDSHIP_STATUS {
   DEFAULT = 0,
   CONNECTING = 1,
   CONNECTED = 2,
   DESTROYED = 3,
 }
 
-export class Friend extends EventEmitter {
+export class Friendship extends EventEmitter {
 
-  status: FRIEND_STATUS = FRIEND_STATUS.DEFAULT;
+  status: FRIENDSHIP_STATUS = FRIENDSHIP_STATUS.DEFAULT;
 
   peerClientNonce: Bytes;
 
@@ -26,17 +26,17 @@ export class Friend extends EventEmitter {
     this.setSimplePeerListeners()
   }
 
-  setStatus(status: FRIEND_STATUS): void {
+  setStatus(status: FRIENDSHIP_STATUS): void {
     if (this.status !== undefined && status <= this.status) {
       throw new Error('Can only increase status')
     }
     this.status = status
     if (this.peerClientNonce) {
-      this.client.setFriendStatusByClientNonce(this.peerClientNonce, status)
+      this.client.setFriendshipStatusByClientNonce(this.peerClientNonce, status)
     }
     this.emit('status', status)
-    this.client.emit('friend.status', {
-      friend: this,
+    this.client.emit('friendship.status', {
+      friendship: this,
       status: this.status
     })
   }
@@ -56,7 +56,7 @@ export class Friend extends EventEmitter {
     })
 
     this.simplePeer.on('connect', () => {
-      this.setStatus(FRIEND_STATUS.CONNECTED)
+      this.setStatus(FRIENDSHIP_STATUS.CONNECTED)
     })
     this.simplePeer.on('data', (missiveEncodingBuffer: Buffer) => {
       const missive = Missive.fromEncoding(this.client, Bytes.fromBuffer(missiveEncodingBuffer))
@@ -75,12 +75,12 @@ export class Friend extends EventEmitter {
     if (this.simplePeer) {
       this.destroySimplePeer()
     }
-    this.setStatus(FRIEND_STATUS.DESTROYED)
+    this.setStatus(FRIENDSHIP_STATUS.DESTROYED)
     setTimeout(() => {
       // keep async so that client can listen for destroy event
       this.removeAllListeners()
     })
-    this.client.createFriend()
+    this.client.createFriendship()
   }
 
   destroySimplePeer(): void {
@@ -89,8 +89,8 @@ export class Friend extends EventEmitter {
   }
 
   send(bytes: Bytes): void {
-    if (this.status !== FRIEND_STATUS.CONNECTED) {
-      throw new Error('Cannot send unless FRIEND_STATUS.CONNECTED')
+    if (this.status !== FRIENDSHIP_STATUS.CONNECTED) {
+      throw new Error('Cannot send unless FRIENDSHIP_STATUS.CONNECTED')
     }
     this.simplePeer.send(bytes.uint8Array)
   }
@@ -105,15 +105,15 @@ export class Friend extends EventEmitter {
     }
 
     missive.markIsReceived()
-    this.client.emit('friend.message', missive)
-    this.client.getFriends().forEach((friend) => {
-      if (friend === this) {
+    this.client.emit('friendship.message', missive)
+    this.client.getFriendships().forEach((friendship) => {
+      if (friendship === this) {
         return
       }
-      if (friend.status !== FRIEND_STATUS.CONNECTED) {
+      if (friendship.status !== FRIENDSHIP_STATUS.CONNECTED) {
         return
       }
-      friend.sendMessage(missive)
+      friendship.sendMessage(missive)
     })
   }
 

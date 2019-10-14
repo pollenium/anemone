@@ -52,7 +52,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Friend_1 = require("./Friend");
+var Friendship_1 = require("./Friendship");
 var Offer_1 = require("./Offer");
 var FlushOffer_1 = require("./FlushOffer");
 var simple_peer_1 = __importDefault(require("simple-peer"));
@@ -82,7 +82,7 @@ var Extrovert = (function (_super) {
                         return [4, delay_1.default(timeout)];
                     case 2:
                         _a.sent();
-                        if (this.status === Friend_1.FRIEND_STATUS.DEFAULT) {
+                        if (this.status === Friendship_1.FRIENDSHIP_STATUS.DEFAULT) {
                             this.loopUploadOffer(timeout);
                         }
                         return [2];
@@ -119,7 +119,7 @@ var Extrovert = (function (_super) {
                     _this.simplePeer.once('signal', function (signal) {
                         resolve(signal.sdp);
                         setTimeout(function () {
-                            if (_this.status === Friend_1.FRIEND_STATUS.DEFAULT) {
+                            if (_this.status === Friendship_1.FRIENDSHIP_STATUS.DEFAULT) {
                                 _this.destroy();
                             }
                         }, _this.client.signalTimeoutMs * 2);
@@ -174,14 +174,14 @@ var Extrovert = (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (this.status !== Friend_1.FRIEND_STATUS.DEFAULT) {
-                            throw new Error('Must be in FRIEND_STATUS.DEFAULT');
+                        if (this.status !== Friendship_1.FRIENDSHIP_STATUS.DEFAULT) {
+                            throw new Error('Must be in FRIENDSHIP_STATUS.DEFAULT');
                         }
                         if (!this.client.getIsConnectableByClientNonce(answer.clientNonce)) {
                             return [2];
                         }
                         this.peerClientNonce = answer.clientNonce;
-                        this.setStatus(Friend_1.FRIEND_STATUS.CONNECTING);
+                        this.setStatus(Friendship_1.FRIENDSHIP_STATUS.CONNECTING);
                         this.simplePeer.signal({
                             type: 'answer',
                             sdp: answer.sdpb.getUtf8()
@@ -189,7 +189,7 @@ var Extrovert = (function (_super) {
                         return [4, delay_1.default(this.client.signalTimeoutMs)];
                     case 1:
                         _a.sent();
-                        if (this.status === Friend_1.FRIEND_STATUS.CONNECTING) {
+                        if (this.status === Friendship_1.FRIENDSHIP_STATUS.CONNECTING) {
                             this.destroy();
                         }
                         return [2];
@@ -216,14 +216,14 @@ var Extrovert = (function (_super) {
     };
     Extrovert.prototype.destroy = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var friendIndex;
+            var friendshipIndex;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4, this.uploadFlushOffer()];
                     case 1:
                         _a.sent();
-                        friendIndex = this.client.extroverts.indexOf(this);
-                        this.client.extroverts.splice(friendIndex, 1);
+                        friendshipIndex = this.client.extroverts.indexOf(this);
+                        this.client.extroverts.splice(friendshipIndex, 1);
                         _super.prototype.destroy.call(this);
                         return [2];
                 }
@@ -231,6 +231,6 @@ var Extrovert = (function (_super) {
         });
     };
     return Extrovert;
-}(Friend_1.Friend));
+}(Friendship_1.Friendship));
 exports.Extrovert = Extrovert;
 //# sourceMappingURL=Extrovert.js.map

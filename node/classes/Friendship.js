@@ -20,45 +20,45 @@ var Bytes_1 = require("./Bytes");
 var events_1 = __importDefault(require("events"));
 var Missive_1 = require("./Missive");
 var utils_1 = require("../utils");
-var FRIEND_STATUS;
-(function (FRIEND_STATUS) {
-    FRIEND_STATUS[FRIEND_STATUS["DEFAULT"] = 0] = "DEFAULT";
-    FRIEND_STATUS[FRIEND_STATUS["CONNECTING"] = 1] = "CONNECTING";
-    FRIEND_STATUS[FRIEND_STATUS["CONNECTED"] = 2] = "CONNECTED";
-    FRIEND_STATUS[FRIEND_STATUS["DESTROYED"] = 3] = "DESTROYED";
-})(FRIEND_STATUS = exports.FRIEND_STATUS || (exports.FRIEND_STATUS = {}));
-var Friend = (function (_super) {
-    __extends(Friend, _super);
-    function Friend(client, simplePeer) {
+var FRIENDSHIP_STATUS;
+(function (FRIENDSHIP_STATUS) {
+    FRIENDSHIP_STATUS[FRIENDSHIP_STATUS["DEFAULT"] = 0] = "DEFAULT";
+    FRIENDSHIP_STATUS[FRIENDSHIP_STATUS["CONNECTING"] = 1] = "CONNECTING";
+    FRIENDSHIP_STATUS[FRIENDSHIP_STATUS["CONNECTED"] = 2] = "CONNECTED";
+    FRIENDSHIP_STATUS[FRIENDSHIP_STATUS["DESTROYED"] = 3] = "DESTROYED";
+})(FRIENDSHIP_STATUS = exports.FRIENDSHIP_STATUS || (exports.FRIENDSHIP_STATUS = {}));
+var Friendship = (function (_super) {
+    __extends(Friendship, _super);
+    function Friendship(client, simplePeer) {
         var _this = _super.call(this) || this;
         _this.client = client;
         _this.simplePeer = simplePeer;
-        _this.status = FRIEND_STATUS.DEFAULT;
+        _this.status = FRIENDSHIP_STATUS.DEFAULT;
         _this.createdAt = utils_1.getNow();
         _this.setSimplePeerListeners();
         return _this;
     }
-    Friend.prototype.setStatus = function (status) {
+    Friendship.prototype.setStatus = function (status) {
         if (this.status !== undefined && status <= this.status) {
             throw new Error('Can only increase status');
         }
         this.status = status;
         if (this.peerClientNonce) {
-            this.client.setFriendStatusByClientNonce(this.peerClientNonce, status);
+            this.client.setFriendshipStatusByClientNonce(this.peerClientNonce, status);
         }
         this.emit('status', status);
-        this.client.emit('friend.status', {
-            friend: this,
+        this.client.emit('friendship.status', {
+            friendship: this,
             status: this.status
         });
     };
-    Friend.prototype.getDistance = function () {
+    Friendship.prototype.getDistance = function () {
         if (this.peerClientNonce === undefined) {
             throw new Error('peerClientNonce not yet established');
         }
         return this.peerClientNonce.getXor(this.client.nonce);
     };
-    Friend.prototype.setSimplePeerListeners = function () {
+    Friendship.prototype.setSimplePeerListeners = function () {
         var _this = this;
         this.simplePeer.on('iceStateChange', function (iceConnectionState) {
             if (iceConnectionState === 'disconnected') {
@@ -66,7 +66,7 @@ var Friend = (function (_super) {
             }
         });
         this.simplePeer.on('connect', function () {
-            _this.setStatus(FRIEND_STATUS.CONNECTED);
+            _this.setStatus(FRIENDSHIP_STATUS.CONNECTED);
         });
         this.simplePeer.on('data', function (missiveEncodingBuffer) {
             var missive = Missive_1.Missive.fromEncoding(_this.client, Bytes_1.Bytes.fromBuffer(missiveEncodingBuffer));
@@ -79,48 +79,48 @@ var Friend = (function (_super) {
             _this.destroy();
         });
     };
-    Friend.prototype.destroy = function () {
+    Friendship.prototype.destroy = function () {
         var _this = this;
         if (this.simplePeer) {
             this.destroySimplePeer();
         }
-        this.setStatus(FRIEND_STATUS.DESTROYED);
+        this.setStatus(FRIENDSHIP_STATUS.DESTROYED);
         setTimeout(function () {
             _this.removeAllListeners();
         });
-        this.client.createFriend();
+        this.client.createFriendship();
     };
-    Friend.prototype.destroySimplePeer = function () {
+    Friendship.prototype.destroySimplePeer = function () {
         this.simplePeer.removeAllListeners();
         this.simplePeer.destroy();
     };
-    Friend.prototype.send = function (bytes) {
-        if (this.status !== FRIEND_STATUS.CONNECTED) {
-            throw new Error('Cannot send unless FRIEND_STATUS.CONNECTED');
+    Friendship.prototype.send = function (bytes) {
+        if (this.status !== FRIENDSHIP_STATUS.CONNECTED) {
+            throw new Error('Cannot send unless FRIENDSHIP_STATUS.CONNECTED');
         }
         this.simplePeer.send(bytes.uint8Array);
     };
-    Friend.prototype.sendMessage = function (missive) {
+    Friendship.prototype.sendMessage = function (missive) {
         this.send(missive.getEncoding());
     };
-    Friend.prototype.handleMessage = function (missive) {
+    Friendship.prototype.handleMessage = function (missive) {
         var _this = this;
         if (missive.getIsReceived()) {
             return;
         }
         missive.markIsReceived();
-        this.client.emit('friend.message', missive);
-        this.client.getFriends().forEach(function (friend) {
-            if (friend === _this) {
+        this.client.emit('friendship.message', missive);
+        this.client.getFriendships().forEach(function (friendship) {
+            if (friendship === _this) {
                 return;
             }
-            if (friend.status !== FRIEND_STATUS.CONNECTED) {
+            if (friendship.status !== FRIENDSHIP_STATUS.CONNECTED) {
                 return;
             }
-            friend.sendMessage(missive);
+            friendship.sendMessage(missive);
         });
     };
-    return Friend;
+    return Friendship;
 }(events_1.default));
-exports.Friend = Friend;
-//# sourceMappingURL=Friend.js.map
+exports.Friendship = Friendship;
+//# sourceMappingURL=Friendship.js.map

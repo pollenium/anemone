@@ -1,4 +1,4 @@
-import { Friend, FRIEND_STATUS } from './Friend'
+import { Friendship, FRIENDSHIP_STATUS } from './Friendship'
 import { Extrovert } from './Extrovert'
 import { Introvert } from './Introvert'
 import { SignalingClient } from './SignalingClient'
@@ -30,7 +30,7 @@ export class Client extends EventEmitter {
 
   signalingClientsByOfferIdHex: { [id: string]: SignalingClient } = {};
 
-  friendStatusByClientNonceHex: { [id: string]: FRIEND_STATUS } = {};
+  friendshipStatusByClientNonceHex: { [id: string]: FRIENDSHIP_STATUS } = {};
 
   offersReceivedByClientNonceHex: { [id: string]: number } = {};
 
@@ -58,24 +58,24 @@ export class Client extends EventEmitter {
       this.addSignalingClient(signalingServerUrl)
     }
 
-    await this.loopCreateFriend()
+    await this.loopCreateFriendship()
   }
 
-  private async loopCreateFriend(): Promise<void> {
-    if (this.extroverts.length + this.introverts.length >= this.options.friendsMax) {
+  private async loopCreateFriendship(): Promise<void> {
+    if (this.extroverts.length + this.introverts.length >= this.options.friendshipsMax) {
       return
     }
-    await this.createFriend()
-    this.loopCreateFriend()
+    await this.createFriendship()
+    this.loopCreateFriendship()
   }
 
-  getFriendsCount(): number {
+  getFriendshipsCount(): number {
     return this.introverts.length + this.extroverts.length
   }
 
-  async createFriend(): Promise<void> {
+  async createFriendship(): Promise<void> {
 
-    if (this.getFriendsCount() === this.options.friendsMax) {
+    if (this.getFriendshipsCount() === this.options.friendshipsMax) {
       return
     }
 
@@ -86,7 +86,7 @@ export class Client extends EventEmitter {
 
     await delay(this.options.bootstrapOffersTimeout * 1000)
 
-    if (this.getFriendsCount() === this.options.friendsMax) {
+    if (this.getFriendshipsCount() === this.options.friendshipsMax) {
       return
     }
 
@@ -95,12 +95,12 @@ export class Client extends EventEmitter {
       const extrovert = new Extrovert(this)
       this.extroverts.push(extrovert)
       this.emit('extrovert', extrovert)
-      this.emit('friend', extrovert)
+      this.emit('friendship', extrovert)
     } else {
       const introvert = new Introvert(this, offer2)
       this.introverts.push(introvert)
       this.emit('introvert', introvert)
-      this.emit('friend', introvert)
+      this.emit('friendship', introvert)
     }
 
   }
@@ -186,34 +186,34 @@ export class Client extends EventEmitter {
     })
 
     if (this.getIsConnectableByClientNonce(offer.clientNonce)) {
-      const peeredFriends = this.getPeeredFriends()
-      if (peeredFriends.length === this.options.friendsMax) {
+      const peeredFriendships = this.getPeeredFriendships()
+      if (peeredFriendships.length === this.options.friendshipsMax) {
         const offerDistance = offer.getDistance(this.nonce)
-        const worstFriend = this.getWorstFriend()
-        const worstFriendDistance = worstFriend.getDistance()
-        if (worstFriendDistance.compare(offerDistance) === 1) {
-          worstFriend.destroy()
+        const worstFriendship = this.getWorstFriendship()
+        const worstFriendshipDistance = worstFriendship.getDistance()
+        if (worstFriendshipDistance.compare(offerDistance) === 1) {
+          worstFriendship.destroy()
         }
       }
     }
-    this.createFriend()
+    this.createFriendship()
   }
 
-  private getPeeredFriends(): Friend[] {
-    return this.getFriends().filter((friend) => {
-      return friend.peerClientNonce !== undefined
+  private getPeeredFriendships(): Friendship[] {
+    return this.getFriendships().filter((friendship) => {
+      return friendship.peerClientNonce !== undefined
     })
   }
 
-  private getWorstFriend(): null | Friend {
-    const peeredFriends = this.getPeeredFriends()
-    if (peeredFriends.length === 0) {
+  private getWorstFriendship(): null | Friendship {
+    const peeredFriendships = this.getPeeredFriendships()
+    if (peeredFriendships.length === 0) {
       return null
     }
 
-    return peeredFriends.sort((friendA, friendB) => {
-      const distanceA = friendA.getDistance()
-      const distanceB = friendB.getDistance()
+    return peeredFriendships.sort((friendshipA, friendshipB) => {
+      const distanceA = friendshipA.getDistance()
+      const distanceB = friendshipB.getDistance()
       return distanceA.compare(distanceB)
     })[0]
   }
@@ -233,11 +233,11 @@ export class Client extends EventEmitter {
     })
   }
 
-  getFriends(): Friend[] {
-    const friends: Friend[] = []
-    friends.push(...this.extroverts)
-    friends.push(...this.introverts)
-    return friends
+  getFriendships(): Friendship[] {
+    const friendships: Friendship[] = []
+    friendships.push(...this.extroverts)
+    friendships.push(...this.introverts)
+    return friendships
   }
 
   async handleAnswer(signalingClient: SignalingClient, answer: Answer): Promise<void> {
@@ -253,17 +253,17 @@ export class Client extends EventEmitter {
       return
     }
 
-    if (extrovert.status === FRIEND_STATUS.DEFAULT) {
+    if (extrovert.status === FRIENDSHIP_STATUS.DEFAULT) {
       extrovert.handleAnswer(answer)
     }
   }
 
-  getFriendStatusByClientNonce(clientNonce: Bytes): FRIEND_STATUS {
-    const friendStatus = this.friendStatusByClientNonceHex[clientNonce.getHex()]
-    if (friendStatus === undefined) {
-      return FRIEND_STATUS.DEFAULT
+  getFriendshipStatusByClientNonce(clientNonce: Bytes): FRIENDSHIP_STATUS {
+    const friendshipStatus = this.friendshipStatusByClientNonceHex[clientNonce.getHex()]
+    if (friendshipStatus === undefined) {
+      return FRIENDSHIP_STATUS.DEFAULT
     }
-      return friendStatus
+      return friendshipStatus
 
   }
 
@@ -271,33 +271,33 @@ export class Client extends EventEmitter {
     if (clientNonce.equals(this.nonce)) {
       return false
     }
-    switch(this.getFriendStatusByClientNonce(clientNonce)) {
-      case FRIEND_STATUS.DEFAULT:
-      case FRIEND_STATUS.DESTROYED:
+    switch(this.getFriendshipStatusByClientNonce(clientNonce)) {
+      case FRIENDSHIP_STATUS.DEFAULT:
+      case FRIENDSHIP_STATUS.DESTROYED:
         return true;
-      case FRIEND_STATUS.CONNECTING:
-      case FRIEND_STATUS.CONNECTED:
+      case FRIENDSHIP_STATUS.CONNECTING:
+      case FRIENDSHIP_STATUS.CONNECTED:
         return false;
       default:
-        throw new Error('Unkown FRIEND_STATUS')
+        throw new Error('Unkown FRIENDSHIP_STATUS')
     }
   }
 
-  setFriendStatusByClientNonce(clientNonce: Bytes, friendStatus: FRIEND_STATUS): void {
-    this.friendStatusByClientNonceHex[clientNonce.getHex()] = friendStatus
+  setFriendshipStatusByClientNonce(clientNonce: Bytes, friendshipStatus: FRIENDSHIP_STATUS): void {
+    this.friendshipStatusByClientNonceHex[clientNonce.getHex()] = friendshipStatus
   }
 
   getIsFullyConnected(): boolean {
-    if (this.extroverts.length + this.introverts.length < this.options.friendsMax) {
+    if (this.extroverts.length + this.introverts.length < this.options.friendshipsMax) {
       return false
     }
     for (let i = 0; i < this.extroverts.length; i++) {
-      if (this.extroverts[i].status !== FRIEND_STATUS.CONNECTED) {
+      if (this.extroverts[i].status !== FRIENDSHIP_STATUS.CONNECTED) {
         return false
       }
     }
     for (let i = 0; i < this.introverts.length; i++) {
-      if (this.introverts[i].status !== FRIEND_STATUS.CONNECTED) {
+      if (this.introverts[i].status !== FRIENDSHIP_STATUS.CONNECTED) {
         return false
       }
     }

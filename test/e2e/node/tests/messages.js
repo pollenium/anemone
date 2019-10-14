@@ -32,7 +32,7 @@ describe('missives', () => {
   it(`should send message and be received ${expectedReceivalsCount} times`, (done) => {
     let i = 0
     clients.forEach((client) => {
-      client.on('friend.missive', (_missive) => {
+      client.on('friendship.missive', (_missive) => {
         i++
         if (i === expectedReceivalsCount) {
           setTimeout(() => {

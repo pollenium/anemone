@@ -1,4 +1,4 @@
-import { Friend, FRIEND_STATUS } from './Friend'
+import { Friendship, FRIENDSHIP_STATUS } from './Friendship'
 import { Offer } from './Offer'
 import { FlushOffer } from './FlushOffer'
 import { Answer } from './Answer'
@@ -8,7 +8,7 @@ import delay from 'delay'
 import { Bytes } from './Bytes'
 import { Client } from './Client'
 
-export class Extrovert extends Friend {
+export class Extrovert extends Friendship {
 
   answers: Answer[] = [];
 
@@ -29,7 +29,7 @@ export class Extrovert extends Friend {
   private async loopUploadOffer(timeout: number): Promise<void> {
     await this.uploadOffer()
     await delay(timeout)
-    if (this.status === FRIEND_STATUS.DEFAULT) {
+    if (this.status === FRIENDSHIP_STATUS.DEFAULT) {
       this.loopUploadOffer(timeout)
     }
   }
@@ -51,7 +51,7 @@ export class Extrovert extends Friend {
         resolve(signal.sdp)
 
         setTimeout(() => {
-          if (this.status === FRIEND_STATUS.DEFAULT) {
+          if (this.status === FRIENDSHIP_STATUS.DEFAULT) {
             this.destroy()
           }
         }, this.client.signalTimeoutMs * 2)
@@ -80,8 +80,8 @@ export class Extrovert extends Friend {
 
   async handleAnswer(answer: Answer): Promise<void> {
 
-    if (this.status !== FRIEND_STATUS.DEFAULT) {
-      throw new Error('Must be in FRIEND_STATUS.DEFAULT')
+    if (this.status !== FRIENDSHIP_STATUS.DEFAULT) {
+      throw new Error('Must be in FRIENDSHIP_STATUS.DEFAULT')
     }
 
     if (!this.client.getIsConnectableByClientNonce(answer.clientNonce)) {
@@ -89,7 +89,7 @@ export class Extrovert extends Friend {
     }
 
     this.peerClientNonce = answer.clientNonce
-    this.setStatus(FRIEND_STATUS.CONNECTING)
+    this.setStatus(FRIENDSHIP_STATUS.CONNECTING)
     this.simplePeer.signal({
       type: 'answer',
       sdp: answer.sdpb.getUtf8()
@@ -99,7 +99,7 @@ export class Extrovert extends Friend {
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
-    if (this.status === FRIEND_STATUS.CONNECTING) {
+    if (this.status === FRIENDSHIP_STATUS.CONNECTING) {
       this.destroy()
     }
   }
@@ -114,8 +114,8 @@ export class Extrovert extends Friend {
 
   async destroy(): Promise<void> {
     await this.uploadFlushOffer()
-    const friendIndex = this.client.extroverts.indexOf(this)
-    this.client.extroverts.splice(friendIndex, 1)
+    const friendshipIndex = this.client.extroverts.indexOf(this)
+    this.client.extroverts.splice(friendshipIndex, 1)
     super.destroy()
   }
 

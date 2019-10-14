@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Bytes_1 = require("./Bytes");
-var Friend_1 = require("./Friend");
+var Friendship_1 = require("./Friendship");
 var missive_1 = require("../templates/missive");
 var utils_1 = require("../utils");
 var bn_js_1 = __importDefault(require("bn.js"));
@@ -79,11 +79,11 @@ var Missive = (function () {
     Missive.prototype.broadcast = function () {
         var _this = this;
         this.markIsReceived();
-        this.client.getFriends().forEach(function (friend) {
-            if (friend.status !== Friend_1.FRIEND_STATUS.CONNECTED) {
+        this.client.getFriendships().forEach(function (friendship) {
+            if (friendship.status !== Friendship_1.FRIENDSHIP_STATUS.CONNECTED) {
                 return;
             }
-            friend.send(_this.getEncoding());
+            friendship.send(_this.getEncoding());
         });
     };
     Missive.fromHenpojo = function (client, henpojo) {

@@ -52,7 +52,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Friend_1 = require("./Friend");
+var Friendship_1 = require("./Friendship");
 var Extrovert_1 = require("./Extrovert");
 var Introvert_1 = require("./Introvert");
 var SignalingClient_1 = require("./SignalingClient");
@@ -71,7 +71,7 @@ var Client = (function (_super) {
         _this.offers = [];
         _this.answer = [];
         _this.signalingClientsByOfferIdHex = {};
-        _this.friendStatusByClientNonceHex = {};
+        _this.friendshipStatusByClientNonceHex = {};
         _this.offersReceivedByClientNonceHex = {};
         _this.isFlushedOfferByOfferIdHex = {};
         _this.missiveIsReceivedByIdHexByEra = {};
@@ -92,7 +92,7 @@ var Client = (function (_super) {
                             signalingServerUrl = this.options.signalingServerUrls[i];
                             this.addSignalingClient(signalingServerUrl);
                         }
-                        return [4, this.loopCreateFriend()];
+                        return [4, this.loopCreateFriendship()];
                     case 1:
                         _a.sent();
                         return [2];
@@ -100,33 +100,33 @@ var Client = (function (_super) {
             });
         });
     };
-    Client.prototype.loopCreateFriend = function () {
+    Client.prototype.loopCreateFriendship = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (this.extroverts.length + this.introverts.length >= this.options.friendsMax) {
+                        if (this.extroverts.length + this.introverts.length >= this.options.friendshipsMax) {
                             return [2];
                         }
-                        return [4, this.createFriend()];
+                        return [4, this.createFriendship()];
                     case 1:
                         _a.sent();
-                        this.loopCreateFriend();
+                        this.loopCreateFriendship();
                         return [2];
                 }
             });
         });
     };
-    Client.prototype.getFriendsCount = function () {
+    Client.prototype.getFriendshipsCount = function () {
         return this.introverts.length + this.extroverts.length;
     };
-    Client.prototype.createFriend = function () {
+    Client.prototype.createFriendship = function () {
         return __awaiter(this, void 0, void 0, function () {
             var offer, offer2, extrovert, introvert;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (this.getFriendsCount() === this.options.friendsMax) {
+                        if (this.getFriendshipsCount() === this.options.friendshipsMax) {
                             return [2];
                         }
                         offer = this.popConnectableOffer();
@@ -136,7 +136,7 @@ var Client = (function (_super) {
                         return [4, delay_1.default(this.options.bootstrapOffersTimeout * 1000)];
                     case 1:
                         _a.sent();
-                        if (this.getFriendsCount() === this.options.friendsMax) {
+                        if (this.getFriendshipsCount() === this.options.friendshipsMax) {
                             return [2];
                         }
                         offer2 = this.popConnectableOffer();
@@ -144,13 +144,13 @@ var Client = (function (_super) {
                             extrovert = new Extrovert_1.Extrovert(this);
                             this.extroverts.push(extrovert);
                             this.emit('extrovert', extrovert);
-                            this.emit('friend', extrovert);
+                            this.emit('friendship', extrovert);
                         }
                         else {
                             introvert = new Introvert_1.Introvert(this, offer2);
                             this.introverts.push(introvert);
                             this.emit('introvert', introvert);
-                            this.emit('friend', introvert);
+                            this.emit('friendship', introvert);
                         }
                         return [2];
                 }
@@ -238,31 +238,31 @@ var Client = (function (_super) {
             return distanceB.compare(distanceA);
         });
         if (this.getIsConnectableByClientNonce(offer.clientNonce)) {
-            var peeredFriends = this.getPeeredFriends();
-            if (peeredFriends.length === this.options.friendsMax) {
+            var peeredFriendships = this.getPeeredFriendships();
+            if (peeredFriendships.length === this.options.friendshipsMax) {
                 var offerDistance = offer.getDistance(this.nonce);
-                var worstFriend = this.getWorstFriend();
-                var worstFriendDistance = worstFriend.getDistance();
-                if (worstFriendDistance.compare(offerDistance) === 1) {
-                    worstFriend.destroy();
+                var worstFriendship = this.getWorstFriendship();
+                var worstFriendshipDistance = worstFriendship.getDistance();
+                if (worstFriendshipDistance.compare(offerDistance) === 1) {
+                    worstFriendship.destroy();
                 }
             }
         }
-        this.createFriend();
+        this.createFriendship();
     };
-    Client.prototype.getPeeredFriends = function () {
-        return this.getFriends().filter(function (friend) {
-            return friend.peerClientNonce !== undefined;
+    Client.prototype.getPeeredFriendships = function () {
+        return this.getFriendships().filter(function (friendship) {
+            return friendship.peerClientNonce !== undefined;
         });
     };
-    Client.prototype.getWorstFriend = function () {
-        var peeredFriends = this.getPeeredFriends();
-        if (peeredFriends.length === 0) {
+    Client.prototype.getWorstFriendship = function () {
+        var peeredFriendships = this.getPeeredFriendships();
+        if (peeredFriendships.length === 0) {
             return null;
         }
-        return peeredFriends.sort(function (friendA, friendB) {
-            var distanceA = friendA.getDistance();
-            var distanceB = friendB.getDistance();
+        return peeredFriendships.sort(function (friendshipA, friendshipB) {
+            var distanceA = friendshipA.getDistance();
+            var distanceB = friendshipB.getDistance();
             return distanceA.compare(distanceB);
         })[0];
     };
@@ -277,11 +277,11 @@ var Client = (function (_super) {
             }
         });
     };
-    Client.prototype.getFriends = function () {
-        var friends = [];
-        friends.push.apply(friends, this.extroverts);
-        friends.push.apply(friends, this.introverts);
-        return friends;
+    Client.prototype.getFriendships = function () {
+        var friendships = [];
+        friendships.push.apply(friendships, this.extroverts);
+        friendships.push.apply(friendships, this.introverts);
+        return friendships;
     };
     Client.prototype.handleAnswer = function (signalingClient, answer) {
         return __awaiter(this, void 0, void 0, function () {
@@ -298,7 +298,7 @@ var Client = (function (_super) {
                         if (!this.getIsConnectableByClientNonce(answer.clientNonce)) {
                             return [2];
                         }
-                        if (extrovert.status === Friend_1.FRIEND_STATUS.DEFAULT) {
+                        if (extrovert.status === Friendship_1.FRIENDSHIP_STATUS.DEFAULT) {
                             extrovert.handleAnswer(answer);
                         }
                         return [2];
@@ -306,42 +306,42 @@ var Client = (function (_super) {
             });
         });
     };
-    Client.prototype.getFriendStatusByClientNonce = function (clientNonce) {
-        var friendStatus = this.friendStatusByClientNonceHex[clientNonce.getHex()];
-        if (friendStatus === undefined) {
-            return Friend_1.FRIEND_STATUS.DEFAULT;
+    Client.prototype.getFriendshipStatusByClientNonce = function (clientNonce) {
+        var friendshipStatus = this.friendshipStatusByClientNonceHex[clientNonce.getHex()];
+        if (friendshipStatus === undefined) {
+            return Friendship_1.FRIENDSHIP_STATUS.DEFAULT;
         }
-        return friendStatus;
+        return friendshipStatus;
     };
     Client.prototype.getIsConnectableByClientNonce = function (clientNonce) {
         if (clientNonce.equals(this.nonce)) {
             return false;
         }
-        switch (this.getFriendStatusByClientNonce(clientNonce)) {
-            case Friend_1.FRIEND_STATUS.DEFAULT:
-            case Friend_1.FRIEND_STATUS.DESTROYED:
+        switch (this.getFriendshipStatusByClientNonce(clientNonce)) {
+            case Friendship_1.FRIENDSHIP_STATUS.DEFAULT:
+            case Friendship_1.FRIENDSHIP_STATUS.DESTROYED:
                 return true;
-            case Friend_1.FRIEND_STATUS.CONNECTING:
-            case Friend_1.FRIEND_STATUS.CONNECTED:
+            case Friendship_1.FRIENDSHIP_STATUS.CONNECTING:
+            case Friendship_1.FRIENDSHIP_STATUS.CONNECTED:
                 return false;
             default:
-                throw new Error('Unkown FRIEND_STATUS');
+                throw new Error('Unkown FRIENDSHIP_STATUS');
         }
     };
-    Client.prototype.setFriendStatusByClientNonce = function (clientNonce, friendStatus) {
-        this.friendStatusByClientNonceHex[clientNonce.getHex()] = friendStatus;
+    Client.prototype.setFriendshipStatusByClientNonce = function (clientNonce, friendshipStatus) {
+        this.friendshipStatusByClientNonceHex[clientNonce.getHex()] = friendshipStatus;
     };
     Client.prototype.getIsFullyConnected = function () {
-        if (this.extroverts.length + this.introverts.length < this.options.friendsMax) {
+        if (this.extroverts.length + this.introverts.length < this.options.friendshipsMax) {
             return false;
         }
         for (var i = 0; i < this.extroverts.length; i++) {
-            if (this.extroverts[i].status !== Friend_1.FRIEND_STATUS.CONNECTED) {
+            if (this.extroverts[i].status !== Friendship_1.FRIENDSHIP_STATUS.CONNECTED) {
                 return false;
             }
         }
         for (var i = 0; i < this.introverts.length; i++) {
-            if (this.introverts[i].status !== Friend_1.FRIEND_STATUS.CONNECTED) {
+            if (this.introverts[i].status !== Friendship_1.FRIENDSHIP_STATUS.CONNECTED) {
                 return false;
             }
         }

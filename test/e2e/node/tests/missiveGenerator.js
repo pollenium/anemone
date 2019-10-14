@@ -7,7 +7,7 @@ describe('missiveGenerator', () => {
   it('should create client', () => {
     client = new utils.pollenium.Client({
       signalingServerUrls: [],
-      friendsMax: 0,
+      friendshipsMax: 0,
       Worker: utils.Worker,
       hashcashWorkerUrl: utils.hashcashWorkerUrl
     })
