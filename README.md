@@ -67,5 +67,6 @@ const missiveGenerator = new pollenium.MissiveGenerator({
 )
 
 const missive = await missiveGenerator.fetchMissive()
-````
 
+missive.broadcast()
+````
