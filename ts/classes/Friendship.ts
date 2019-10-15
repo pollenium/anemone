@@ -35,10 +35,7 @@ export class Friendship extends EventEmitter {
       this.client.setFriendshipStatusByClientNonce(this.peerClientNonce, status)
     }
     this.emit('status', status)
-    this.client.emit('friendship.status', {
-      friendship: this,
-      status: this.status
-    })
+    this.client.emit('friendship.status', this)
   }
 
   getDistance(): Bytes {
