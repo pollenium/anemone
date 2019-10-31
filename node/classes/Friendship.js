@@ -91,9 +91,18 @@ var Friendship = (function (_super) {
         this.simplePeer.removeAllListeners();
         this.simplePeer.destroy();
     };
-    Friendship.prototype.send = function (bytes) {
+    Friendship.prototype.getIsSendable = function () {
         if (this.status !== FRIENDSHIP_STATUS.CONNECTED) {
-            throw new Error('Cannot send unless FRIENDSHIP_STATUS.CONNECTED');
+            return false;
+        }
+        if (!this.simplePeer.connected) {
+            return false;
+        }
+        return true;
+    };
+    Friendship.prototype.send = function (bytes) {
+        if (!this.getIsSendable()) {
+            throw new Error('friendship not sendable');
         }
         this.simplePeer.send(bytes.uint8Array);
     };
@@ -111,7 +120,7 @@ var Friendship = (function (_super) {
             if (friendship === _this) {
                 return;
             }
-            if (friendship.status !== FRIENDSHIP_STATUS.CONNECTED) {
+            if (!friendship.getIsSendable()) {
                 return;
             }
             friendship.sendMessage(missive);

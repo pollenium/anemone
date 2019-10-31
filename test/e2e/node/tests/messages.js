@@ -23,7 +23,7 @@ describe('missives', () => {
         client,
         utils.pollenium.Bytes.random(32),
         utils.pollenium.Bytes.random(32),
-        6
+        1
       )
       const missive = await missiveGenerator.fetchMissive()
       missives.push(missive)

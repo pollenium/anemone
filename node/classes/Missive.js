@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Bytes_1 = require("./Bytes");
-var Friendship_1 = require("./Friendship");
 var missive_1 = require("../templates/missive");
 var utils_1 = require("../utils");
 var bn_js_1 = __importDefault(require("bn.js"));
@@ -85,7 +84,7 @@ var Missive = (function () {
         var _this = this;
         this.markIsReceived();
         this.client.getFriendships().forEach(function (friendship) {
-            if (friendship.status !== Friendship_1.FRIENDSHIP_STATUS.CONNECTED) {
+            if (!friendship.getIsSendable()) {
                 return;
             }
             friendship.send(_this.getEncoding());

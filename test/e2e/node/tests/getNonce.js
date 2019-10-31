@@ -9,7 +9,7 @@ const noncelessPrehash = utils.pollenium.Bytes.random(64)
 describe('getNonce (non-worker)', () => {
   for (let difficulty = 0; difficulty <= 8; difficulty++) {
     it(`difficulty:${difficulty}`, () => {
-      getNonce(noncelessPrehash, difficulty, 69, 32, getNow() + 30)
+      getNonce(noncelessPrehash, difficulty, 69, 32, getNow() + 60)
     })
   }
 })

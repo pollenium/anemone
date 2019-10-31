@@ -1,5 +1,4 @@
 import { Bytes } from './Bytes'
-import { FRIENDSHIP_STATUS } from './Friendship'
 import { MISSIVE_KEY, missiveTemplate } from '../templates/missive'
 import { getNow, calculateEra, getMaxHash } from '../utils'
 import { Client } from './Client'
@@ -95,7 +94,7 @@ export class Missive {
   broadcast(): void {
     this.markIsReceived()
     this.client.getFriendships().forEach((friendship) => {
-      if (friendship.status !== FRIENDSHIP_STATUS.CONNECTED) {
+      if (!friendship.getIsSendable()) {
         return
       }
       friendship.send(this.getEncoding())

@@ -85,9 +85,19 @@ export class Friendship extends EventEmitter {
     this.simplePeer.destroy()
   }
 
-  send(bytes: Bytes): void {
+  getIsSendable(): boolean {
     if (this.status !== FRIENDSHIP_STATUS.CONNECTED) {
-      throw new Error('Cannot send unless FRIENDSHIP_STATUS.CONNECTED')
+      return false
+    }
+    if (!this.simplePeer.connected) {
+      return false
+    }
+    return true
+  }
+
+  send(bytes: Bytes): void {
+    if (!this.getIsSendable()) {
+      throw new Error('friendship not sendable')
     }
     this.simplePeer.send(bytes.uint8Array)
   }
@@ -107,7 +117,7 @@ export class Friendship extends EventEmitter {
       if (friendship === this) {
         return
       }
-      if (friendship.status !== FRIENDSHIP_STATUS.CONNECTED) {
+      if (!friendship.getIsSendable()) {
         return
       }
       friendship.sendMessage(missive)
