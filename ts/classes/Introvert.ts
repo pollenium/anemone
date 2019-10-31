@@ -43,9 +43,9 @@ export class Introvert extends Friendship {
 
   private async connect(): Promise<void> {
 
-    const answer = await this.fetchAnswer()
-
     this.setStatus(FRIENDSHIP_STATUS.CONNECTING)
+
+    const answer = await this.fetchAnswer()
 
     this.client.signalingClientsByOfferIdHex[this.offer.getId().getHex()].sendAnswer(answer)
 

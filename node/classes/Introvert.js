@@ -104,10 +104,11 @@ var Introvert = (function (_super) {
             var answer;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, this.fetchAnswer()];
+                    case 0:
+                        this.setStatus(Friendship_1.FRIENDSHIP_STATUS.CONNECTING);
+                        return [4, this.fetchAnswer()];
                     case 1:
                         answer = _a.sent();
-                        this.setStatus(Friendship_1.FRIENDSHIP_STATUS.CONNECTING);
                         this.client.signalingClientsByOfferIdHex[this.offer.getId().getHex()].sendAnswer(answer);
                         return [4, delay_1.default(this.client.signalTimeoutMs * 2)];
                     case 2:
