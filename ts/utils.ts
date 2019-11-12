@@ -1,4 +1,4 @@
-import { Bytes } from './classes/Bytes'
+import { Buttercup } from 'pollenium-buttercup'
 import Bn from 'bn.js'
 
 export const stunServers = [
@@ -33,26 +33,26 @@ export function getSimplePeerConfig() {
   }
 }
 
-export function getTimestamp(): Bytes {
-  return Bytes.fromNumber(getNow()).getPaddedLeft(5)
+export function getTimestamp(): Buttercup {
+  return Buttercup.fromNumber(getNow()).getPaddedLeft(5)
 }
 
 export const twoBn = new Bn(2)
 
-export function getMaxHash(difficulty: number, cover: number, applicationDataLength: number): Bytes {
+export function getMaxHash(difficulty: number, cover: number, applicationDataLength: number): Buttercup {
   const powBn = new Bn(255 - difficulty)
   const divisor = new Bn(cover + applicationDataLength)
   const maxHashBn = twoBn.pow(powBn).divRound(divisor)
-  return Bytes.fromBn(maxHashBn)
+  return Buttercup.fromBn(maxHashBn)
 }
 
 export function getNonce(
-  noncelessPrehash: Bytes,
+  noncelessPrehash: Buttercup,
   difficulty: number,
   cover: number,
   applicationDataLength: number,
   timeoutAt: number
-): Bytes {
+): Buttercup {
   const maxHashBn = getMaxHash(difficulty, cover, applicationDataLength).getBn()
 
   // eslint-disable-next-line no-constant-condition
@@ -60,7 +60,7 @@ export function getNonce(
     if (getNow() > timeoutAt) {
       throw new Error('Timeout')
     }
-    const nonce = Bytes.random(32)
+    const nonce = Buttercup.random(32)
     const prehash = noncelessPrehash.append(nonce)
     const hashBn = prehash.getHash().getBn()
     if (hashBn.lte(maxHashBn)) {

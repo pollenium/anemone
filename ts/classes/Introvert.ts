@@ -4,7 +4,7 @@ import { Answer } from './Answer'
 import SimplePeer, { SignalData as SimplePeerSignalData } from 'simple-peer'
 import { getSimplePeerConfig } from '../utils'
 import delay from 'delay'
-import { Bytes } from './Bytes'
+import { Buttercup } from 'pollenium-buttercup'
 import { Client } from './Client'
 
 
@@ -21,10 +21,10 @@ export class Introvert extends Friendship {
     this.connect()
   }
 
-  private fetchAnswerSdpb(): Promise<Bytes> {
+  private fetchAnswerSdpb(): Promise<Buttercup> {
     return new Promise((resolve): void => {
       this.simplePeer.once('signal', (signal: SimplePeerSignalData) => {
-        resolve(Bytes.fromUtf8(signal.sdp))
+        resolve(Buttercup.fromUtf8(signal.sdp))
       })
       this.simplePeer.signal({
         type: 'offer',

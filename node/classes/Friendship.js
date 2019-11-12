@@ -16,7 +16,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Bytes_1 = require("./Bytes");
+var pollenium_buttercup_1 = require("pollenium-buttercup");
 var events_1 = __importDefault(require("events"));
 var Missive_1 = require("./Missive");
 var utils_1 = require("../utils");
@@ -66,7 +66,7 @@ var Friendship = (function (_super) {
             _this.setStatus(FRIENDSHIP_STATUS.CONNECTED);
         });
         this.simplePeer.on('data', function (missiveEncodingBuffer) {
-            var missive = Missive_1.Missive.fromEncoding(_this.client, Bytes_1.Bytes.fromBuffer(missiveEncodingBuffer));
+            var missive = Missive_1.Missive.fromEncoding(_this.client, pollenium_buttercup_1.Buttercup.fromBuffer(missiveEncodingBuffer));
             _this.handleMessage(missive);
         });
         this.simplePeer.once('error', function () {

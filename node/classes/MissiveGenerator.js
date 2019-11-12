@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Bytes_1 = require("./Bytes");
+var pollenium_buttercup_1 = require("pollenium-buttercup");
 var Missive_1 = require("./Missive");
 var utils_1 = require("../utils");
 var missive_1 = require("../templates/missive");
@@ -60,7 +60,7 @@ var MissiveGenerator = (function () {
                 applicationData: this.applicationData.uint8Array
             }
         });
-        return new Bytes_1.Bytes(encoding.slice(0, encoding.length - 32));
+        return new pollenium_buttercup_1.Buttercup(encoding.slice(0, encoding.length - 32));
     };
     MissiveGenerator.prototype.fetchNonce = function (timestamp) {
         var _this = this;
@@ -80,7 +80,7 @@ var MissiveGenerator = (function () {
                             }
                             return [3, 4];
                         case 1:
-                            resolve(Bytes_1.Bytes.fromHex(hashcashResolution.value));
+                            resolve(pollenium_buttercup_1.Buttercup.fromHex(hashcashResolution.value));
                             return [3, 5];
                         case 2:
                             _b = resolve;

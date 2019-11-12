@@ -5,7 +5,7 @@ import { Answer } from './Answer'
 import SimplePeer, { SignalData as SimplePeerSignalData } from 'simple-peer'
 import { getNow, getSimplePeerConfig } from '../utils'
 import delay from 'delay'
-import { Bytes } from './Bytes'
+import { Buttercup } from 'pollenium-buttercup'
 import { Client } from './Client'
 
 export class Extrovert extends Friendship {
@@ -61,9 +61,9 @@ export class Extrovert extends Friendship {
     return this.offerSdpPromise
   }
 
-  private async fetchOfferSdpb(): Promise<Bytes> {
+  private async fetchOfferSdpb(): Promise<Buttercup> {
     const offerSdp = await this.fetchOfferSdp()
-    return Bytes.fromUtf8(offerSdp)
+    return Buttercup.fromUtf8(offerSdp)
   }
 
   async fetchOffer(): Promise<Offer> {
@@ -73,7 +73,7 @@ export class Extrovert extends Friendship {
     )
   }
 
-  async fetchOfferId(): Promise<Bytes> {
+  async fetchOfferId(): Promise<Buttercup> {
     const offer = await this.fetchOffer()
     return offer.getId()
   }

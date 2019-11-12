@@ -1,5 +1,5 @@
 import { Client } from './Client'
-import { Bytes } from './Bytes'
+import { Buttercup } from 'pollenium-buttercup'
 import { Missive, MISSIVE_COVER } from './Missive'
 import { getTimestamp, getNow } from '../utils'
 import { missiveTemplate, MISSIVE_KEY } from '../templates/missive'
@@ -14,10 +14,10 @@ export class MissiveGenerator {
 
   worker: Worker;
 
-  constructor(public client: Client, public applicationId: Bytes, public applicationData: Bytes, public difficulty: number) {
+  constructor(public client: Client, public applicationId: Buttercup, public applicationData: Buttercup, public difficulty: number) {
   }
 
-  private getNoncelessPrehash(timestamp: Bytes): Bytes {
+  private getNoncelessPrehash(timestamp: Buttercup): Buttercup {
     const encoding = missiveTemplate.encode({
       key: MISSIVE_KEY.V0,
       value: {
@@ -28,10 +28,10 @@ export class MissiveGenerator {
         applicationData: this.applicationData.uint8Array
       }
     })
-    return new Bytes(encoding.slice(0, encoding.length - 32))
+    return new Buttercup(encoding.slice(0, encoding.length - 32))
   }
 
-  private fetchNonce(timestamp: Bytes): Promise<Bytes> {
+  private fetchNonce(timestamp: Buttercup): Promise<Buttercup> {
     return new Promise((resolve, reject): void => {
 
       const worker = new this.client.options.Worker(this.client.options.hashcashWorkerUrl, [], {esm: true})
@@ -41,7 +41,7 @@ export class MissiveGenerator {
         const hashcashResolution: HashcashResolution = event.data
         switch(hashcashResolution.key) {
           case HASHCASH_RESOLUTION_KEY.NONCE_HEX:
-            resolve(Bytes.fromHex(hashcashResolution.value))
+            resolve(Buttercup.fromHex(hashcashResolution.value))
             break;
           case HASHCASH_RESOLUTION_KEY.TIMEOUT_ERROR:
             resolve(await this.fetchNonce(timestamp))

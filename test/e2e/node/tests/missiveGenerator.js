@@ -16,8 +16,8 @@ describe('missiveGenerator', () => {
   for (let difficulty = 0; difficulty <= 6; difficulty++) {
     let missive
     it(`should generate missive with difficulty ${difficulty}`, async () => {
-      const applicationId = utils.pollenium.Bytes.random(32)
-      const applicationData = utils.pollenium.Bytes.random(64)
+      const applicationId = utils.pollenium.Buttercup.random(32)
+      const applicationData = utils.pollenium.Buttercup.random(64)
       const missiveGenerator = new utils.pollenium.MissiveGenerator(client, applicationId, applicationData, difficulty)
       missive = await missiveGenerator.fetchMissive()
     })

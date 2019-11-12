@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Bytes_1 = require("./classes/Bytes");
+var pollenium_buttercup_1 = require("pollenium-buttercup");
 var bn_js_1 = __importDefault(require("bn.js"));
 exports.stunServers = [
     'stun.l.google.com:19302',
@@ -34,7 +34,7 @@ function getSimplePeerConfig() {
 }
 exports.getSimplePeerConfig = getSimplePeerConfig;
 function getTimestamp() {
-    return Bytes_1.Bytes.fromNumber(getNow()).getPaddedLeft(5);
+    return pollenium_buttercup_1.Buttercup.fromNumber(getNow()).getPaddedLeft(5);
 }
 exports.getTimestamp = getTimestamp;
 exports.twoBn = new bn_js_1.default(2);
@@ -42,7 +42,7 @@ function getMaxHash(difficulty, cover, applicationDataLength) {
     var powBn = new bn_js_1.default(255 - difficulty);
     var divisor = new bn_js_1.default(cover + applicationDataLength);
     var maxHashBn = exports.twoBn.pow(powBn).divRound(divisor);
-    return Bytes_1.Bytes.fromBn(maxHashBn);
+    return pollenium_buttercup_1.Buttercup.fromBn(maxHashBn);
 }
 exports.getMaxHash = getMaxHash;
 function getNonce(noncelessPrehash, difficulty, cover, applicationDataLength, timeoutAt) {
@@ -51,7 +51,7 @@ function getNonce(noncelessPrehash, difficulty, cover, applicationDataLength, ti
         if (getNow() > timeoutAt) {
             throw new Error('Timeout');
         }
-        var nonce = Bytes_1.Bytes.random(32);
+        var nonce = pollenium_buttercup_1.Buttercup.random(32);
         var prehash = noncelessPrehash.append(nonce);
         var hashBn = prehash.getHash().getBn();
         if (hashBn.lte(maxHashBn)) {

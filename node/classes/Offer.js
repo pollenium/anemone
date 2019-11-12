@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var Bytes_1 = require("./Bytes");
+var pollenium_buttercup_1 = require("pollenium-buttercup");
 var signalingMessage_1 = require("../templates/signalingMessage");
 var Offer = (function () {
     function Offer(clientNonce, sdpb) {
@@ -8,7 +8,7 @@ var Offer = (function () {
         this.sdpb = sdpb;
     }
     Offer.prototype.getEncoding = function () {
-        return new Bytes_1.Bytes(signalingMessage_1.signalingMessageTemplate.encode({
+        return new pollenium_buttercup_1.Buttercup(signalingMessage_1.signalingMessageTemplate.encode({
             key: signalingMessage_1.SIGNALING_MESSAGE_KEY.OFFER,
             value: {
                 clientNonce: this.clientNonce.uint8Array,
@@ -23,7 +23,7 @@ var Offer = (function () {
         return this.clientNonce.getXor(clientNonce);
     };
     Offer.fromHenpojo = function (henpojo) {
-        return new Offer(new Bytes_1.Bytes(henpojo.clientNonce), new Bytes_1.Bytes(henpojo.sdpb));
+        return new Offer(new pollenium_buttercup_1.Buttercup(henpojo.clientNonce), new pollenium_buttercup_1.Buttercup(henpojo.sdpb));
     };
     return Offer;
 }());

@@ -1,7 +1,7 @@
 import { Client } from './Client'
 import { ConstructableWebSocket } from '../interfaces/ConstructableWebSocket'
 import EventEmitter from 'events'
-import { Bytes } from './Bytes'
+import { Buttercup } from 'pollenium-buttercup'
 import { Offer } from './Offer'
 import { FlushOffer } from './FlushOffer'
 import { Answer } from './Answer'
@@ -71,7 +71,7 @@ export class SignalingClient extends EventEmitter {
     }
   }
 
-  async send(bytes: Bytes): Promise<void> {
+  async send(bytes: Buttercup): Promise<void> {
     const wsConnection = await this.fetchConnection()
     wsConnection.send(bytes.getBuffer())
   }

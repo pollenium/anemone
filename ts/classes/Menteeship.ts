@@ -1,7 +1,7 @@
 import EventEmitter from 'events'
 import { connection as WsConnection } from 'websocket'
 import { SignalingServer } from './SignalingServer'
-import { Bytes } from './Bytes'
+import { Buttercup } from 'pollenium-buttercup'
 import { Offer } from './Offer'
 import { Answer } from './Answer'
 import { FlushOffer } from './FlushOffer'
@@ -39,7 +39,7 @@ export class Menteeship extends EventEmitter {
     })
   }
 
-  send(bytes: Bytes): void {
+  send(bytes: Buttercup): void {
     this.wsConnection.sendBytes(bytes.getBuffer())
   }
 

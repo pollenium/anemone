@@ -1,4 +1,4 @@
-import { Bytes } from './Bytes'
+import { Buttercup } from 'pollenium-buttercup'
 import { MISSIVE_KEY, missiveTemplate } from '../templates/missive'
 import { getNow, calculateEra, getMaxHash } from '../utils'
 import { Client } from './Client'
@@ -15,17 +15,17 @@ export class Missive {
   constructor(
     public client: Client,
     public version: MISSIVE_KEY,
-    public timestamp: Bytes,
+    public timestamp: Buttercup,
     public difficulty: number,
-    public nonce: Bytes,
-    public applicationId: Bytes,
-    public applicationData: Bytes
+    public nonce: Buttercup,
+    public applicationId: Buttercup,
+    public applicationData: Buttercup
   ) {
     this.cover = MISSIVE_COVER.V0
   }
 
-  getEncoding(): Bytes {
-    return new Bytes(
+  getEncoding(): Buttercup {
+    return new Buttercup(
       missiveTemplate.encode({
         key: MISSIVE_KEY.V0,
         value: {
@@ -39,7 +39,7 @@ export class Missive {
     )
   }
 
-  getId(): Bytes {
+  getId(): Buttercup {
     return this.getEncoding().getHash()
   }
 
@@ -65,7 +65,7 @@ export class Missive {
     this.client.missiveIsReceivedByIdHexByEra[era][idHex] = true
   }
 
-  getMaxHash(): Bytes {
+  getMaxHash(): Buttercup {
     return getMaxHash(this.difficulty, this.cover, this.applicationData.getLength())
   }
 
@@ -108,11 +108,11 @@ export class Missive {
         return new Missive(
           client,
           henpojo.key,
-          new Bytes(v0Henpojo.timestamp),
+          new Buttercup(v0Henpojo.timestamp),
           v0Henpojo.difficulty[0],
-          new Bytes(v0Henpojo.nonce),
-          new Bytes(v0Henpojo.applicationId),
-          new Bytes(v0Henpojo.applicationData),
+          new Buttercup(v0Henpojo.nonce),
+          new Buttercup(v0Henpojo.applicationId),
+          new Buttercup(v0Henpojo.applicationData),
         )
       }
       default:
@@ -120,7 +120,7 @@ export class Missive {
     }
   }
 
-  static fromEncoding(client: Client, encoding: Bytes): Missive {
+  static fromEncoding(client: Client, encoding: Buttercup): Missive {
     return Missive.fromHenpojo(client, missiveTemplate.decode(encoding.uint8Array))
   }
 

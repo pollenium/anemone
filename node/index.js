@@ -8,10 +8,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var _utils = __importStar(require("./utils"));
+var pollenium_buttercup_1 = require("pollenium-buttercup");
+exports.Buttercup = pollenium_buttercup_1.Buttercup;
 var Client_1 = require("./classes/Client");
 exports.Client = Client_1.Client;
-var Bytes_1 = require("./classes/Bytes");
-exports.Bytes = Bytes_1.Bytes;
 var MissiveGenerator_1 = require("./classes/MissiveGenerator");
 exports.MissiveGenerator = MissiveGenerator_1.MissiveGenerator;
 exports.utils = _utils;

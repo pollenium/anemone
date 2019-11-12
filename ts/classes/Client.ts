@@ -3,7 +3,7 @@ import { Extrovert } from './Extrovert'
 import { Introvert } from './Introvert'
 import { SignalingClient } from './SignalingClient'
 import EventEmitter from 'events'
-import { Bytes } from './Bytes'
+import { Buttercup } from 'pollenium-buttercup'
 import { Offer } from './Offer'
 import { Answer } from './Answer'
 import { FlushOffer } from './FlushOffer'
@@ -16,7 +16,7 @@ export class Client extends EventEmitter {
 
   options: ClientOptions;
 
-  nonce: Bytes;
+  nonce: Buttercup;
 
   signalingClients: SignalingClient[] = [];
 
@@ -48,7 +48,7 @@ export class Client extends EventEmitter {
     this.options = Object.assign(new ClientDefaultOptions, options)
     this.signalTimeoutMs = this.options.signalTimeout * 1000
     this.missiveLatencyToleranceBn = new Bn(this.options.missiveLatencyTolerance)
-    this.nonce = Bytes.random(32)
+    this.nonce = Buttercup.random(32)
     this.bootstrap()
   }
 
@@ -258,7 +258,7 @@ export class Client extends EventEmitter {
     }
   }
 
-  getFriendshipStatusByClientNonce(clientNonce: Bytes): FRIENDSHIP_STATUS {
+  getFriendshipStatusByClientNonce(clientNonce: Buttercup): FRIENDSHIP_STATUS {
     const friendshipStatus = this.friendshipStatusByClientNonceHex[clientNonce.getHex()]
     if (friendshipStatus === undefined) {
       return FRIENDSHIP_STATUS.DEFAULT
@@ -267,7 +267,7 @@ export class Client extends EventEmitter {
 
   }
 
-  getIsConnectableByClientNonce(clientNonce: Bytes): boolean {
+  getIsConnectableByClientNonce(clientNonce: Buttercup): boolean {
     if (clientNonce.equals(this.nonce)) {
       return false
     }
@@ -283,7 +283,7 @@ export class Client extends EventEmitter {
     }
   }
 
-  setFriendshipStatusByClientNonce(clientNonce: Bytes, friendshipStatus: FRIENDSHIP_STATUS): void {
+  setFriendshipStatusByClientNonce(clientNonce: Buttercup, friendshipStatus: FRIENDSHIP_STATUS): void {
     this.friendshipStatusByClientNonceHex[clientNonce.getHex()] = friendshipStatus
   }
 

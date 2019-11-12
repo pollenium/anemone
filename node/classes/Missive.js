@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Bytes_1 = require("./Bytes");
+var pollenium_buttercup_1 = require("pollenium-buttercup");
 var missive_1 = require("../templates/missive");
 var utils_1 = require("../utils");
 var bn_js_1 = __importDefault(require("bn.js"));
@@ -23,7 +23,7 @@ var Missive = (function () {
         this.cover = MISSIVE_COVER.V0;
     }
     Missive.prototype.getEncoding = function () {
-        return new Bytes_1.Bytes(missive_1.missiveTemplate.encode({
+        return new pollenium_buttercup_1.Buttercup(missive_1.missiveTemplate.encode({
             key: missive_1.MISSIVE_KEY.V0,
             value: {
                 timestamp: this.timestamp.uint8Array,
@@ -94,7 +94,7 @@ var Missive = (function () {
         switch (henpojo.key) {
             case missive_1.MISSIVE_KEY.V0: {
                 var v0Henpojo = henpojo.value;
-                return new Missive(client, henpojo.key, new Bytes_1.Bytes(v0Henpojo.timestamp), v0Henpojo.difficulty[0], new Bytes_1.Bytes(v0Henpojo.nonce), new Bytes_1.Bytes(v0Henpojo.applicationId), new Bytes_1.Bytes(v0Henpojo.applicationData));
+                return new Missive(client, henpojo.key, new pollenium_buttercup_1.Buttercup(v0Henpojo.timestamp), v0Henpojo.difficulty[0], new pollenium_buttercup_1.Buttercup(v0Henpojo.nonce), new pollenium_buttercup_1.Buttercup(v0Henpojo.applicationId), new pollenium_buttercup_1.Buttercup(v0Henpojo.applicationData));
             }
             default:
                 throw new Error('Unhandled MISSIVE_KEY');

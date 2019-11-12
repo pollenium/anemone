@@ -1,5 +1,5 @@
 import { Client } from './Client'
-import { Bytes } from './Bytes'
+import { Buttercup } from 'pollenium-buttercup'
 import EventEmitter from 'events'
 import { Missive } from './Missive'
 import { getNow } from '../utils'
@@ -16,7 +16,7 @@ export class Friendship extends EventEmitter {
 
   status: FRIENDSHIP_STATUS = FRIENDSHIP_STATUS.DEFAULT;
 
-  peerClientNonce: Bytes;
+  peerClientNonce: Buttercup;
 
   createdAt: number;
 
@@ -38,7 +38,7 @@ export class Friendship extends EventEmitter {
     this.client.emit('friendship.status', this)
   }
 
-  getDistance(): Bytes {
+  getDistance(): Buttercup {
     if (this.peerClientNonce === undefined) {
       throw new Error('peerClientNonce not yet established')
     }
@@ -56,7 +56,7 @@ export class Friendship extends EventEmitter {
       this.setStatus(FRIENDSHIP_STATUS.CONNECTED)
     })
     this.simplePeer.on('data', (missiveEncodingBuffer: Buffer) => {
-      const missive = Missive.fromEncoding(this.client, Bytes.fromBuffer(missiveEncodingBuffer))
+      const missive = Missive.fromEncoding(this.client, Buttercup.fromBuffer(missiveEncodingBuffer))
       this.handleMessage(missive)
     })
 
@@ -95,7 +95,7 @@ export class Friendship extends EventEmitter {
     return true
   }
 
-  send(bytes: Bytes): void {
+  send(bytes: Buttercup): void {
     if (!this.getIsSendable()) {
       throw new Error('friendship not sendable')
     }

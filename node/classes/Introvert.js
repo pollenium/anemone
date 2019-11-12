@@ -57,7 +57,7 @@ var Answer_1 = require("./Answer");
 var simple_peer_1 = __importDefault(require("simple-peer"));
 var utils_1 = require("../utils");
 var delay_1 = __importDefault(require("delay"));
-var Bytes_1 = require("./Bytes");
+var pollenium_buttercup_1 = require("pollenium-buttercup");
 var Introvert = (function (_super) {
     __extends(Introvert, _super);
     function Introvert(client, offer) {
@@ -76,7 +76,7 @@ var Introvert = (function (_super) {
         var _this = this;
         return new Promise(function (resolve) {
             _this.simplePeer.once('signal', function (signal) {
-                resolve(Bytes_1.Bytes.fromUtf8(signal.sdp));
+                resolve(pollenium_buttercup_1.Buttercup.fromUtf8(signal.sdp));
             });
             _this.simplePeer.signal({
                 type: 'offer',

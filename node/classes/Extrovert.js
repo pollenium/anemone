@@ -58,7 +58,7 @@ var FlushOffer_1 = require("./FlushOffer");
 var simple_peer_1 = __importDefault(require("simple-peer"));
 var utils_1 = require("../utils");
 var delay_1 = __importDefault(require("delay"));
-var Bytes_1 = require("./Bytes");
+var pollenium_buttercup_1 = require("pollenium-buttercup");
 var Extrovert = (function (_super) {
     __extends(Extrovert, _super);
     function Extrovert(client) {
@@ -137,7 +137,7 @@ var Extrovert = (function (_super) {
                     case 0: return [4, this.fetchOfferSdp()];
                     case 1:
                         offerSdp = _a.sent();
-                        return [2, Bytes_1.Bytes.fromUtf8(offerSdp)];
+                        return [2, pollenium_buttercup_1.Buttercup.fromUtf8(offerSdp)];
                 }
             });
         });

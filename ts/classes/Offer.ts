@@ -1,11 +1,11 @@
-import { Bytes } from './Bytes'
+import { Buttercup } from 'pollenium-buttercup'
 import { SIGNALING_MESSAGE_KEY, signalingMessageTemplate } from '../templates/signalingMessage'
 
 export class Offer {
-  constructor(public clientNonce: Bytes, public sdpb: Bytes) {}
+  constructor(public clientNonce: Buttercup, public sdpb: Buttercup) {}
 
-  getEncoding(): Bytes {
-    return new Bytes(
+  getEncoding(): Buttercup {
+    return new Buttercup(
       signalingMessageTemplate.encode({
         key: SIGNALING_MESSAGE_KEY.OFFER,
         value: {
@@ -16,18 +16,18 @@ export class Offer {
     )
   }
 
-  getId(): Bytes {
+  getId(): Buttercup {
     return this.getEncoding().getHash()
   }
 
-  getDistance(clientNonce: Bytes): Bytes {
+  getDistance(clientNonce: Buttercup): Buttercup {
     return this.clientNonce.getXor(clientNonce)
   }
 
   static fromHenpojo(henpojo: any): Offer {
     return new Offer(
-      new Bytes(henpojo.clientNonce),
-      new Bytes(henpojo.sdpb)
+      new Buttercup(henpojo.clientNonce),
+      new Buttercup(henpojo.sdpb)
     )
   }
 }

@@ -4,7 +4,7 @@ const getMaxHash = utils.pollenium.utils.getMaxHash
 const getNonce = utils.pollenium.utils.getNonce
 const getNow = utils.pollenium.utils.getNow
 
-const noncelessPrehash = utils.pollenium.Bytes.random(64)
+const noncelessPrehash = utils.pollenium.Buttercup.random(64)
 
 describe('getNonce (non-worker)', () => {
   for (let difficulty = 0; difficulty <= 8; difficulty++) {

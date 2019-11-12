@@ -1,4 +1,4 @@
-import { Bytes } from './classes/Bytes'
+import { Buttercup } from 'pollenium-buttercup'
 import { getNonce } from './utils'
 import { HASHCASH_RESOLUTION_KEY } from './interfaces/HashcashResolution'
 
@@ -7,7 +7,7 @@ import { HASHCASH_RESOLUTION_KEY } from './interfaces/HashcashResolution'
 onmessage = (event): void => {
   const hashcashRequest = event.data
 
-  const noncelessPrehash = Bytes.fromHex(hashcashRequest.noncelessPrehashHex)
+  const noncelessPrehash = Buttercup.fromHex(hashcashRequest.noncelessPrehashHex)
 
   try {
     const nonce = getNonce(

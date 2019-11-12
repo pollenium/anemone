@@ -57,7 +57,7 @@ var Extrovert_1 = require("./Extrovert");
 var Introvert_1 = require("./Introvert");
 var SignalingClient_1 = require("./SignalingClient");
 var events_1 = __importDefault(require("events"));
-var Bytes_1 = require("./Bytes");
+var pollenium_buttercup_1 = require("pollenium-buttercup");
 var delay_1 = __importDefault(require("delay"));
 var bn_js_1 = __importDefault(require("bn.js"));
 var ClientDefaultOptions_1 = require("./ClientDefaultOptions");
@@ -78,7 +78,7 @@ var Client = (function (_super) {
         _this.options = Object.assign(new ClientDefaultOptions_1.ClientDefaultOptions, options);
         _this.signalTimeoutMs = _this.options.signalTimeout * 1000;
         _this.missiveLatencyToleranceBn = new bn_js_1.default(_this.options.missiveLatencyTolerance);
-        _this.nonce = Bytes_1.Bytes.random(32);
+        _this.nonce = pollenium_buttercup_1.Buttercup.random(32);
         _this.bootstrap();
         return _this;
     }

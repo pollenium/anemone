@@ -21,8 +21,8 @@ describe('missives', () => {
       const client = clients[Math.floor(Math.random() * clients.length)]
       const missiveGenerator = new utils.pollenium.MissiveGenerator(
         client,
-        utils.pollenium.Bytes.random(32),
-        utils.pollenium.Bytes.random(32),
+        utils.pollenium.Buttercup.random(32),
+        utils.pollenium.Buttercup.random(32),
         1
       )
       const missive = await missiveGenerator.fetchMissive()
