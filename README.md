@@ -45,7 +45,7 @@ const client = new pollenium.Client({
 After creating a client, the client will automatically create friendship. You can monitor progress by listening to the `friendship.status` event
 
 ````
-client.on('friendship.status', (friendship) => {
+client.friendshipStatusSnowdrop.addHandle((friendship) => {
   ...
 })
 ````
