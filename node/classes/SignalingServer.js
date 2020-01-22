@@ -1,17 +1,4 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -26,17 +13,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var websocket_1 = require("websocket");
 var http = __importStar(require("http"));
 var Menteeship_1 = require("./Menteeship");
-var events_1 = __importDefault(require("events"));
 var server_destroy_1 = __importDefault(require("server-destroy"));
-var SignalingServer = (function (_super) {
-    __extends(SignalingServer, _super);
+var SignalingServer = (function () {
     function SignalingServer(port) {
-        var _this = _super.call(this) || this;
-        _this.port = port;
-        _this.menteeships = [];
-        _this.menteeshipsByOfferIdHex = {};
-        _this.bootstrap();
-        return _this;
+        this.port = port;
+        this.menteeships = [];
+        this.menteeshipsByOfferIdHex = {};
+        this.bootstrap();
     }
     SignalingServer.prototype.bootstrap = function () {
         var _this = this;
@@ -53,7 +36,7 @@ var SignalingServer = (function (_super) {
         this.wsServer.on('connect', function (wsConnection) {
             var menteeship = new Menteeship_1.Menteeship(_this, wsConnection);
             _this.menteeships.push(menteeship);
-            menteeship.on('offer', function (offer) {
+            menteeship.offerSnowdrop.addHandle(function (offer) {
                 var offerIdHex = offer.getId().getHex();
                 _this.menteeshipsByOfferIdHex[offerIdHex] = menteeship;
                 _this.menteeships.sort(function () {
@@ -64,12 +47,11 @@ var SignalingServer = (function (_super) {
                     }
                     _menteeship.sendOffer(offer);
                 });
-                _this.emit('offer', offer);
             });
-            menteeship.on('answer', function (answer) {
+            menteeship.answerSnowdrop.addHandle(function (answer) {
                 _this.menteeshipsByOfferIdHex[answer.offerId.getHex()].sendAnswer(answer);
             });
-            menteeship.on('flushOffer', function (flushOffer) {
+            menteeship.flushOfferSnowdrop.addHandle(function (flushOffer) {
                 _this.menteeships.sort(function () {
                     return Math.random() - .5;
                 }).forEach(function (_menteeship) {
@@ -83,6 +65,6 @@ var SignalingServer = (function (_super) {
         this.httpServer.destroy();
     };
     return SignalingServer;
-}(events_1.default));
+}());
 exports.SignalingServer = SignalingServer;
 //# sourceMappingURL=SignalingServer.js.map

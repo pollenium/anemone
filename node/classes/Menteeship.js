@@ -1,17 +1,4 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -48,23 +35,20 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var events_1 = __importDefault(require("events"));
 var Offer_1 = require("./Offer");
 var Answer_1 = require("./Answer");
 var FlushOffer_1 = require("./FlushOffer");
 var signalingMessage_1 = require("../templates/signalingMessage");
-var Menteeship = (function (_super) {
-    __extends(Menteeship, _super);
+var pollenium_snowdrop_1 = require("pollenium-snowdrop");
+var Menteeship = (function () {
     function Menteeship(signalingServer, wsConnection) {
-        var _this = _super.call(this) || this;
-        _this.signalingServer = signalingServer;
-        _this.wsConnection = wsConnection;
-        _this.bootstrapPromise = _this.bootstrap();
-        return _this;
+        this.signalingServer = signalingServer;
+        this.wsConnection = wsConnection;
+        this.offerSnowdrop = new pollenium_snowdrop_1.Snowdrop();
+        this.answerSnowdrop = new pollenium_snowdrop_1.Snowdrop();
+        this.flushOfferSnowdrop = new pollenium_snowdrop_1.Snowdrop();
+        this.bootstrapPromise = this.bootstrap();
     }
     Menteeship.prototype.bootstrap = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -77,13 +61,13 @@ var Menteeship = (function (_super) {
                     var signalingMessageHenpojo = signalingMessage_1.signalingMessageTemplate.decode(new Uint8Array(message.binaryData));
                     switch (signalingMessageHenpojo.key) {
                         case signalingMessage_1.SIGNALING_MESSAGE_KEY.OFFER:
-                            _this.emit('offer', Offer_1.Offer.fromHenpojo(signalingMessageHenpojo.value));
+                            _this.offerSnowdrop.emitIfHandle(Offer_1.Offer.fromHenpojo(signalingMessageHenpojo.value));
                             break;
                         case signalingMessage_1.SIGNALING_MESSAGE_KEY.ANSWER:
-                            _this.emit('answer', Answer_1.Answer.fromHenpojo(signalingMessageHenpojo.value));
+                            _this.answerSnowdrop.emitIfHandle(Answer_1.Answer.fromHenpojo(signalingMessageHenpojo.value));
                             break;
                         case signalingMessage_1.SIGNALING_MESSAGE_KEY.FLUSH_OFFER:
-                            _this.emit('flushOffer', FlushOffer_1.FlushOffer.fromHenpojo(signalingMessageHenpojo.value));
+                            _this.flushOfferSnowdrop.emitIfHandle(FlushOffer_1.FlushOffer.fromHenpojo(signalingMessageHenpojo.value));
                             break;
                         default:
                             throw new Error('Unhandled SIGNALING_MESSAGE_KEY');
@@ -133,6 +117,6 @@ var Menteeship = (function (_super) {
         });
     };
     return Menteeship;
-}(events_1.default));
+}());
 exports.Menteeship = Menteeship;
 //# sourceMappingURL=Menteeship.js.map

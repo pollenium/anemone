@@ -1,17 +1,4 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -56,31 +43,32 @@ var Friendship_1 = require("./Friendship");
 var Extrovert_1 = require("./Extrovert");
 var Introvert_1 = require("./Introvert");
 var SignalingClient_1 = require("./SignalingClient");
-var events_1 = __importDefault(require("events"));
 var pollenium_buttercup_1 = require("pollenium-buttercup");
 var delay_1 = __importDefault(require("delay"));
 var bn_js_1 = __importDefault(require("bn.js"));
 var ClientDefaultOptions_1 = require("./ClientDefaultOptions");
-var Client = (function (_super) {
-    __extends(Client, _super);
+var pollenium_snowdrop_1 = require("pollenium-snowdrop");
+var Client = (function () {
     function Client(options) {
-        var _this = _super.call(this) || this;
-        _this.signalingClients = [];
-        _this.extroverts = [];
-        _this.introverts = [];
-        _this.offers = [];
-        _this.answer = [];
-        _this.signalingClientsByOfferIdHex = {};
-        _this.friendshipStatusByClientNonceHex = {};
-        _this.offersReceivedByClientNonceHex = {};
-        _this.isFlushedOfferByOfferIdHex = {};
-        _this.missiveIsReceivedByIdHexByEra = {};
-        _this.options = Object.assign(new ClientDefaultOptions_1.ClientDefaultOptions, options);
-        _this.signalTimeoutMs = _this.options.signalTimeout * 1000;
-        _this.missiveLatencyToleranceBn = new bn_js_1.default(_this.options.missiveLatencyTolerance);
-        _this.nonce = pollenium_buttercup_1.Buttercup.random(32);
-        _this.bootstrap();
-        return _this;
+        this.signalingClients = [];
+        this.extroverts = [];
+        this.introverts = [];
+        this.offers = [];
+        this.answer = [];
+        this.signalingClientsByOfferIdHex = {};
+        this.friendshipStatusByClientNonceHex = {};
+        this.offersReceivedByClientNonceHex = {};
+        this.isFlushedOfferByOfferIdHex = {};
+        this.missiveIsReceivedByIdHexByEra = {};
+        this.friendshipStatusSnowdrop = new pollenium_snowdrop_1.Snowdrop();
+        this.extrovertSnowdrop = new pollenium_snowdrop_1.Snowdrop();
+        this.introvertSnowdrop = new pollenium_snowdrop_1.Snowdrop();
+        this.missiveSnowdrop = new pollenium_snowdrop_1.Snowdrop();
+        this.options = Object.assign(new ClientDefaultOptions_1.ClientDefaultOptions, options);
+        this.signalTimeoutMs = this.options.signalTimeout * 1000;
+        this.missiveLatencyToleranceBn = new bn_js_1.default(this.options.missiveLatencyTolerance);
+        this.nonce = pollenium_buttercup_1.Buttercup.random(32);
+        this.bootstrap();
     }
     Client.prototype.bootstrap = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -143,14 +131,12 @@ var Client = (function (_super) {
                         if (offer2 === null) {
                             extrovert = new Extrovert_1.Extrovert(this);
                             this.extroverts.push(extrovert);
-                            this.emit('extrovert', extrovert);
-                            this.emit('friendship', extrovert);
+                            this.extrovertSnowdrop.emitIfHandle(extrovert);
                         }
                         else {
                             introvert = new Introvert_1.Introvert(this, offer2);
                             this.introverts.push(introvert);
-                            this.emit('introvert', introvert);
-                            this.emit('friendship', introvert);
+                            this.introvertSnowdrop.emitIfHandle(introvert);
                         }
                         return [2];
                 }
@@ -161,13 +147,13 @@ var Client = (function (_super) {
         var _this = this;
         var signalingClient = new SignalingClient_1.SignalingClient(this, signalingServerUrl);
         this.signalingClients.push(signalingClient);
-        signalingClient.on('offer', function (offer) {
+        signalingClient.offerSnowdrop.addHandle(function (offer) {
             _this.handleOffer(signalingClient, offer);
         });
-        signalingClient.on('answer', function (answer) {
+        signalingClient.answerSnowdrop.addHandle(function (answer) {
             _this.handleAnswer(signalingClient, answer);
         });
-        signalingClient.on('flushOffer', function (flushOffer) {
+        signalingClient.flushOfferSnowdrop.addHandle(function (flushOffer) {
             _this.handleFlushOffer(signalingClient, flushOffer);
         });
     };
@@ -348,6 +334,6 @@ var Client = (function (_super) {
         return true;
     };
     return Client;
-}(events_1.default));
+}());
 exports.Client = Client;
 //# sourceMappingURL=Client.js.map

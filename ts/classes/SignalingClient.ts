@@ -1,20 +1,28 @@
 import { Client } from './Client'
 import { ConstructableWebSocket } from '../interfaces/ConstructableWebSocket'
-import EventEmitter from 'events'
 import { Buttercup } from 'pollenium-buttercup'
 import { Offer } from './Offer'
 import { FlushOffer } from './FlushOffer'
 import { Answer } from './Answer'
 import { SIGNALING_MESSAGE_KEY, signalingMessageTemplate } from '../templates/signalingMessage'
+import { Snowdrop } from 'pollenium-snowdrop'
 
-export class SignalingClient extends EventEmitter {
+export class SignalingClient {
 
   bootstrapPromise: Promise<void>;
 
   wsConnectionPromise: Promise<ConstructableWebSocket>;
 
+  readonly offerSnowdrop: Snowdrop<Offer> = new Snowdrop<Offer>();
+
+  readonly answerSnowdrop: Snowdrop<Answer> = new Snowdrop<Answer>();
+
+  readonly flushOfferSnowdrop: Snowdrop<FlushOffer> = new Snowdrop<FlushOffer>();
+
+  readonly closeSnowdrop: Snowdrop<void> = new Snowdrop<void>();
+
+
   constructor(public client: Client, public signalingServerUrl: string) {
-    super()
     this.fetchConnection()
   }
 
@@ -40,7 +48,7 @@ export class SignalingClient extends EventEmitter {
 
       wsConnection.onclose = (): void => {
         delete this.wsConnectionPromise
-        this.emit('close')
+        this.closeSnowdrop.emitIfHandle()
       }
 
       wsConnection.onmessage = this.handleWsConnectionMessage.bind(this)
@@ -55,15 +63,15 @@ export class SignalingClient extends EventEmitter {
     switch(signalingMessageHenpojo.key) {
       case SIGNALING_MESSAGE_KEY.OFFER: {
         const offer = Offer.fromHenpojo(signalingMessageHenpojo.value)
-        this.emit('offer', offer)
+        this.offerSnowdrop.emitIfHandle(offer)
         break;
       }
       case SIGNALING_MESSAGE_KEY.ANSWER: {
-        this.emit('answer', Answer.fromHenpojo(signalingMessageHenpojo.value))
+        this.answerSnowdrop.emitIfHandle(Answer.fromHenpojo(signalingMessageHenpojo.value))
         break;
       }
       case SIGNALING_MESSAGE_KEY.FLUSH_OFFER: {
-        this.emit('flushOffer', FlushOffer.fromHenpojo(signalingMessageHenpojo.value))
+        this.flushOfferSnowdrop.emitIfHandle(FlushOffer.fromHenpojo(signalingMessageHenpojo.value))
         break;
       }
       default:

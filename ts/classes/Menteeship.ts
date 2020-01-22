@@ -1,4 +1,3 @@
-import EventEmitter from 'events'
 import { connection as WsConnection } from 'websocket'
 import { SignalingServer } from './SignalingServer'
 import { Buttercup } from 'pollenium-buttercup'
@@ -6,13 +5,19 @@ import { Offer } from './Offer'
 import { Answer } from './Answer'
 import { FlushOffer } from './FlushOffer'
 import { SIGNALING_MESSAGE_KEY, signalingMessageTemplate } from '../templates/signalingMessage'
+import { Snowdrop } from 'pollenium-snowdrop'
 
-export class Menteeship extends EventEmitter {
+export class Menteeship {
 
   bootstrapPromise: Promise<void>;
 
+  readonly offerSnowdrop: Snowdrop<Offer> = new Snowdrop<Offer>();
+
+  readonly answerSnowdrop: Snowdrop<Answer> = new Snowdrop<Answer>();
+
+  readonly flushOfferSnowdrop: Snowdrop<FlushOffer> = new Snowdrop<FlushOffer>();
+
   constructor(public signalingServer: SignalingServer, public wsConnection: WsConnection) {
-    super()
     this.bootstrapPromise = this.bootstrap()
   }
 
@@ -25,13 +30,13 @@ export class Menteeship extends EventEmitter {
 
       switch(signalingMessageHenpojo.key) {
         case SIGNALING_MESSAGE_KEY.OFFER:
-          this.emit('offer', Offer.fromHenpojo(signalingMessageHenpojo.value))
+          this.offerSnowdrop.emitIfHandle(Offer.fromHenpojo(signalingMessageHenpojo.value))
           break;
         case SIGNALING_MESSAGE_KEY.ANSWER:
-          this.emit('answer', Answer.fromHenpojo(signalingMessageHenpojo.value))
+          this.answerSnowdrop.emitIfHandle(Answer.fromHenpojo(signalingMessageHenpojo.value))
           break;
         case SIGNALING_MESSAGE_KEY.FLUSH_OFFER:
-          this.emit('flushOffer', FlushOffer.fromHenpojo(signalingMessageHenpojo.value))
+          this.flushOfferSnowdrop.emitIfHandle(FlushOffer.fromHenpojo(signalingMessageHenpojo.value))
           break;
         default:
           throw new Error('Unhandled SIGNALING_MESSAGE_KEY')

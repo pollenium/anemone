@@ -2,7 +2,6 @@ import { Friendship, FRIENDSHIP_STATUS } from './Friendship'
 import { Extrovert } from './Extrovert'
 import { Introvert } from './Introvert'
 import { SignalingClient } from './SignalingClient'
-import EventEmitter from 'events'
 import { Buttercup } from 'pollenium-buttercup'
 import { Offer } from './Offer'
 import { Answer } from './Answer'
@@ -11,8 +10,10 @@ import { ClientOptions } from '../interfaces/ClientOptions'
 import delay from 'delay'
 import Bn from 'bn.js'
 import { ClientDefaultOptions } from './ClientDefaultOptions'
+import { Snowdrop } from 'pollenium-snowdrop'
+import { Missive } from './Missive'
 
-export class Client extends EventEmitter {
+export class Client {
 
   options: ClientOptions;
 
@@ -42,9 +43,16 @@ export class Client extends EventEmitter {
 
   missiveLatencyToleranceBn: Bn;
 
+  readonly friendshipStatusSnowdrop: Snowdrop<Friendship> = new Snowdrop<Friendship>();
+
+  readonly extrovertSnowdrop: Snowdrop<Extrovert> = new Snowdrop<Extrovert>();
+
+  readonly introvertSnowdrop: Snowdrop<Introvert> = new Snowdrop<Introvert>();
+
+  readonly missiveSnowdrop: Snowdrop<Missive> = new Snowdrop<Missive>();
+
 
   constructor(options: ClientOptions) {
-    super()
     this.options = Object.assign(new ClientDefaultOptions, options)
     this.signalTimeoutMs = this.options.signalTimeout * 1000
     this.missiveLatencyToleranceBn = new Bn(this.options.missiveLatencyTolerance)
@@ -94,13 +102,11 @@ export class Client extends EventEmitter {
     if (offer2 === null) {
       const extrovert = new Extrovert(this)
       this.extroverts.push(extrovert)
-      this.emit('extrovert', extrovert)
-      this.emit('friendship', extrovert)
+      this.extrovertSnowdrop.emitIfHandle(extrovert)
     } else {
       const introvert = new Introvert(this, offer2)
       this.introverts.push(introvert)
-      this.emit('introvert', introvert)
-      this.emit('friendship', introvert)
+      this.introvertSnowdrop.emitIfHandle(introvert)
     }
 
   }
@@ -109,15 +115,15 @@ export class Client extends EventEmitter {
     const signalingClient = new SignalingClient(this, signalingServerUrl)
     this.signalingClients.push(signalingClient)
 
-    signalingClient.on('offer', (offer) => {
+    signalingClient.offerSnowdrop.addHandle((offer) => {
       this.handleOffer(signalingClient, offer)
     })
 
-    signalingClient.on('answer', (answer) => {
+    signalingClient.answerSnowdrop.addHandle((answer) => {
       this.handleAnswer(signalingClient, answer)
     })
 
-    signalingClient.on('flushOffer', (flushOffer) => {
+    signalingClient.flushOfferSnowdrop.addHandle((flushOffer) => {
       this.handleFlushOffer(signalingClient, flushOffer)
     })
 

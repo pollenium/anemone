@@ -1,9 +1,9 @@
 import { Client } from './Client'
 import { Buttercup } from 'pollenium-buttercup'
-import EventEmitter from 'events'
 import { Missive } from './Missive'
 import { getNow } from '../utils'
 import { SimplePeer } from 'simple-peer'
+import { Snowdrop } from 'pollenium-snowdrop'
 
 export enum FRIENDSHIP_STATUS {
   DEFAULT = 0,
@@ -12,7 +12,7 @@ export enum FRIENDSHIP_STATUS {
   DESTROYED = 3,
 }
 
-export class Friendship extends EventEmitter {
+export class Friendship {
 
   status: FRIENDSHIP_STATUS = FRIENDSHIP_STATUS.DEFAULT;
 
@@ -20,8 +20,9 @@ export class Friendship extends EventEmitter {
 
   createdAt: number;
 
+  readonly statusSnowdrop: Snowdrop<Friendship> = new Snowdrop<Friendship>()
+
   constructor(public client: Client, public simplePeer: SimplePeer) {
-    super()
     this.createdAt = getNow()
     this.setSimplePeerListeners()
   }
@@ -34,8 +35,8 @@ export class Friendship extends EventEmitter {
     if (this.peerClientNonce) {
       this.client.setFriendshipStatusByClientNonce(this.peerClientNonce, status)
     }
-    this.emit('status', status)
-    this.client.emit('friendship.status', this)
+    this.statusSnowdrop.emitIfHandle(this)
+    this.client.friendshipStatusSnowdrop.emitIfHandle(this)
   }
 
   getDistance(): Buttercup {
@@ -73,10 +74,6 @@ export class Friendship extends EventEmitter {
       this.destroySimplePeer()
     }
     this.setStatus(FRIENDSHIP_STATUS.DESTROYED)
-    setTimeout(() => {
-      // keep async so that client can listen for destroy event
-      this.removeAllListeners()
-    })
     this.client.createFriendship()
   }
 
@@ -112,7 +109,7 @@ export class Friendship extends EventEmitter {
     }
 
     missive.markIsReceived()
-    this.client.emit('friendship.missive', missive)
+    this.client.missiveSnowdrop.emitIfHandle(missive)
     this.client.getFriendships().forEach((friendship) => {
       if (friendship === this) {
         return

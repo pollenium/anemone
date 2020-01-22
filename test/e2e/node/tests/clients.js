@@ -70,7 +70,7 @@ describe('clients', () => {
         signalingServerUrls: params.signalingServerPorts.map((port) => {
           return `ws://localhost:${port}`
         }),
-        bootstrapOffersTimeout: (i % 2 === 0) ? 0 : 5,
+        bootstrapOffersTimeout: (i % 2 === 0) ? 5 : 2,
         signalTimeout: 5, // utils.isBrowser ? 5 : 2,
         friendshipsMax: params.friendshipsCount,
         Worker: utils.Worker,
@@ -100,7 +100,6 @@ describe('clients', () => {
     }
 
     if (getIsFullyConnected()) {
-      console.log('started fully connected')
       done()
     }
 
@@ -110,14 +109,14 @@ describe('clients', () => {
       }
 
       clients.forEach((client) => {
-        client.removeListener('friendship.status', onFriendshipStatus)
+        client.friendshipStatusSnowdrop.removeAllHandles()
       })
       clearInterval(interval)
       done()
     }
 
     clients.forEach((client) => {
-      client.on('friendship.status', onFriendshipStatus)
+      client.friendshipStatusSnowdrop.addHandle(onFriendshipStatus)
     })
 
 

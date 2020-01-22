@@ -1,17 +1,4 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -48,23 +35,21 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var events_1 = __importDefault(require("events"));
 var Offer_1 = require("./Offer");
 var FlushOffer_1 = require("./FlushOffer");
 var Answer_1 = require("./Answer");
 var signalingMessage_1 = require("../templates/signalingMessage");
-var SignalingClient = (function (_super) {
-    __extends(SignalingClient, _super);
+var pollenium_snowdrop_1 = require("pollenium-snowdrop");
+var SignalingClient = (function () {
     function SignalingClient(client, signalingServerUrl) {
-        var _this = _super.call(this) || this;
-        _this.client = client;
-        _this.signalingServerUrl = signalingServerUrl;
-        _this.fetchConnection();
-        return _this;
+        this.client = client;
+        this.signalingServerUrl = signalingServerUrl;
+        this.offerSnowdrop = new pollenium_snowdrop_1.Snowdrop();
+        this.answerSnowdrop = new pollenium_snowdrop_1.Snowdrop();
+        this.flushOfferSnowdrop = new pollenium_snowdrop_1.Snowdrop();
+        this.closeSnowdrop = new pollenium_snowdrop_1.Snowdrop();
+        this.fetchConnection();
     }
     SignalingClient.prototype.fetchConnection = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -84,7 +69,7 @@ var SignalingClient = (function (_super) {
                     };
                     wsConnection.onclose = function () {
                         delete _this.wsConnectionPromise;
-                        _this.emit('close');
+                        _this.closeSnowdrop.emitIfHandle();
                     };
                     wsConnection.onmessage = _this.handleWsConnectionMessage.bind(_this);
                 });
@@ -97,15 +82,15 @@ var SignalingClient = (function (_super) {
         switch (signalingMessageHenpojo.key) {
             case signalingMessage_1.SIGNALING_MESSAGE_KEY.OFFER: {
                 var offer = Offer_1.Offer.fromHenpojo(signalingMessageHenpojo.value);
-                this.emit('offer', offer);
+                this.offerSnowdrop.emitIfHandle(offer);
                 break;
             }
             case signalingMessage_1.SIGNALING_MESSAGE_KEY.ANSWER: {
-                this.emit('answer', Answer_1.Answer.fromHenpojo(signalingMessageHenpojo.value));
+                this.answerSnowdrop.emitIfHandle(Answer_1.Answer.fromHenpojo(signalingMessageHenpojo.value));
                 break;
             }
             case signalingMessage_1.SIGNALING_MESSAGE_KEY.FLUSH_OFFER: {
-                this.emit('flushOffer', FlushOffer_1.FlushOffer.fromHenpojo(signalingMessageHenpojo.value));
+                this.flushOfferSnowdrop.emitIfHandle(FlushOffer_1.FlushOffer.fromHenpojo(signalingMessageHenpojo.value));
                 break;
             }
             default:
@@ -163,6 +148,6 @@ var SignalingClient = (function (_super) {
         });
     };
     return SignalingClient;
-}(events_1.default));
+}());
 exports.SignalingClient = SignalingClient;
 //# sourceMappingURL=SignalingClient.js.map

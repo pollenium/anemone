@@ -1,25 +1,9 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_buttercup_1 = require("pollenium-buttercup");
-var events_1 = __importDefault(require("events"));
 var Missive_1 = require("./Missive");
 var utils_1 = require("../utils");
+var pollenium_snowdrop_1 = require("pollenium-snowdrop");
 var FRIENDSHIP_STATUS;
 (function (FRIENDSHIP_STATUS) {
     FRIENDSHIP_STATUS[FRIENDSHIP_STATUS["DEFAULT"] = 0] = "DEFAULT";
@@ -27,16 +11,14 @@ var FRIENDSHIP_STATUS;
     FRIENDSHIP_STATUS[FRIENDSHIP_STATUS["CONNECTED"] = 2] = "CONNECTED";
     FRIENDSHIP_STATUS[FRIENDSHIP_STATUS["DESTROYED"] = 3] = "DESTROYED";
 })(FRIENDSHIP_STATUS = exports.FRIENDSHIP_STATUS || (exports.FRIENDSHIP_STATUS = {}));
-var Friendship = (function (_super) {
-    __extends(Friendship, _super);
+var Friendship = (function () {
     function Friendship(client, simplePeer) {
-        var _this = _super.call(this) || this;
-        _this.client = client;
-        _this.simplePeer = simplePeer;
-        _this.status = FRIENDSHIP_STATUS.DEFAULT;
-        _this.createdAt = utils_1.getNow();
-        _this.setSimplePeerListeners();
-        return _this;
+        this.client = client;
+        this.simplePeer = simplePeer;
+        this.status = FRIENDSHIP_STATUS.DEFAULT;
+        this.statusSnowdrop = new pollenium_snowdrop_1.Snowdrop();
+        this.createdAt = utils_1.getNow();
+        this.setSimplePeerListeners();
     }
     Friendship.prototype.setStatus = function (status) {
         if (this.status !== undefined && status <= this.status) {
@@ -46,8 +28,8 @@ var Friendship = (function (_super) {
         if (this.peerClientNonce) {
             this.client.setFriendshipStatusByClientNonce(this.peerClientNonce, status);
         }
-        this.emit('status', status);
-        this.client.emit('friendship.status', this);
+        this.statusSnowdrop.emitIfHandle(this);
+        this.client.friendshipStatusSnowdrop.emitIfHandle(this);
     };
     Friendship.prototype.getDistance = function () {
         if (this.peerClientNonce === undefined) {
@@ -77,14 +59,10 @@ var Friendship = (function (_super) {
         });
     };
     Friendship.prototype.destroy = function () {
-        var _this = this;
         if (this.simplePeer) {
             this.destroySimplePeer();
         }
         this.setStatus(FRIENDSHIP_STATUS.DESTROYED);
-        setTimeout(function () {
-            _this.removeAllListeners();
-        });
         this.client.createFriendship();
     };
     Friendship.prototype.destroySimplePeer = function () {
@@ -115,7 +93,7 @@ var Friendship = (function (_super) {
             return;
         }
         missive.markIsReceived();
-        this.client.emit('friendship.missive', missive);
+        this.client.missiveSnowdrop.emitIfHandle(missive);
         this.client.getFriendships().forEach(function (friendship) {
             if (friendship === _this) {
                 return;
@@ -127,6 +105,6 @@ var Friendship = (function (_super) {
         });
     };
     return Friendship;
-}(events_1.default));
+}());
 exports.Friendship = Friendship;
 //# sourceMappingURL=Friendship.js.map
