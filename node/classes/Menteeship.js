@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var Offer_1 = require("./Offer");
 var Answer_1 = require("./Answer");
 var FlushOffer_1 = require("./FlushOffer");
@@ -77,8 +78,9 @@ var Menteeship = (function () {
             });
         });
     };
-    Menteeship.prototype.send = function (bytes) {
-        this.wsConnection.sendBytes(bytes.getBuffer());
+    Menteeship.prototype.send = function (uish) {
+        var buffer = Buffer.from(pollenium_uvaursi_1.Uu.wrap(uish).u);
+        this.wsConnection.sendBytes(buffer);
     };
     Menteeship.prototype.sendOffer = function (offer) {
         return __awaiter(this, void 0, void 0, function () {

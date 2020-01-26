@@ -1,7 +1,8 @@
 import { Client } from './Client'
-import { Buttercup } from 'pollenium-buttercup'
+import { Uu } from 'pollenium-uvaursi'
+import { Uint256 } from 'pollenium-buttercup'
 import { Missive } from './Missive'
-import { getNow } from '../utils'
+import { genNow } from '../utils'
 import { SimplePeer } from 'simple-peer'
 import { Snowdrop } from 'pollenium-snowdrop'
 
@@ -16,14 +17,14 @@ export class Friendship {
 
   status: FRIENDSHIP_STATUS = FRIENDSHIP_STATUS.DEFAULT;
 
-  peerClientNonce: Buttercup;
+  peerClientNonce: Uu;
 
   createdAt: number;
 
   readonly statusSnowdrop: Snowdrop<Friendship> = new Snowdrop<Friendship>()
 
   constructor(public client: Client, public simplePeer: SimplePeer) {
-    this.createdAt = getNow()
+    this.createdAt = genNow()
     this.setSimplePeerListeners()
   }
 
@@ -39,11 +40,11 @@ export class Friendship {
     this.client.friendshipStatusSnowdrop.emitIfHandle(this)
   }
 
-  getDistance(): Buttercup {
+  getDistance(): Uint256 {
     if (this.peerClientNonce === undefined) {
       throw new Error('peerClientNonce not yet established')
     }
-    return this.peerClientNonce.getXor(this.client.nonce)
+    return new Uint256(this.peerClientNonce.genXor(this.client.nonce))
   }
 
   private setSimplePeerListeners(): void {
@@ -57,7 +58,7 @@ export class Friendship {
       this.setStatus(FRIENDSHIP_STATUS.CONNECTED)
     })
     this.simplePeer.on('data', (missiveEncodingBuffer: Buffer) => {
-      const missive = Missive.fromEncoding(this.client, Buttercup.fromBuffer(missiveEncodingBuffer))
+      const missive = Missive.fromEncoding(this.client, Uu.wrap(missiveEncodingBuffer))
       this.handleMessage(missive)
     })
 
@@ -92,11 +93,11 @@ export class Friendship {
     return true
   }
 
-  send(bytes: Buttercup): void {
+  send(bytes: Uu): void {
     if (!this.getIsSendable()) {
       throw new Error('friendship not sendable')
     }
-    this.simplePeer.send(bytes.uint8Array)
+    this.simplePeer.send(bytes.unwrap())
   }
 
   sendMessage(missive: Missive): void {

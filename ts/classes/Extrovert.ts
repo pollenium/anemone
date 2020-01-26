@@ -3,9 +3,9 @@ import { Offer } from './Offer'
 import { FlushOffer } from './FlushOffer'
 import { Answer } from './Answer'
 import SimplePeer, { SignalData as SimplePeerSignalData } from 'simple-peer'
-import { getNow, getSimplePeerConfig } from '../utils'
+import { genNow, genSimplePeerConfig } from '../utils'
 import delay from 'delay'
-import { Buttercup } from 'pollenium-buttercup'
+import { Uu } from 'pollenium-uvaursi'
 import { Client } from './Client'
 
 export class Extrovert extends Friendship {
@@ -21,7 +21,7 @@ export class Extrovert extends Friendship {
       initiator: true,
       trickle: false,
       wrtc: client.options.wrtc,
-      config: getSimplePeerConfig()
+      config: genSimplePeerConfig()
     }))
     this.loopUploadOffer(1000)
   }
@@ -35,7 +35,7 @@ export class Extrovert extends Friendship {
   }
 
   private async uploadOffer(): Promise<void> {
-    this.offersSentAt = getNow()
+    this.offersSentAt = genNow()
     const offer = await this.fetchOffer()
     this.client.signalingClients.forEach((signalingClient) => {
       signalingClient.sendOffer(offer)
@@ -54,26 +54,26 @@ export class Extrovert extends Friendship {
           if (this.status === FRIENDSHIP_STATUS.DEFAULT) {
             this.destroy()
           }
-        }, this.client.signalTimeoutMs * 2)
+        }, this.client.options.signalTimeout * 1000 * 2)
 
       })
     })
     return this.offerSdpPromise
   }
 
-  private async fetchOfferSdpb(): Promise<Buttercup> {
+  private async fetchOfferSdpb(): Promise<Uu> {
     const offerSdp = await this.fetchOfferSdp()
-    return Buttercup.fromUtf8(offerSdp)
+    return Uu.fromUtf8(offerSdp)
   }
 
   async fetchOffer(): Promise<Offer> {
-    return new Offer(
-      this.client.nonce,
-      await this.fetchOfferSdpb()
-    )
+    return new Offer({
+      clientNonce: this.client.nonce,
+      sdpb: await this.fetchOfferSdpb()
+    })
   }
 
-  async fetchOfferId(): Promise<Buttercup> {
+  async fetchOfferId(): Promise<Uu> {
     const offer = await this.fetchOffer()
     return offer.getId()
   }
@@ -92,10 +92,10 @@ export class Extrovert extends Friendship {
     this.setStatus(FRIENDSHIP_STATUS.CONNECTING)
     this.simplePeer.signal({
       type: 'answer',
-      sdp: answer.sdpb.getUtf8()
+      sdp: answer.sdpb.toUtf8()
     })
 
-    await delay(this.client.signalTimeoutMs)
+    await delay(this.client.options.signalTimeout * 1000)
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore

@@ -1,6 +1,6 @@
 import { Client } from './Client'
 import { ConstructableWebSocket } from '../interfaces/ConstructableWebSocket'
-import { Buttercup } from 'pollenium-buttercup'
+import { Uu, Uish } from 'pollenium-uvaursi'
 import { Offer } from './Offer'
 import { FlushOffer } from './FlushOffer'
 import { Answer } from './Answer'
@@ -79,9 +79,9 @@ export class SignalingClient {
     }
   }
 
-  async send(bytes: Buttercup): Promise<void> {
+  async send(bytes: Uish): Promise<void> {
     const wsConnection = await this.fetchConnection()
-    wsConnection.send(bytes.getBuffer())
+    wsConnection.send(Uu.wrap(bytes).u)
   }
 
   async sendOffer(offer: Offer): Promise<void> {

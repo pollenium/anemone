@@ -95,8 +95,8 @@ module.exports = (grunt) => {
   grunt.registerTask('test', [
     'test-cleanup',
     'servers',
-    'test-browser',
     'run:npm-test-node',
+    'test-browser',
   ])
 
   grunt.registerTask('test-browser', 'open browser test in chrome', async function() {

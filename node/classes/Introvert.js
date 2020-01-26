@@ -57,7 +57,7 @@ var Answer_1 = require("./Answer");
 var simple_peer_1 = __importDefault(require("simple-peer"));
 var utils_1 = require("../utils");
 var delay_1 = __importDefault(require("delay"));
-var pollenium_buttercup_1 = require("pollenium-buttercup");
+var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var Introvert = (function (_super) {
     __extends(Introvert, _super);
     function Introvert(client, offer) {
@@ -65,7 +65,7 @@ var Introvert = (function (_super) {
             initiator: false,
             trickle: false,
             wrtc: client.options.wrtc,
-            config: utils_1.getSimplePeerConfig()
+            config: utils_1.genSimplePeerConfig()
         })) || this;
         _this.offer = offer;
         _this.peerClientNonce = offer.clientNonce;
@@ -76,11 +76,11 @@ var Introvert = (function (_super) {
         var _this = this;
         return new Promise(function (resolve) {
             _this.simplePeer.once('signal', function (signal) {
-                resolve(pollenium_buttercup_1.Buttercup.fromUtf8(signal.sdp));
+                resolve(pollenium_uvaursi_1.Uu.fromUtf8(signal.sdp));
             });
             _this.simplePeer.signal({
                 type: 'offer',
-                sdp: _this.offer.sdpb.getUtf8()
+                sdp: _this.offer.sdpb.toUtf8()
             });
         });
     };
@@ -91,10 +91,13 @@ var Introvert = (function (_super) {
                 switch (_c.label) {
                     case 0:
                         _a = Answer_1.Answer.bind;
-                        _b = [void 0, this.client.nonce,
-                            this.offer.getId()];
+                        _b = {
+                            clientNonce: this.client.nonce,
+                            offerId: this.offer.getId()
+                        };
                         return [4, this.fetchAnswerSdpb()];
-                    case 1: return [2, new (_a.apply(Answer_1.Answer, _b.concat([_c.sent()])))()];
+                    case 1: return [2, new (_a.apply(Answer_1.Answer, [void 0, (_b.sdpb = _c.sent(),
+                                _b)]))()];
                 }
             });
         });
@@ -109,8 +112,8 @@ var Introvert = (function (_super) {
                         return [4, this.fetchAnswer()];
                     case 1:
                         answer = _a.sent();
-                        this.client.signalingClientsByOfferIdHex[this.offer.getId().getHex()].sendAnswer(answer);
-                        return [4, delay_1.default(this.client.signalTimeoutMs * 2)];
+                        this.client.signalingClientsByOfferIdHex[this.offer.getId().toHex()].sendAnswer(answer);
+                        return [4, delay_1.default(this.client.options.signalTimeout * 1000)];
                     case 2:
                         _a.sent();
                         if (this.status === Friendship_1.FRIENDSHIP_STATUS.CONNECTING) {

@@ -37,7 +37,7 @@ var SignalingServer = (function () {
             var menteeship = new Menteeship_1.Menteeship(_this, wsConnection);
             _this.menteeships.push(menteeship);
             menteeship.offerSnowdrop.addHandle(function (offer) {
-                var offerIdHex = offer.getId().getHex();
+                var offerIdHex = offer.getId().toHex();
                 _this.menteeshipsByOfferIdHex[offerIdHex] = menteeship;
                 _this.menteeships.sort(function () {
                     return Math.random() - .5;
@@ -49,7 +49,7 @@ var SignalingServer = (function () {
                 });
             });
             menteeship.answerSnowdrop.addHandle(function (answer) {
-                _this.menteeshipsByOfferIdHex[answer.offerId.getHex()].sendAnswer(answer);
+                _this.menteeshipsByOfferIdHex[answer.offerId.toHex()].sendAnswer(answer);
             });
             menteeship.flushOfferSnowdrop.addHandle(function (flushOffer) {
                 _this.menteeships.sort(function () {

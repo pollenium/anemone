@@ -1,27 +1,42 @@
-import { Buttercup } from 'pollenium-buttercup'
+import { Uish, Uu } from 'pollenium-uvaursi'
 import { SIGNALING_MESSAGE_KEY, signalingMessageTemplate } from '../templates/signalingMessage'
 
 export class Answer {
-  constructor(public clientNonce: Buttercup, public offerId: Buttercup, public sdpb: Buttercup) {}
 
-  getEncoding(): Buttercup {
-    return new Buttercup(
+  clientNonce: Uu;
+
+  offerId: Uu;
+
+  sdpb: Uu;
+
+  constructor(struct: {
+    clientNonce: Uish,
+    offerId: Uish,
+    sdpb: Uish
+  }) {
+    this.clientNonce = Uu.wrap(struct.clientNonce)
+    this.offerId = Uu.wrap(struct.offerId)
+    this.sdpb = Uu.wrap(struct.sdpb)
+  }
+
+  getEncoding(): Uu {
+    return Uu.wrap(
       signalingMessageTemplate.encode({
         key: SIGNALING_MESSAGE_KEY.ANSWER,
         value: {
-          clientNonce: this.clientNonce.uint8Array,
-          offerId: this.offerId.uint8Array,
-          sdpb: this.sdpb.uint8Array
+          clientNonce: this.clientNonce.unwrap(),
+          offerId: this.offerId.unwrap(),
+          sdpb: this.sdpb.unwrap()
         }
       })
     )
   }
 
   static fromHenpojo(henpojo: any): Answer {
-    return new Answer(
-      new Buttercup(henpojo.clientNonce),
-      new Buttercup(henpojo.offerId),
-      new Buttercup(henpojo.sdpb)
-    )
+    return new Answer({
+      clientNonce: henpojo.clientNonce,
+      offerId: henpojo.offerId,
+      sdpb: henpojo.sdpb
+    })
   }
 }

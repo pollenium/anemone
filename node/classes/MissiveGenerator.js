@@ -37,30 +37,31 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_buttercup_1 = require("pollenium-buttercup");
+var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var Missive_1 = require("./Missive");
 var utils_1 = require("../utils");
 var missive_1 = require("../templates/missive");
 var HashcashResolution_1 = require("../interfaces/HashcashResolution");
 var nullNonce = (new Uint8Array(32)).fill(0);
 var MissiveGenerator = (function () {
-    function MissiveGenerator(client, applicationId, applicationData, difficulty) {
+    function MissiveGenerator(client, struct) {
         this.client = client;
-        this.applicationId = applicationId;
-        this.applicationData = applicationData;
-        this.difficulty = difficulty;
+        this.applicationId = pollenium_uvaursi_1.Uu.wrap(struct.applicationId);
+        this.applicationData = pollenium_uvaursi_1.Uu.wrap(struct.applicationData);
+        this.difficulty = pollenium_buttercup_1.Uint8.fromUintable(struct.difficulty);
     }
     MissiveGenerator.prototype.getNoncelessPrehash = function (timestamp) {
         var encoding = missive_1.missiveTemplate.encode({
             key: missive_1.MISSIVE_KEY.V0,
             value: {
                 nonce: nullNonce,
-                difficulty: new Uint8Array([this.difficulty]),
-                timestamp: timestamp.uint8Array,
-                applicationId: this.applicationId.uint8Array,
-                applicationData: this.applicationData.uint8Array
+                difficulty: this.difficulty.u,
+                timestamp: pollenium_buttercup_1.Uint40.fromUintable(timestamp).u,
+                applicationId: this.applicationId.u,
+                applicationData: this.applicationData.u
             }
         });
-        return new pollenium_buttercup_1.Buttercup(encoding.slice(0, encoding.length - 32));
+        return new pollenium_uvaursi_1.Uu(encoding.slice(0, encoding.length - 32));
     };
     MissiveGenerator.prototype.fetchNonce = function (timestamp) {
         var _this = this;
@@ -80,7 +81,7 @@ var MissiveGenerator = (function () {
                             }
                             return [3, 4];
                         case 1:
-                            resolve(pollenium_buttercup_1.Buttercup.fromHex(hashcashResolution.value));
+                            resolve(new pollenium_buttercup_1.Bytes32(pollenium_uvaursi_1.Uu.fromHexish(hashcashResolution.value)));
                             return [3, 5];
                         case 2:
                             _b = resolve;
@@ -97,13 +98,13 @@ var MissiveGenerator = (function () {
             worker.onerror = function (error) {
                 reject(error);
             };
-            var timeoutAt = utils_1.getNow() + 5;
+            var timeoutAt = utils_1.genNow() + 5;
             var noncelessPrehash = _this.getNoncelessPrehash(timestamp);
             var hashcashRequest = {
-                noncelessPrehashHex: noncelessPrehash.getHex(),
+                noncelessPrehash: noncelessPrehash,
                 difficulty: _this.difficulty,
                 cover: Missive_1.MISSIVE_COVER.V0,
-                applicationDataLength: _this.applicationData.getLength(),
+                applicationDataLength: _this.applicationData.u.length,
                 timeoutAt: timeoutAt
             };
             worker.postMessage(hashcashRequest);
@@ -115,11 +116,18 @@ var MissiveGenerator = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        timestamp = utils_1.getTimestamp();
+                        timestamp = utils_1.genTimestamp();
                         return [4, this.fetchNonce(timestamp)];
                     case 1:
                         nonce = _a.sent();
-                        return [2, new Missive_1.Missive(this.client, missive_1.MISSIVE_KEY.V0, timestamp, this.difficulty, nonce, this.applicationId, this.applicationData)];
+                        return [2, new Missive_1.Missive(this.client, {
+                                version: missive_1.MISSIVE_KEY.V0,
+                                timestamp: timestamp,
+                                difficulty: this.difficulty,
+                                nonce: nonce,
+                                applicationId: this.applicationId,
+                                applicationData: this.applicationData
+                            })];
                 }
             });
         });

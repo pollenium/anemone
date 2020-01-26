@@ -1,10 +1,15 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var pollenium_buttercup_1 = require("pollenium-buttercup");
-var bn_js_1 = __importDefault(require("bn.js"));
+var shasta = __importStar(require("pollenium-shasta"));
 exports.stunServers = [
     'stun.l.google.com:19302',
     'stun1.l.google.com:19302',
@@ -13,15 +18,15 @@ exports.stunServers = [
     'stun4.l.google.com:19302',
     'global.stun.twilio.com:3478?transport=udp'
 ];
-function getNow() {
+function genNow() {
     return Math.floor((new Date).getTime() / 1000);
 }
-exports.getNow = getNow;
-function calculateEra(time) {
+exports.genNow = genNow;
+function genEra(time) {
     return Math.floor(time / 60);
 }
-exports.calculateEra = calculateEra;
-function getSimplePeerConfig() {
+exports.genEra = genEra;
+function genSimplePeerConfig() {
     return {
         iceServers: exports.stunServers.sort(function () {
             return Math.random() - .5;
@@ -32,32 +37,40 @@ function getSimplePeerConfig() {
         })
     };
 }
-exports.getSimplePeerConfig = getSimplePeerConfig;
-function getTimestamp() {
-    return pollenium_buttercup_1.Buttercup.fromNumber(getNow()).getPaddedLeft(5);
+exports.genSimplePeerConfig = genSimplePeerConfig;
+function genTimestamp() {
+    return pollenium_buttercup_1.Uint40.fromNumber(genNow());
 }
-exports.getTimestamp = getTimestamp;
-exports.twoBn = new bn_js_1.default(2);
-function getMaxHash(difficulty, cover, applicationDataLength) {
-    var powBn = new bn_js_1.default(255 - difficulty);
-    var divisor = new bn_js_1.default(cover + applicationDataLength);
-    var maxHashBn = exports.twoBn.pow(powBn).divRound(divisor);
-    return pollenium_buttercup_1.Buttercup.fromBn(maxHashBn);
+exports.genTimestamp = genTimestamp;
+var two256 = pollenium_buttercup_1.Uint256.fromNumber(2);
+var twofiftyfive256 = pollenium_buttercup_1.Uint256.fromNumber(255);
+function genMaxHash(struct) {
+    var difficulty = pollenium_buttercup_1.Uint256.fromUintable(struct.difficulty);
+    var cover = pollenium_buttercup_1.Uint256.fromUintable(struct.cover);
+    var applicationDataLength = pollenium_buttercup_1.Uint256.fromUintable(struct.applicationDataLength);
+    var pow = twofiftyfive256.opSub(difficulty);
+    var divisor = cover.opAdd(applicationDataLength);
+    var maxHash = two256.opPow(pow).opDiv(divisor);
+    return maxHash;
 }
-exports.getMaxHash = getMaxHash;
-function getNonce(noncelessPrehash, difficulty, cover, applicationDataLength, timeoutAt) {
-    var maxHashBn = getMaxHash(difficulty, cover, applicationDataLength).getBn();
+exports.genMaxHash = genMaxHash;
+function genNonce(struct) {
+    var maxHash = genMaxHash({
+        difficulty: struct.difficulty,
+        cover: struct.cover,
+        applicationDataLength: struct.applicationDataLength
+    });
     while (true) {
-        if (getNow() > timeoutAt) {
+        if (genNow() > struct.timeoutAt) {
             throw new Error('Timeout');
         }
-        var nonce = pollenium_buttercup_1.Buttercup.random(32);
-        var prehash = noncelessPrehash.append(nonce);
-        var hashBn = prehash.getHash().getBn();
-        if (hashBn.lte(maxHashBn)) {
-            return nonce;
+        var nonce = pollenium_uvaursi_1.Uu.genRandom(32);
+        var prehash = pollenium_uvaursi_1.Uu.genConcat([nonce, struct.noncelessPrehash]);
+        var hash = new pollenium_buttercup_1.Uint256(shasta.genSha256(prehash));
+        if (hash.compLte(maxHash)) {
+            return new pollenium_buttercup_1.Uint256(nonce);
         }
     }
 }
-exports.getNonce = getNonce;
+exports.genNonce = genNonce;
 //# sourceMappingURL=utils.js.map

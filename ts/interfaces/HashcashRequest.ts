@@ -1,7 +1,10 @@
+import { Uintable } from 'pollenium-buttercup'
+import { Uish } from 'pollenium-uvaursi'
+
 export interface HashcashRequest {
-  noncelessPrehashHex: string;
-  difficulty: number;
-  cover: number;
-  applicationDataLength: number;
+  noncelessPrehash: Uish;
+  difficulty: Uintable;
+  cover: Uintable;
+  applicationDataLength: Uintable;
   timeoutAt: number;
 }

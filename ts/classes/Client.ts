@@ -2,13 +2,12 @@ import { Friendship, FRIENDSHIP_STATUS } from './Friendship'
 import { Extrovert } from './Extrovert'
 import { Introvert } from './Introvert'
 import { SignalingClient } from './SignalingClient'
-import { Buttercup } from 'pollenium-buttercup'
+import { Uish, Uu } from 'pollenium-uvaursi'
 import { Offer } from './Offer'
 import { Answer } from './Answer'
 import { FlushOffer } from './FlushOffer'
 import { ClientOptions } from '../interfaces/ClientOptions'
 import delay from 'delay'
-import Bn from 'bn.js'
 import { ClientDefaultOptions } from './ClientDefaultOptions'
 import { Snowdrop } from 'pollenium-snowdrop'
 import { Missive } from './Missive'
@@ -17,7 +16,7 @@ export class Client {
 
   options: ClientOptions;
 
-  nonce: Buttercup;
+  nonce: Uu;
 
   signalingClients: SignalingClient[] = [];
 
@@ -39,10 +38,6 @@ export class Client {
 
   missiveIsReceivedByIdHexByEra: { [era: number]: { [missiveIdHex: string]: boolean }} = {};
 
-  signalTimeoutMs: number;
-
-  missiveLatencyToleranceBn: Bn;
-
   readonly friendshipStatusSnowdrop: Snowdrop<Friendship> = new Snowdrop<Friendship>();
 
   readonly extrovertSnowdrop: Snowdrop<Extrovert> = new Snowdrop<Extrovert>();
@@ -54,9 +49,7 @@ export class Client {
 
   constructor(options: ClientOptions) {
     this.options = Object.assign(new ClientDefaultOptions, options)
-    this.signalTimeoutMs = this.options.signalTimeout * 1000
-    this.missiveLatencyToleranceBn = new Bn(this.options.missiveLatencyTolerance)
-    this.nonce = Buttercup.random(32)
+    this.nonce = Uu.genRandom(32)
     this.bootstrap()
   }
 
@@ -139,7 +132,7 @@ export class Client {
 
     const offer = this.offers.splice(connectableOfferIndex, 1)[0]
 
-    if (this.isFlushedOfferByOfferIdHex[offer.getId().getHex()]) {
+    if (this.isFlushedOfferByOfferIdHex[offer.getId().toHex()]) {
       return this.popConnectableOffer()
     }
 
@@ -151,36 +144,36 @@ export class Client {
     const extrovertsByOfferIdHex: {[id: string]: Extrovert} = {}
     await Promise.all(this.extroverts.map(async (extrovert) => {
       const offer = await extrovert.fetchOffer()
-      extrovertsByOfferIdHex[offer.getId().getHex()] = extrovert
+      extrovertsByOfferIdHex[offer.getId().toHex()] = extrovert
     }))
     return extrovertsByOfferIdHex
   }
 
   handleOffer(signalingClient: SignalingClient, offer: Offer): void {
 
-    if (this.isFlushedOfferByOfferIdHex[offer.getId().getHex()]) {
+    if (this.isFlushedOfferByOfferIdHex[offer.getId().toHex()]) {
       return
     }
 
     if (
-      this.offersReceivedByClientNonceHex[offer.clientNonce.getHex()] === undefined
+      this.offersReceivedByClientNonceHex[offer.clientNonce.toHex()] === undefined
     ) {
-      this.offersReceivedByClientNonceHex[offer.clientNonce.getHex()] = 1
+      this.offersReceivedByClientNonceHex[offer.clientNonce.toHex()] = 1
     } else {
-      this.offersReceivedByClientNonceHex[offer.clientNonce.getHex()] += 1
+      this.offersReceivedByClientNonceHex[offer.clientNonce.toHex()] += 1
     }
 
-    if (this.nonce.equals(offer.clientNonce)) {
+    if (this.nonce.getIsEqual(offer.clientNonce)) {
       return
     }
 
-    const offerIdHex = offer.getId().getHex()
+    const offerIdHex = offer.getId().toHex()
 
 
     this.signalingClientsByOfferIdHex[offerIdHex] = signalingClient
 
     this.offers = this.offers.filter((_offer) => {
-      return !offer.clientNonce.equals(_offer.clientNonce)
+      return !offer.clientNonce.getIsEqual(_offer.clientNonce)
     })
 
     this.offers.unshift(offer)
@@ -188,7 +181,7 @@ export class Client {
     this.offers = this.offers.sort((offerA, offerB) => {
       const distanceA = offerA.getDistance(this.nonce)
       const distanceB = offerB.getDistance(this.nonce)
-      return distanceB.compare(distanceA)
+      return distanceB.compGt(distanceA) ? 1 : -1
     })
 
     if (this.getIsConnectableByClientNonce(offer.clientNonce)) {
@@ -197,7 +190,7 @@ export class Client {
         const offerDistance = offer.getDistance(this.nonce)
         const worstFriendship = this.getWorstFriendship()
         const worstFriendshipDistance = worstFriendship.getDistance()
-        if (worstFriendshipDistance.compare(offerDistance) === 1) {
+        if (worstFriendshipDistance.compGt(offerDistance)) {
           worstFriendship.destroy()
         }
       }
@@ -220,20 +213,20 @@ export class Client {
     return peeredFriendships.sort((friendshipA, friendshipB) => {
       const distanceA = friendshipA.getDistance()
       const distanceB = friendshipB.getDistance()
-      return distanceA.compare(distanceB)
+      return distanceA.compGt(distanceB) ? 1 : -1
     })[0]
   }
 
   handleFlushOffer(signalingClient: SignalingClient, flushOffer: FlushOffer): void {
 
-    this.isFlushedOfferByOfferIdHex[flushOffer.offerId.getHex()] = true
+    this.isFlushedOfferByOfferIdHex[flushOffer.offerId.toHex()] = true
 
     this.offers = this.offers.filter((_offer) => {
-      return !flushOffer.offerId.equals(_offer.getId())
+      return !flushOffer.offerId.getIsEqual(_offer.getId())
     })
 
     this.introverts.forEach((introvert) => {
-      if (introvert.offer.getId().equals(flushOffer.offerId)) {
+      if (introvert.offer.getId().getIsEqual(flushOffer.offerId)) {
         introvert.destroy()
       }
     })
@@ -249,7 +242,7 @@ export class Client {
   async handleAnswer(signalingClient: SignalingClient, answer: Answer): Promise<void> {
 
     const extrovertsByOfferIdHex = await this.fetchExtrovertsByOfferIdHex()
-    const extrovert = extrovertsByOfferIdHex[answer.offerId.getHex()]
+    const extrovert = extrovertsByOfferIdHex[answer.offerId.toHex()]
 
     if (!extrovert) {
       return
@@ -264,8 +257,9 @@ export class Client {
     }
   }
 
-  getFriendshipStatusByClientNonce(clientNonce: Buttercup): FRIENDSHIP_STATUS {
-    const friendshipStatus = this.friendshipStatusByClientNonceHex[clientNonce.getHex()]
+  getFriendshipStatusByClientNonce(clientNonceUish: Uish): FRIENDSHIP_STATUS {
+    const clientNonce = Uu.wrap(clientNonceUish)
+    const friendshipStatus = this.friendshipStatusByClientNonceHex[clientNonce.toHex()]
     if (friendshipStatus === undefined) {
       return FRIENDSHIP_STATUS.DEFAULT
     }
@@ -273,8 +267,9 @@ export class Client {
 
   }
 
-  getIsConnectableByClientNonce(clientNonce: Buttercup): boolean {
-    if (clientNonce.equals(this.nonce)) {
+  getIsConnectableByClientNonce(clientNonceUish: Uish): boolean {
+    const clientNonce = Uu.wrap(clientNonceUish)
+    if (clientNonce.getIsEqual(this.nonce)) {
       return false
     }
     switch(this.getFriendshipStatusByClientNonce(clientNonce)) {
@@ -289,8 +284,9 @@ export class Client {
     }
   }
 
-  setFriendshipStatusByClientNonce(clientNonce: Buttercup, friendshipStatus: FRIENDSHIP_STATUS): void {
-    this.friendshipStatusByClientNonceHex[clientNonce.getHex()] = friendshipStatus
+  setFriendshipStatusByClientNonce(clientNonceUish: Uish, friendshipStatus: FRIENDSHIP_STATUS): void {
+    const clientNonce = Uu.wrap(clientNonceUish)
+    this.friendshipStatusByClientNonceHex[clientNonce.toHex()] = friendshipStatus
   }
 
   getIsFullyConnected(): boolean {

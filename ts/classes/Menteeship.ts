@@ -1,6 +1,6 @@
 import { connection as WsConnection } from 'websocket'
 import { SignalingServer } from './SignalingServer'
-import { Buttercup } from 'pollenium-buttercup'
+import { Uish, Uu } from 'pollenium-uvaursi'
 import { Offer } from './Offer'
 import { Answer } from './Answer'
 import { FlushOffer } from './FlushOffer'
@@ -21,7 +21,7 @@ export class Menteeship {
     this.bootstrapPromise = this.bootstrap()
   }
 
-  async bootstrap(): Promise<void> {
+  private async bootstrap(): Promise<void> {
     this.wsConnection.on('message', (message) => {
       if (message.type !== 'binary') {
         return
@@ -44,8 +44,9 @@ export class Menteeship {
     })
   }
 
-  send(bytes: Buttercup): void {
-    this.wsConnection.sendBytes(bytes.getBuffer())
+  send(uish: Uish): void {
+    const buffer = Buffer.from(Uu.wrap(uish).u)
+    this.wsConnection.sendBytes(buffer)
   }
 
   async sendOffer(offer: Offer): Promise<void> {

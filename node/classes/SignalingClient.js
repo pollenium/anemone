@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var Offer_1 = require("./Offer");
 var FlushOffer_1 = require("./FlushOffer");
 var Answer_1 = require("./Answer");
@@ -105,7 +106,7 @@ var SignalingClient = (function () {
                     case 0: return [4, this.fetchConnection()];
                     case 1:
                         wsConnection = _a.sent();
-                        wsConnection.send(bytes.getBuffer());
+                        wsConnection.send(pollenium_uvaursi_1.Uu.wrap(bytes).u);
                         return [2];
                 }
             });

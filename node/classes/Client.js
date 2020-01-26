@@ -43,9 +43,8 @@ var Friendship_1 = require("./Friendship");
 var Extrovert_1 = require("./Extrovert");
 var Introvert_1 = require("./Introvert");
 var SignalingClient_1 = require("./SignalingClient");
-var pollenium_buttercup_1 = require("pollenium-buttercup");
+var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var delay_1 = __importDefault(require("delay"));
-var bn_js_1 = __importDefault(require("bn.js"));
 var ClientDefaultOptions_1 = require("./ClientDefaultOptions");
 var pollenium_snowdrop_1 = require("pollenium-snowdrop");
 var Client = (function () {
@@ -65,9 +64,7 @@ var Client = (function () {
         this.introvertSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.missiveSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.options = Object.assign(new ClientDefaultOptions_1.ClientDefaultOptions, options);
-        this.signalTimeoutMs = this.options.signalTimeout * 1000;
-        this.missiveLatencyToleranceBn = new bn_js_1.default(this.options.missiveLatencyTolerance);
-        this.nonce = pollenium_buttercup_1.Buttercup.random(32);
+        this.nonce = pollenium_uvaursi_1.Uu.genRandom(32);
         this.bootstrap();
     }
     Client.prototype.bootstrap = function () {
@@ -166,7 +163,7 @@ var Client = (function () {
             return null;
         }
         var offer = this.offers.splice(connectableOfferIndex, 1)[0];
-        if (this.isFlushedOfferByOfferIdHex[offer.getId().getHex()]) {
+        if (this.isFlushedOfferByOfferIdHex[offer.getId().toHex()]) {
             return this.popConnectableOffer();
         }
         return offer;
@@ -186,7 +183,7 @@ var Client = (function () {
                                         case 0: return [4, extrovert.fetchOffer()];
                                         case 1:
                                             offer = _a.sent();
-                                            extrovertsByOfferIdHex[offer.getId().getHex()] = extrovert;
+                                            extrovertsByOfferIdHex[offer.getId().toHex()] = extrovert;
                                             return [2];
                                     }
                                 });
@@ -200,28 +197,28 @@ var Client = (function () {
     };
     Client.prototype.handleOffer = function (signalingClient, offer) {
         var _this = this;
-        if (this.isFlushedOfferByOfferIdHex[offer.getId().getHex()]) {
+        if (this.isFlushedOfferByOfferIdHex[offer.getId().toHex()]) {
             return;
         }
-        if (this.offersReceivedByClientNonceHex[offer.clientNonce.getHex()] === undefined) {
-            this.offersReceivedByClientNonceHex[offer.clientNonce.getHex()] = 1;
+        if (this.offersReceivedByClientNonceHex[offer.clientNonce.toHex()] === undefined) {
+            this.offersReceivedByClientNonceHex[offer.clientNonce.toHex()] = 1;
         }
         else {
-            this.offersReceivedByClientNonceHex[offer.clientNonce.getHex()] += 1;
+            this.offersReceivedByClientNonceHex[offer.clientNonce.toHex()] += 1;
         }
-        if (this.nonce.equals(offer.clientNonce)) {
+        if (this.nonce.getIsEqual(offer.clientNonce)) {
             return;
         }
-        var offerIdHex = offer.getId().getHex();
+        var offerIdHex = offer.getId().toHex();
         this.signalingClientsByOfferIdHex[offerIdHex] = signalingClient;
         this.offers = this.offers.filter(function (_offer) {
-            return !offer.clientNonce.equals(_offer.clientNonce);
+            return !offer.clientNonce.getIsEqual(_offer.clientNonce);
         });
         this.offers.unshift(offer);
         this.offers = this.offers.sort(function (offerA, offerB) {
             var distanceA = offerA.getDistance(_this.nonce);
             var distanceB = offerB.getDistance(_this.nonce);
-            return distanceB.compare(distanceA);
+            return distanceB.compGt(distanceA) ? 1 : -1;
         });
         if (this.getIsConnectableByClientNonce(offer.clientNonce)) {
             var peeredFriendships = this.getPeeredFriendships();
@@ -229,7 +226,7 @@ var Client = (function () {
                 var offerDistance = offer.getDistance(this.nonce);
                 var worstFriendship = this.getWorstFriendship();
                 var worstFriendshipDistance = worstFriendship.getDistance();
-                if (worstFriendshipDistance.compare(offerDistance) === 1) {
+                if (worstFriendshipDistance.compGt(offerDistance)) {
                     worstFriendship.destroy();
                 }
             }
@@ -249,16 +246,16 @@ var Client = (function () {
         return peeredFriendships.sort(function (friendshipA, friendshipB) {
             var distanceA = friendshipA.getDistance();
             var distanceB = friendshipB.getDistance();
-            return distanceA.compare(distanceB);
+            return distanceA.compGt(distanceB) ? 1 : -1;
         })[0];
     };
     Client.prototype.handleFlushOffer = function (signalingClient, flushOffer) {
-        this.isFlushedOfferByOfferIdHex[flushOffer.offerId.getHex()] = true;
+        this.isFlushedOfferByOfferIdHex[flushOffer.offerId.toHex()] = true;
         this.offers = this.offers.filter(function (_offer) {
-            return !flushOffer.offerId.equals(_offer.getId());
+            return !flushOffer.offerId.getIsEqual(_offer.getId());
         });
         this.introverts.forEach(function (introvert) {
-            if (introvert.offer.getId().equals(flushOffer.offerId)) {
+            if (introvert.offer.getId().getIsEqual(flushOffer.offerId)) {
                 introvert.destroy();
             }
         });
@@ -277,7 +274,7 @@ var Client = (function () {
                     case 0: return [4, this.fetchExtrovertsByOfferIdHex()];
                     case 1:
                         extrovertsByOfferIdHex = _a.sent();
-                        extrovert = extrovertsByOfferIdHex[answer.offerId.getHex()];
+                        extrovert = extrovertsByOfferIdHex[answer.offerId.toHex()];
                         if (!extrovert) {
                             return [2];
                         }
@@ -292,15 +289,17 @@ var Client = (function () {
             });
         });
     };
-    Client.prototype.getFriendshipStatusByClientNonce = function (clientNonce) {
-        var friendshipStatus = this.friendshipStatusByClientNonceHex[clientNonce.getHex()];
+    Client.prototype.getFriendshipStatusByClientNonce = function (clientNonceUish) {
+        var clientNonce = pollenium_uvaursi_1.Uu.wrap(clientNonceUish);
+        var friendshipStatus = this.friendshipStatusByClientNonceHex[clientNonce.toHex()];
         if (friendshipStatus === undefined) {
             return Friendship_1.FRIENDSHIP_STATUS.DEFAULT;
         }
         return friendshipStatus;
     };
-    Client.prototype.getIsConnectableByClientNonce = function (clientNonce) {
-        if (clientNonce.equals(this.nonce)) {
+    Client.prototype.getIsConnectableByClientNonce = function (clientNonceUish) {
+        var clientNonce = pollenium_uvaursi_1.Uu.wrap(clientNonceUish);
+        if (clientNonce.getIsEqual(this.nonce)) {
             return false;
         }
         switch (this.getFriendshipStatusByClientNonce(clientNonce)) {
@@ -314,8 +313,9 @@ var Client = (function () {
                 throw new Error('Unkown FRIENDSHIP_STATUS');
         }
     };
-    Client.prototype.setFriendshipStatusByClientNonce = function (clientNonce, friendshipStatus) {
-        this.friendshipStatusByClientNonceHex[clientNonce.getHex()] = friendshipStatus;
+    Client.prototype.setFriendshipStatusByClientNonce = function (clientNonceUish, friendshipStatus) {
+        var clientNonce = pollenium_uvaursi_1.Uu.wrap(clientNonceUish);
+        this.friendshipStatusByClientNonceHex[clientNonce.toHex()] = friendshipStatus;
     };
     Client.prototype.getIsFullyConnected = function () {
         if (this.extroverts.length + this.introverts.length < this.options.friendshipsMax) {

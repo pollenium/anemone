@@ -58,7 +58,7 @@ var FlushOffer_1 = require("./FlushOffer");
 var simple_peer_1 = __importDefault(require("simple-peer"));
 var utils_1 = require("../utils");
 var delay_1 = __importDefault(require("delay"));
-var pollenium_buttercup_1 = require("pollenium-buttercup");
+var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var Extrovert = (function (_super) {
     __extends(Extrovert, _super);
     function Extrovert(client) {
@@ -66,7 +66,7 @@ var Extrovert = (function (_super) {
             initiator: true,
             trickle: false,
             wrtc: client.options.wrtc,
-            config: utils_1.getSimplePeerConfig()
+            config: utils_1.genSimplePeerConfig()
         })) || this;
         _this.answers = [];
         _this.loopUploadOffer(1000);
@@ -96,7 +96,7 @@ var Extrovert = (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.offersSentAt = utils_1.getNow();
+                        this.offersSentAt = utils_1.genNow();
                         return [4, this.fetchOffer()];
                     case 1:
                         offer = _a.sent();
@@ -122,7 +122,7 @@ var Extrovert = (function (_super) {
                             if (_this.status === Friendship_1.FRIENDSHIP_STATUS.DEFAULT) {
                                 _this.destroy();
                             }
-                        }, _this.client.signalTimeoutMs * 2);
+                        }, _this.client.options.signalTimeout * 1000 * 2);
                     });
                 });
                 return [2, this.offerSdpPromise];
@@ -137,7 +137,7 @@ var Extrovert = (function (_super) {
                     case 0: return [4, this.fetchOfferSdp()];
                     case 1:
                         offerSdp = _a.sent();
-                        return [2, pollenium_buttercup_1.Buttercup.fromUtf8(offerSdp)];
+                        return [2, pollenium_uvaursi_1.Uu.fromUtf8(offerSdp)];
                 }
             });
         });
@@ -149,9 +149,12 @@ var Extrovert = (function (_super) {
                 switch (_c.label) {
                     case 0:
                         _a = Offer_1.Offer.bind;
-                        _b = [void 0, this.client.nonce];
+                        _b = {
+                            clientNonce: this.client.nonce
+                        };
                         return [4, this.fetchOfferSdpb()];
-                    case 1: return [2, new (_a.apply(Offer_1.Offer, _b.concat([_c.sent()])))()];
+                    case 1: return [2, new (_a.apply(Offer_1.Offer, [void 0, (_b.sdpb = _c.sent(),
+                                _b)]))()];
                 }
             });
         });
@@ -184,9 +187,9 @@ var Extrovert = (function (_super) {
                         this.setStatus(Friendship_1.FRIENDSHIP_STATUS.CONNECTING);
                         this.simplePeer.signal({
                             type: 'answer',
-                            sdp: answer.sdpb.getUtf8()
+                            sdp: answer.sdpb.toUtf8()
                         });
-                        return [4, delay_1.default(this.client.signalTimeoutMs)];
+                        return [4, delay_1.default(this.client.options.signalTimeout * 1000)];
                     case 1:
                         _a.sent();
                         if (this.status === Friendship_1.FRIENDSHIP_STATUS.CONNECTING) {

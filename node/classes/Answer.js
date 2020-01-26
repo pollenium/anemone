@@ -1,25 +1,29 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var pollenium_buttercup_1 = require("pollenium-buttercup");
+var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var signalingMessage_1 = require("../templates/signalingMessage");
 var Answer = (function () {
-    function Answer(clientNonce, offerId, sdpb) {
-        this.clientNonce = clientNonce;
-        this.offerId = offerId;
-        this.sdpb = sdpb;
+    function Answer(struct) {
+        this.clientNonce = pollenium_uvaursi_1.Uu.wrap(struct.clientNonce);
+        this.offerId = pollenium_uvaursi_1.Uu.wrap(struct.offerId);
+        this.sdpb = pollenium_uvaursi_1.Uu.wrap(struct.sdpb);
     }
     Answer.prototype.getEncoding = function () {
-        return new pollenium_buttercup_1.Buttercup(signalingMessage_1.signalingMessageTemplate.encode({
+        return pollenium_uvaursi_1.Uu.wrap(signalingMessage_1.signalingMessageTemplate.encode({
             key: signalingMessage_1.SIGNALING_MESSAGE_KEY.ANSWER,
             value: {
-                clientNonce: this.clientNonce.uint8Array,
-                offerId: this.offerId.uint8Array,
-                sdpb: this.sdpb.uint8Array
+                clientNonce: this.clientNonce.unwrap(),
+                offerId: this.offerId.unwrap(),
+                sdpb: this.sdpb.unwrap()
             }
         }));
     };
     Answer.fromHenpojo = function (henpojo) {
-        return new Answer(new pollenium_buttercup_1.Buttercup(henpojo.clientNonce), new pollenium_buttercup_1.Buttercup(henpojo.offerId), new pollenium_buttercup_1.Buttercup(henpojo.sdpb));
+        return new Answer({
+            clientNonce: henpojo.clientNonce,
+            offerId: henpojo.offerId,
+            sdpb: henpojo.sdpb
+        });
     };
     return Answer;
 }());

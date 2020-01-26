@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var pollenium_buttercup_1 = require("pollenium-buttercup");
 var Missive_1 = require("./Missive");
 var utils_1 = require("../utils");
@@ -17,7 +18,7 @@ var Friendship = (function () {
         this.simplePeer = simplePeer;
         this.status = FRIENDSHIP_STATUS.DEFAULT;
         this.statusSnowdrop = new pollenium_snowdrop_1.Snowdrop();
-        this.createdAt = utils_1.getNow();
+        this.createdAt = utils_1.genNow();
         this.setSimplePeerListeners();
     }
     Friendship.prototype.setStatus = function (status) {
@@ -35,7 +36,7 @@ var Friendship = (function () {
         if (this.peerClientNonce === undefined) {
             throw new Error('peerClientNonce not yet established');
         }
-        return this.peerClientNonce.getXor(this.client.nonce);
+        return new pollenium_buttercup_1.Uint256(this.peerClientNonce.genXor(this.client.nonce));
     };
     Friendship.prototype.setSimplePeerListeners = function () {
         var _this = this;
@@ -48,7 +49,7 @@ var Friendship = (function () {
             _this.setStatus(FRIENDSHIP_STATUS.CONNECTED);
         });
         this.simplePeer.on('data', function (missiveEncodingBuffer) {
-            var missive = Missive_1.Missive.fromEncoding(_this.client, pollenium_buttercup_1.Buttercup.fromBuffer(missiveEncodingBuffer));
+            var missive = Missive_1.Missive.fromEncoding(_this.client, pollenium_uvaursi_1.Uu.wrap(missiveEncodingBuffer));
             _this.handleMessage(missive);
         });
         this.simplePeer.once('error', function () {
@@ -82,7 +83,7 @@ var Friendship = (function () {
         if (!this.getIsSendable()) {
             throw new Error('friendship not sendable');
         }
-        this.simplePeer.send(bytes.uint8Array);
+        this.simplePeer.send(bytes.unwrap());
     };
     Friendship.prototype.sendMessage = function (missive) {
         this.send(missive.getEncoding());

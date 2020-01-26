@@ -38,7 +38,7 @@ export class SignalingServer {
 
       menteeship.offerSnowdrop.addHandle((offer) => {
 
-        const offerIdHex = offer.getId().getHex()
+        const offerIdHex = offer.getId().toHex()
 
         this.menteeshipsByOfferIdHex[offerIdHex] = menteeship
 
@@ -53,7 +53,7 @@ export class SignalingServer {
       })
 
       menteeship.answerSnowdrop.addHandle((answer) => {
-        this.menteeshipsByOfferIdHex[answer.offerId.getHex()].sendAnswer(answer)
+        this.menteeshipsByOfferIdHex[answer.offerId.toHex()].sendAnswer(answer)
       })
 
       menteeship.flushOfferSnowdrop.addHandle((flushOffer) => {

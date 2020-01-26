@@ -2,9 +2,9 @@ import { Friendship, FRIENDSHIP_STATUS } from './Friendship'
 import { Offer } from './Offer'
 import { Answer } from './Answer'
 import SimplePeer, { SignalData as SimplePeerSignalData } from 'simple-peer'
-import { getSimplePeerConfig } from '../utils'
+import { genSimplePeerConfig } from '../utils'
 import delay from 'delay'
-import { Buttercup } from 'pollenium-buttercup'
+import { Uu } from 'pollenium-uvaursi'
 import { Client } from './Client'
 
 
@@ -15,30 +15,30 @@ export class Introvert extends Friendship {
       initiator: false,
       trickle: false,
       wrtc: client.options.wrtc,
-      config: getSimplePeerConfig()
+      config: genSimplePeerConfig()
     }))
     this.peerClientNonce = offer.clientNonce
     this.connect()
   }
 
-  private fetchAnswerSdpb(): Promise<Buttercup> {
+  private fetchAnswerSdpb(): Promise<Uu> {
     return new Promise((resolve): void => {
       this.simplePeer.once('signal', (signal: SimplePeerSignalData) => {
-        resolve(Buttercup.fromUtf8(signal.sdp))
+        resolve(Uu.fromUtf8(signal.sdp))
       })
       this.simplePeer.signal({
         type: 'offer',
-        sdp: this.offer.sdpb.getUtf8()
+        sdp: this.offer.sdpb.toUtf8()
       })
     })
   }
 
   private async fetchAnswer(): Promise<Answer> {
-    return new Answer(
-      this.client.nonce,
-      this.offer.getId(),
-      await this.fetchAnswerSdpb()
-    )
+    return new Answer({
+      clientNonce: this.client.nonce,
+      offerId: this.offer.getId(),
+      sdpb: await this.fetchAnswerSdpb()
+    })
   }
 
   private async connect(): Promise<void> {
@@ -47,9 +47,9 @@ export class Introvert extends Friendship {
 
     const answer = await this.fetchAnswer()
 
-    this.client.signalingClientsByOfferIdHex[this.offer.getId().getHex()].sendAnswer(answer)
+    this.client.signalingClientsByOfferIdHex[this.offer.getId().toHex()].sendAnswer(answer)
 
-    await delay(this.client.signalTimeoutMs * 2)
+    await delay(this.client.options.signalTimeout * 1000)
 
     if (this.status === FRIENDSHIP_STATUS.CONNECTING) {
       this.destroy()
