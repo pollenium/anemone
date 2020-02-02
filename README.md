@@ -6,16 +6,15 @@ Anemone is collection of Pollenium client and signaling servers for typescript, 
 
 ## Importing
 
-### Typescript
-
 ````
-import { Client, Bytes, MissiveGenerator } from 'pollenium-anemone/ts'
+import { Client, MissiveGenerator } from 'pollenium-anemone'
+import { Uu } from 'pollenium-uvaursi' /* Uint8Array utilities *?
 ````
 
 ### Node
 
 ````
-const pollenium = require('pollenium-anemone/node')
+const pollenium = require('pollenium-anemone')
 ````
 
 ### Browser
@@ -32,41 +31,41 @@ const client = new pollenium.Client({
     'ws://unsecured-signaling-server.com',
     'wss://secured-signaling-server'
   ],
-  friendshipsMax: 6,
-  Worker: isBrowser ? Worker : require('tiny-worker'),
-  WebSocket: isBrowser ? WebSocket : require('isomorphic-ws'),
-  wrtc: isBrowser ? wrtc : require('wrtc'),
-  hashcashWorkerUrl: 'path/to/hashcash-worker.js'
+  maxFriendshipsCount: 6,
+  wrtc: isBrowser ? wrtc : require('wrtc')
+  bootstrapOffersTimeout: 10,
+  maxOfferAttemptsCount: 2,
+  wrtc: any,
+  missiveLatencyTolerance: 30
 })
 ```
-
-## Friendships
-
-After creating a client, the client will automatically create friendship. You can monitor progress by listening to the `friendship.status` event
-
-````
-client.friendshipStatusSnowdrop.addHandle((friendship) => {
-  ...
-})
-````
 
 ## Missives
 
 Missives require hashcash proof of work. This hashcash proof of work is generated asynchronously in a seperate thread so that it does not block the main execution.
 
 ````
-const applicationId = pollenium.Bytes.fromUtf8('your-app-id').padLeft(32)
-const applicationData = pollenium.Bytes.random(32)
+const applicationId = Uu.fromUtf8('your-app-id').padLeft(32)
+const applicationData = Uu.genRandom(32)
 const difficulty = 6
 
+const Worker = isWorker ? Worker : require('tiny-worker')
 const missiveGenerator = new pollenium.MissiveGenerator({
-  client,
   applicationId,
   applicationData,
-  difficulty
+  difficulty,
+  hashcashWorker: new Worker('pollenium-anemone/node/hashcash-worker.js', [], { esm: true })
 )
 
 const missive = await missiveGenerator.fetchMissive()
 
-missive.broadcast()
+client.broadcastMissive(missve)
+````
+
+Listen for incoming missives on the client's missive Snowdrop
+
+````
+client.missiveSnowdrop.addHandle((missive) => {
+  doThing(missive.applicationData)
+})
 ````
