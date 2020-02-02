@@ -35,14 +35,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
-var Offer_1 = require("./Offer");
-var Answer_1 = require("./Answer");
-var FlushOffer_1 = require("./FlushOffer");
+var Offer_1 = require("./Signal/Offer");
+var Answer_1 = require("./Signal/Answer");
+var Flush_1 = require("./Signal/Flush");
 var signalingMessage_1 = require("../templates/signalingMessage");
 var pollenium_snowdrop_1 = require("pollenium-snowdrop");
-var Menteeship = (function () {
+var Menteeship = /** @class */ (function () {
     function Menteeship(signalingServer, wsConnection) {
         this.signalingServer = signalingServer;
         this.wsConnection = wsConnection;
@@ -62,19 +62,20 @@ var Menteeship = (function () {
                     var signalingMessageHenpojo = signalingMessage_1.signalingMessageTemplate.decode(new Uint8Array(message.binaryData));
                     switch (signalingMessageHenpojo.key) {
                         case signalingMessage_1.SIGNALING_MESSAGE_KEY.OFFER:
-                            _this.offerSnowdrop.emitIfHandle(Offer_1.Offer.fromHenpojo(signalingMessageHenpojo.value));
+                            var offer = Offer_1.Offer.fromHenpojo(signalingMessageHenpojo.value);
+                            _this.offerSnowdrop.emit(offer);
                             break;
                         case signalingMessage_1.SIGNALING_MESSAGE_KEY.ANSWER:
-                            _this.answerSnowdrop.emitIfHandle(Answer_1.Answer.fromHenpojo(signalingMessageHenpojo.value));
+                            _this.answerSnowdrop.emit(Answer_1.Answer.fromHenpojo(signalingMessageHenpojo.value));
                             break;
-                        case signalingMessage_1.SIGNALING_MESSAGE_KEY.FLUSH_OFFER:
-                            _this.flushOfferSnowdrop.emitIfHandle(FlushOffer_1.FlushOffer.fromHenpojo(signalingMessageHenpojo.value));
+                        case signalingMessage_1.SIGNALING_MESSAGE_KEY.FLUSH:
+                            _this.flushOfferSnowdrop.emit(Flush_1.Flush.fromHenpojo(signalingMessageHenpojo.value));
                             break;
                         default:
                             throw new Error('Unhandled SIGNALING_MESSAGE_KEY');
                     }
                 });
-                return [2];
+                return [2 /*return*/];
             });
         });
     };
@@ -86,10 +87,10 @@ var Menteeship = (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, this.send(offer.getEncoding())];
+                    case 0: return [4 /*yield*/, this.send(offer.getEncoding())];
                     case 1:
                         _a.sent();
-                        return [2];
+                        return [2 /*return*/];
                 }
             });
         });
@@ -98,22 +99,22 @@ var Menteeship = (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, this.send(answer.getEncoding())];
+                    case 0: return [4 /*yield*/, this.send(answer.getEncoding())];
                     case 1:
                         _a.sent();
-                        return [2];
+                        return [2 /*return*/];
                 }
             });
         });
     };
-    Menteeship.prototype.sendFlushOffer = function (flushOffer) {
+    Menteeship.prototype.sendFlush = function (flushOffer) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, this.send(flushOffer.getEncoding())];
+                    case 0: return [4 /*yield*/, this.send(flushOffer.getEncoding())];
                     case 1:
                         _a.sent();
-                        return [2];
+                        return [2 /*return*/];
                 }
             });
         });
@@ -121,4 +122,3 @@ var Menteeship = (function () {
     return Menteeship;
 }());
 exports.Menteeship = Menteeship;
-//# sourceMappingURL=Menteeship.js.map

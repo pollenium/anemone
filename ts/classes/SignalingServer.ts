@@ -1,18 +1,14 @@
 import { server as WsServer, connection as WsConnection } from 'websocket'
 import * as http from 'http'
 import { Menteeship } from './Menteeship'
-import enableHttpServerDestroy from 'server-destroy'
+
+const enableHttpServerDestroy = require('server-destroy')
 
 export class SignalingServer {
 
   menteeships: Menteeship[] = [];
-
   menteeshipsByOfferIdHex: {[id: string]: Menteeship} = {};
-
-  // offers: Offer[] = [];
-  // TODO: any fix
   httpServer: any;
-
   wsServer: any;
 
   constructor(public port: number) {
@@ -38,7 +34,7 @@ export class SignalingServer {
 
       menteeship.offerSnowdrop.addHandle((offer) => {
 
-        const offerIdHex = offer.getId().toHex()
+        const offerIdHex = offer.id.uu.toHex()
 
         this.menteeshipsByOfferIdHex[offerIdHex] = menteeship
 
@@ -53,14 +49,14 @@ export class SignalingServer {
       })
 
       menteeship.answerSnowdrop.addHandle((answer) => {
-        this.menteeshipsByOfferIdHex[answer.offerId.toHex()].sendAnswer(answer)
+        this.menteeshipsByOfferIdHex[answer.offerId.uu.toHex()].sendAnswer(answer)
       })
 
       menteeship.flushOfferSnowdrop.addHandle((flushOffer) => {
         this.menteeships.sort(() => {
           return Math.random() - .5
         }).forEach((_menteeship) => {
-          _menteeship.sendFlushOffer(flushOffer)
+          _menteeship.sendFlush(flushOffer)
         })
       })
     })

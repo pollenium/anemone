@@ -1,6 +1,6 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var ClientDefaultOptions = (function () {
+exports.__esModule = true;
+var ClientDefaultOptions = /** @class */ (function () {
     function ClientDefaultOptions() {
         this.signalingServerUrls = [];
         this.signalTimeout = 5;
@@ -11,4 +11,3 @@ var ClientDefaultOptions = (function () {
     return ClientDefaultOptions;
 }());
 exports.ClientDefaultOptions = ClientDefaultOptions;
-//# sourceMappingURL=ClientDefaultOptions.js.map

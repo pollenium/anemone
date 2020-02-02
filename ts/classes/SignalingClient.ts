@@ -1,87 +1,48 @@
 import { Client } from './Client'
-import { ConstructableWebSocket } from '../interfaces/ConstructableWebSocket'
 import { Uu, Uish } from 'pollenium-uvaursi'
-import { Offer } from './Offer'
-import { FlushOffer } from './FlushOffer'
-import { Answer } from './Answer'
+import { Offer } from './Signal/Offer'
+import { Flush } from './Signal/Flush'
+import { Answer } from './Signal/Answer'
 import { SIGNALING_MESSAGE_KEY, signalingMessageTemplate } from '../templates/signalingMessage'
 import { Snowdrop } from 'pollenium-snowdrop'
+import { Primrose } from 'pollenium-primrose'
+import { Wisteria } from './Wisteria'
 
 export class SignalingClient {
 
-  bootstrapPromise: Promise<void>;
-
-  wsConnectionPromise: Promise<ConstructableWebSocket>;
+  private wisteria: Wisteria;
 
   readonly offerSnowdrop: Snowdrop<Offer> = new Snowdrop<Offer>();
-
   readonly answerSnowdrop: Snowdrop<Answer> = new Snowdrop<Answer>();
+  readonly flushOfferSnowdrop: Snowdrop<Flush> = new Snowdrop<Flush>();
 
-  readonly flushOfferSnowdrop: Snowdrop<FlushOffer> = new Snowdrop<FlushOffer>();
+  constructor(url: string) {
+    this.wisteria = new Wisteria(url)
 
-  readonly closeSnowdrop: Snowdrop<void> = new Snowdrop<void>();
-
-
-  constructor(public client: Client, public signalingServerUrl: string) {
-    this.fetchConnection()
-  }
-
-  async fetchConnection(): Promise<ConstructableWebSocket> {
-    if (this.wsConnectionPromise) {
-      return this.wsConnectionPromise
-    }
-
-
-    this.wsConnectionPromise = new Promise((resolve, reject): void => {
-
-      const wsConnection = new this.client.options.WebSocket(this.signalingServerUrl)
-      wsConnection.binaryType = 'arraybuffer'
-
-
-      wsConnection.onopen = (): void => {
-        resolve(wsConnection)
+    this.wisteria.dataSnowdrop.addHandle((data) => {
+      const signalingMessageHenpojo = signalingMessageTemplate.decode(data.u)
+      switch(signalingMessageHenpojo.key) {
+        case SIGNALING_MESSAGE_KEY.OFFER: {
+          const offer = Offer.fromHenpojo(signalingMessageHenpojo.value)
+          this.offerSnowdrop.emit(offer)
+          break;
+        }
+        case SIGNALING_MESSAGE_KEY.ANSWER: {
+          this.answerSnowdrop.emit(Answer.fromHenpojo(signalingMessageHenpojo.value))
+          break;
+        }
+        case SIGNALING_MESSAGE_KEY.FLUSH: {
+          this.flushOfferSnowdrop.emit(Flush.fromHenpojo(signalingMessageHenpojo.value))
+          break;
+        }
+        default:
+          throw new Error('Unhandled key')
       }
-
-      wsConnection.onerror = (error): void => {
-        reject(error)
-      }
-
-      wsConnection.onclose = (): void => {
-        delete this.wsConnectionPromise
-        this.closeSnowdrop.emitIfHandle()
-      }
-
-      wsConnection.onmessage = this.handleWsConnectionMessage.bind(this)
-
     })
-
-    return this.wsConnectionPromise
   }
 
-  private handleWsConnectionMessage(message): void {
-    const signalingMessageHenpojo = signalingMessageTemplate.decode(new Uint8Array(message.data))
-    switch(signalingMessageHenpojo.key) {
-      case SIGNALING_MESSAGE_KEY.OFFER: {
-        const offer = Offer.fromHenpojo(signalingMessageHenpojo.value)
-        this.offerSnowdrop.emitIfHandle(offer)
-        break;
-      }
-      case SIGNALING_MESSAGE_KEY.ANSWER: {
-        this.answerSnowdrop.emitIfHandle(Answer.fromHenpojo(signalingMessageHenpojo.value))
-        break;
-      }
-      case SIGNALING_MESSAGE_KEY.FLUSH_OFFER: {
-        this.flushOfferSnowdrop.emitIfHandle(FlushOffer.fromHenpojo(signalingMessageHenpojo.value))
-        break;
-      }
-      default:
-        throw new Error('Unhandled key')
-    }
-  }
-
-  async send(bytes: Uish): Promise<void> {
-    const wsConnection = await this.fetchConnection()
-    wsConnection.send(Uu.wrap(bytes).u)
+  private async send(data: Uu): Promise<void> {
+    this.wisteria.handleData(data)
   }
 
   async sendOffer(offer: Offer): Promise<void> {
@@ -92,7 +53,7 @@ export class SignalingClient {
     await this.send(answer.getEncoding())
   }
 
-  async sendFlushOffer(flushOffer: FlushOffer): Promise<void> {
+  async sendFlush(flushOffer: Flush): Promise<void> {
     await this.send(flushOffer.getEncoding())
   }
 

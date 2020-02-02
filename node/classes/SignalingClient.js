@@ -35,80 +35,46 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-var pollenium_uvaursi_1 = require("pollenium-uvaursi");
-var Offer_1 = require("./Offer");
-var FlushOffer_1 = require("./FlushOffer");
-var Answer_1 = require("./Answer");
+exports.__esModule = true;
+var Offer_1 = require("./Signal/Offer");
+var Flush_1 = require("./Signal/Flush");
+var Answer_1 = require("./Signal/Answer");
 var signalingMessage_1 = require("../templates/signalingMessage");
 var pollenium_snowdrop_1 = require("pollenium-snowdrop");
-var SignalingClient = (function () {
-    function SignalingClient(client, signalingServerUrl) {
-        this.client = client;
-        this.signalingServerUrl = signalingServerUrl;
+var Wisteria_1 = require("./Wisteria");
+var SignalingClient = /** @class */ (function () {
+    function SignalingClient(url) {
+        var _this = this;
         this.offerSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.answerSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.flushOfferSnowdrop = new pollenium_snowdrop_1.Snowdrop();
-        this.closeSnowdrop = new pollenium_snowdrop_1.Snowdrop();
-        this.fetchConnection();
-    }
-    SignalingClient.prototype.fetchConnection = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
-            return __generator(this, function (_a) {
-                if (this.wsConnectionPromise) {
-                    return [2, this.wsConnectionPromise];
+        this.wisteria = new Wisteria_1.Wisteria(url);
+        this.wisteria.dataSnowdrop.addHandle(function (data) {
+            var signalingMessageHenpojo = signalingMessage_1.signalingMessageTemplate.decode(data.u);
+            switch (signalingMessageHenpojo.key) {
+                case signalingMessage_1.SIGNALING_MESSAGE_KEY.OFFER: {
+                    var offer = Offer_1.Offer.fromHenpojo(signalingMessageHenpojo.value);
+                    _this.offerSnowdrop.emit(offer);
+                    break;
                 }
-                this.wsConnectionPromise = new Promise(function (resolve, reject) {
-                    var wsConnection = new _this.client.options.WebSocket(_this.signalingServerUrl);
-                    wsConnection.binaryType = 'arraybuffer';
-                    wsConnection.onopen = function () {
-                        resolve(wsConnection);
-                    };
-                    wsConnection.onerror = function (error) {
-                        reject(error);
-                    };
-                    wsConnection.onclose = function () {
-                        delete _this.wsConnectionPromise;
-                        _this.closeSnowdrop.emitIfHandle();
-                    };
-                    wsConnection.onmessage = _this.handleWsConnectionMessage.bind(_this);
-                });
-                return [2, this.wsConnectionPromise];
-            });
+                case signalingMessage_1.SIGNALING_MESSAGE_KEY.ANSWER: {
+                    _this.answerSnowdrop.emit(Answer_1.Answer.fromHenpojo(signalingMessageHenpojo.value));
+                    break;
+                }
+                case signalingMessage_1.SIGNALING_MESSAGE_KEY.FLUSH: {
+                    _this.flushOfferSnowdrop.emit(Flush_1.Flush.fromHenpojo(signalingMessageHenpojo.value));
+                    break;
+                }
+                default:
+                    throw new Error('Unhandled key');
+            }
         });
-    };
-    SignalingClient.prototype.handleWsConnectionMessage = function (message) {
-        var signalingMessageHenpojo = signalingMessage_1.signalingMessageTemplate.decode(new Uint8Array(message.data));
-        switch (signalingMessageHenpojo.key) {
-            case signalingMessage_1.SIGNALING_MESSAGE_KEY.OFFER: {
-                var offer = Offer_1.Offer.fromHenpojo(signalingMessageHenpojo.value);
-                this.offerSnowdrop.emitIfHandle(offer);
-                break;
-            }
-            case signalingMessage_1.SIGNALING_MESSAGE_KEY.ANSWER: {
-                this.answerSnowdrop.emitIfHandle(Answer_1.Answer.fromHenpojo(signalingMessageHenpojo.value));
-                break;
-            }
-            case signalingMessage_1.SIGNALING_MESSAGE_KEY.FLUSH_OFFER: {
-                this.flushOfferSnowdrop.emitIfHandle(FlushOffer_1.FlushOffer.fromHenpojo(signalingMessageHenpojo.value));
-                break;
-            }
-            default:
-                throw new Error('Unhandled key');
-        }
-    };
-    SignalingClient.prototype.send = function (bytes) {
+    }
+    SignalingClient.prototype.send = function (data) {
         return __awaiter(this, void 0, void 0, function () {
-            var wsConnection;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4, this.fetchConnection()];
-                    case 1:
-                        wsConnection = _a.sent();
-                        wsConnection.send(pollenium_uvaursi_1.Uu.wrap(bytes).u);
-                        return [2];
-                }
+                this.wisteria.handleData(data);
+                return [2 /*return*/];
             });
         });
     };
@@ -116,10 +82,10 @@ var SignalingClient = (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, this.send(offer.getEncoding())];
+                    case 0: return [4 /*yield*/, this.send(offer.getEncoding())];
                     case 1:
                         _a.sent();
-                        return [2];
+                        return [2 /*return*/];
                 }
             });
         });
@@ -128,22 +94,22 @@ var SignalingClient = (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, this.send(answer.getEncoding())];
+                    case 0: return [4 /*yield*/, this.send(answer.getEncoding())];
                     case 1:
                         _a.sent();
-                        return [2];
+                        return [2 /*return*/];
                 }
             });
         });
     };
-    SignalingClient.prototype.sendFlushOffer = function (flushOffer) {
+    SignalingClient.prototype.sendFlush = function (flushOffer) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, this.send(flushOffer.getEncoding())];
+                    case 0: return [4 /*yield*/, this.send(flushOffer.getEncoding())];
                     case 1:
                         _a.sent();
-                        return [2];
+                        return [2 /*return*/];
                 }
             });
         });
@@ -151,4 +117,3 @@ var SignalingClient = (function () {
     return SignalingClient;
 }());
 exports.SignalingClient = SignalingClient;
-//# sourceMappingURL=SignalingClient.js.map

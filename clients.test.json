@@ -1,0 +1,89 @@
+[
+  "Fully Connected",
+  "Fully Connected",
+  "Fully Connected",
+  {
+    "idHex": "1c279dcb58b1c7fc61f83a2b2ab36d11fb9f7adcfd9e8bd6dce5d33ae8a26457",
+    "partySummary": {
+      "createdAt": 1580687173,
+      "createdAgo": 0,
+      "friendshipsCount": 4,
+      "connectedFriendshipsCount": 3,
+      "offersCount": 1,
+      "offerInfos": [
+        {
+          "idHex": "b0e23b20fc0d2891194f1e54647b8fef8b763606724da2ff7715ff6dfac43f53",
+          "offerClientIdHex": "17ffede4f50fcad75fcac5387bc712637e57ed7412e61121a8967ca2cd327805",
+          "attemptsCount": 0,
+          "firstReceivedAgo": 9,
+          "lastReceivedAgo": 4,
+          "distance": "0bd8702fadbe0d2b3e32ff1351747f7285c897a8ef789af77473af9825901c52"
+        }
+      ],
+      "friendshipsCountsByStatus": {
+        "0": 0,
+        "1": 1,
+        "2": 3
+      },
+      "introvertsGroup": {
+        "friendshipsCount": 3,
+        "friendshipsCountsByStatus": {
+          "0": 0,
+          "1": 1,
+          "2": 2
+        }
+      },
+      "extrovertsGroup": {
+        "friendshipsCount": 1,
+        "friendshipsCountsByStatus": {
+          "0": 0,
+          "1": 0,
+          "2": 1
+        }
+      }
+    }
+  },
+  {
+    "idHex": "5e5e0fa745cd3188382b35e01b0a35c7b1552506f5f90814af51ec7c57143c04",
+    "partySummary": {
+      "createdAt": 1580687173,
+      "createdAgo": 0,
+      "friendshipsCount": 4,
+      "connectedFriendshipsCount": 3,
+      "offersCount": 1,
+      "offerInfos": [
+        {
+          "idHex": "b0e23b20fc0d2891194f1e54647b8fef8b763606724da2ff7715ff6dfac43f53",
+          "offerClientIdHex": "17ffede4f50fcad75fcac5387bc712637e57ed7412e61121a8967ca2cd327805",
+          "attemptsCount": 0,
+          "firstReceivedAgo": 9,
+          "lastReceivedAgo": 4,
+          "distance": "49a1e243b0c2fb5f67e1f0d860cd27a4cf02c872e71f193507c790de9a264401"
+        }
+      ],
+      "friendshipsCountsByStatus": {
+        "0": 0,
+        "1": 1,
+        "2": 3
+      },
+      "introvertsGroup": {
+        "friendshipsCount": 4,
+        "friendshipsCountsByStatus": {
+          "0": 0,
+          "1": 1,
+          "2": 3
+        }
+      },
+      "extrovertsGroup": {
+        "friendshipsCount": 0,
+        "friendshipsCountsByStatus": {
+          "0": 0,
+          "1": 0,
+          "2": 0
+        }
+      }
+    }
+  },
+  "Fully Connected",
+  "Fully Connected"
+]

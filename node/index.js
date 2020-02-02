@@ -6,7 +6,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var _utils = __importStar(require("./utils"));
 var pollenium_buttercup_1 = require("pollenium-buttercup");
 exports.Buttercup = pollenium_buttercup_1.Buttercup;
@@ -15,4 +15,3 @@ exports.Client = Client_1.Client;
 var MissiveGenerator_1 = require("./classes/MissiveGenerator");
 exports.MissiveGenerator = MissiveGenerator_1.MissiveGenerator;
 exports.utils = _utils;
-//# sourceMappingURL=index.js.map

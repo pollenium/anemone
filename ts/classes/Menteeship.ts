@@ -1,9 +1,9 @@
 import { connection as WsConnection } from 'websocket'
 import { SignalingServer } from './SignalingServer'
 import { Uish, Uu } from 'pollenium-uvaursi'
-import { Offer } from './Offer'
-import { Answer } from './Answer'
-import { FlushOffer } from './FlushOffer'
+import { Offer } from './Signal/Offer'
+import { Answer } from './Signal/Answer'
+import { Flush } from './Signal/Flush'
 import { SIGNALING_MESSAGE_KEY, signalingMessageTemplate } from '../templates/signalingMessage'
 import { Snowdrop } from 'pollenium-snowdrop'
 
@@ -15,7 +15,7 @@ export class Menteeship {
 
   readonly answerSnowdrop: Snowdrop<Answer> = new Snowdrop<Answer>();
 
-  readonly flushOfferSnowdrop: Snowdrop<FlushOffer> = new Snowdrop<FlushOffer>();
+  readonly flushOfferSnowdrop: Snowdrop<Flush> = new Snowdrop<Flush>();
 
   constructor(public signalingServer: SignalingServer, public wsConnection: WsConnection) {
     this.bootstrapPromise = this.bootstrap()
@@ -30,13 +30,14 @@ export class Menteeship {
 
       switch(signalingMessageHenpojo.key) {
         case SIGNALING_MESSAGE_KEY.OFFER:
-          this.offerSnowdrop.emitIfHandle(Offer.fromHenpojo(signalingMessageHenpojo.value))
+          const offer = Offer.fromHenpojo(signalingMessageHenpojo.value)
+          this.offerSnowdrop.emit(offer)
           break;
         case SIGNALING_MESSAGE_KEY.ANSWER:
-          this.answerSnowdrop.emitIfHandle(Answer.fromHenpojo(signalingMessageHenpojo.value))
+          this.answerSnowdrop.emit(Answer.fromHenpojo(signalingMessageHenpojo.value))
           break;
-        case SIGNALING_MESSAGE_KEY.FLUSH_OFFER:
-          this.flushOfferSnowdrop.emitIfHandle(FlushOffer.fromHenpojo(signalingMessageHenpojo.value))
+        case SIGNALING_MESSAGE_KEY.FLUSH:
+          this.flushOfferSnowdrop.emit(Flush.fromHenpojo(signalingMessageHenpojo.value))
           break;
         default:
           throw new Error('Unhandled SIGNALING_MESSAGE_KEY')
@@ -57,7 +58,7 @@ export class Menteeship {
     await this.send(answer.getEncoding())
   }
 
-  async sendFlushOffer(flushOffer: FlushOffer): Promise<void> {
+  async sendFlush(flushOffer: Flush): Promise<void> {
     await this.send(flushOffer.getEncoding())
   }
 }

@@ -11,31 +11,22 @@ export enum MISSIVE_COVER {
 
 export class Missive {
 
-  public cover: MISSIVE_COVER;
+  readonly cover: MISSIVE_COVER;
+  readonly version: MISSIVE_KEY;
+  readonly timestamp: Uint40;
+  readonly difficulty: Uint8;
+  readonly nonce: Uu;
+  readonly applicationId: Bytes32;
+  readonly applicationData: Uu;
 
-  public version: MISSIVE_KEY;
-
-  public timestamp: Uint40;
-
-  public difficulty: Uint8;
-
-  public nonce: Uu;
-
-  public applicationId: Bytes32;
-
-  public applicationData: Uu;
-
-  constructor(
-    public client: Client,
-    struct: {
-      version: MISSIVE_KEY,
-      nonce: Uish,
-      applicationId: Uish,
-      applicationData: Uish,
-      timestamp: Uintable,
-      difficulty: Uintable
-    }
-  ) {
+  constructor(struct: {
+    version: MISSIVE_KEY,
+    nonce: Uish,
+    applicationId: Uish,
+    applicationData: Uish,
+    timestamp: Uintable,
+    difficulty: Uintable
+  }) {
     this.cover = MISSIVE_COVER.V0
     this.version = struct.version
     this.nonce = Uu.wrap(struct.nonce)
@@ -73,23 +64,23 @@ export class Missive {
     return genEra(this.timestamp.toNumber())
   }
 
-  getIsReceived(): boolean {
-    const era = this.getEra()
-    const idHex = this.getId().uu.toHex()
-    if (this.client.missiveIsReceivedByIdHexByEra[era] === undefined) {
-      return false
-    }
-    return this.client.missiveIsReceivedByIdHexByEra[era][idHex] === true
-  }
+  // getIsReceived(): boolean {
+  //   const era = this.getEra()
+  //   const idHex = this.getId().uu.toHex()
+  //   if (this.client.missiveIsReceivedByIdHexByEra[era] === undefined) {
+  //     return false
+  //   }
+  //   return this.client.missiveIsReceivedByIdHexByEra[era][idHex] === true
+  // }
 
-  markIsReceived(): void {
-    const era = this.getEra()
-    const idHex = this.getId().uu.toHex()
-    if (this.client.missiveIsReceivedByIdHexByEra[era] === undefined) {
-      this.client.missiveIsReceivedByIdHexByEra[era] = {}
-    }
-    this.client.missiveIsReceivedByIdHexByEra[era][idHex] = true
-  }
+  // markIsReceived(): void {
+  //   const era = this.getEra()
+  //   const idHex = this.getId().uu.toHex()
+  //   if (this.client.missiveIsReceivedByIdHexByEra[era] === undefined) {
+  //     this.client.missiveIsReceivedByIdHexByEra[era] = {}
+  //   }
+  //   this.client.missiveIsReceivedByIdHexByEra[era][idHex] = true
+  // }
 
   getMaxHash(): Uint256 {
     return genMaxHash({
@@ -103,55 +94,32 @@ export class Missive {
     if (this.version !== MISSIVE_KEY.V0) {
       return false
     }
-    const timestamp = genTimestamp()
-    if (this.timestamp.compLt(timestamp.opSub(this.client.options.missiveLatencyTolerance))) {
-      return false
-    }
-    if (this.timestamp.compGt(timestamp)) {
-      return false
-    }
-    if (this.getIsReceived()) {
-      return false
-    }
     if (this.getHash().compGt(this.getMaxHash())) {
       return false
     }
     return true
   }
 
-  broadcast(): void {
-    this.markIsReceived()
-    this.client.getFriendships().forEach((friendship) => {
-      if (!friendship.getIsSendable()) {
-        return
-      }
-      friendship.send(this.getEncoding())
-    })
-  }
-
-  static fromHenpojo(client: Client, henpojo: any): Missive {
+  static fromHenpojo(henpojo: any): Missive {
     switch (henpojo.key) {
       case MISSIVE_KEY.V0: {
         const v0Henpojo = henpojo.value
-        return new Missive(
-          client,
-          {
-            version: henpojo.key,
-            timestamp: new Uint40(v0Henpojo.timestamp),
-            difficulty: v0Henpojo.difficulty[0],
-            nonce: v0Henpojo.nonce,
-            applicationId: v0Henpojo.applicationId,
-            applicationData: v0Henpojo.applicationData
-          }
-        )
+        return new Missive({
+          version: henpojo.key,
+          timestamp: new Uint40(v0Henpojo.timestamp),
+          difficulty: v0Henpojo.difficulty[0],
+          nonce: v0Henpojo.nonce,
+          applicationId: v0Henpojo.applicationId,
+          applicationData: v0Henpojo.applicationData
+        })
       }
       default:
         throw new Error('Unhandled MISSIVE_KEY')
     }
   }
 
-  static fromEncoding(client: Client, encoding: Uish): Missive {
-    return Missive.fromHenpojo(client, missiveTemplate.decode(Uu.wrap(encoding).unwrap()))
+  static fromEncoding(encoding: Uish): Missive {
+    return Missive.fromHenpojo(missiveTemplate.decode(Uu.wrap(encoding).unwrap()))
   }
 
 }

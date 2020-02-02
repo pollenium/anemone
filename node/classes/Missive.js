@@ -6,7 +6,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var pollenium_buttercup_1 = require("pollenium-buttercup");
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var missive_1 = require("../templates/missive");
@@ -16,9 +16,8 @@ var MISSIVE_COVER;
 (function (MISSIVE_COVER) {
     MISSIVE_COVER[MISSIVE_COVER["V0"] = 69] = "V0";
 })(MISSIVE_COVER = exports.MISSIVE_COVER || (exports.MISSIVE_COVER = {}));
-var Missive = (function () {
-    function Missive(client, struct) {
-        this.client = client;
+var Missive = /** @class */ (function () {
+    function Missive(struct) {
         this.cover = MISSIVE_COVER.V0;
         this.version = struct.version;
         this.nonce = pollenium_uvaursi_1.Uu.wrap(struct.nonce);
@@ -48,22 +47,22 @@ var Missive = (function () {
     Missive.prototype.getEra = function () {
         return utils_1.genEra(this.timestamp.toNumber());
     };
-    Missive.prototype.getIsReceived = function () {
-        var era = this.getEra();
-        var idHex = this.getId().uu.toHex();
-        if (this.client.missiveIsReceivedByIdHexByEra[era] === undefined) {
-            return false;
-        }
-        return this.client.missiveIsReceivedByIdHexByEra[era][idHex] === true;
-    };
-    Missive.prototype.markIsReceived = function () {
-        var era = this.getEra();
-        var idHex = this.getId().uu.toHex();
-        if (this.client.missiveIsReceivedByIdHexByEra[era] === undefined) {
-            this.client.missiveIsReceivedByIdHexByEra[era] = {};
-        }
-        this.client.missiveIsReceivedByIdHexByEra[era][idHex] = true;
-    };
+    // getIsReceived(): boolean {
+    //   const era = this.getEra()
+    //   const idHex = this.getId().uu.toHex()
+    //   if (this.client.missiveIsReceivedByIdHexByEra[era] === undefined) {
+    //     return false
+    //   }
+    //   return this.client.missiveIsReceivedByIdHexByEra[era][idHex] === true
+    // }
+    // markIsReceived(): void {
+    //   const era = this.getEra()
+    //   const idHex = this.getId().uu.toHex()
+    //   if (this.client.missiveIsReceivedByIdHexByEra[era] === undefined) {
+    //     this.client.missiveIsReceivedByIdHexByEra[era] = {}
+    //   }
+    //   this.client.missiveIsReceivedByIdHexByEra[era][idHex] = true
+    // }
     Missive.prototype.getMaxHash = function () {
         return utils_1.genMaxHash({
             difficulty: this.difficulty,
@@ -75,36 +74,16 @@ var Missive = (function () {
         if (this.version !== missive_1.MISSIVE_KEY.V0) {
             return false;
         }
-        var timestamp = utils_1.genTimestamp();
-        if (this.timestamp.compLt(timestamp.opSub(this.client.options.missiveLatencyTolerance))) {
-            return false;
-        }
-        if (this.timestamp.compGt(timestamp)) {
-            return false;
-        }
-        if (this.getIsReceived()) {
-            return false;
-        }
         if (this.getHash().compGt(this.getMaxHash())) {
             return false;
         }
         return true;
     };
-    Missive.prototype.broadcast = function () {
-        var _this = this;
-        this.markIsReceived();
-        this.client.getFriendships().forEach(function (friendship) {
-            if (!friendship.getIsSendable()) {
-                return;
-            }
-            friendship.send(_this.getEncoding());
-        });
-    };
-    Missive.fromHenpojo = function (client, henpojo) {
+    Missive.fromHenpojo = function (henpojo) {
         switch (henpojo.key) {
             case missive_1.MISSIVE_KEY.V0: {
                 var v0Henpojo = henpojo.value;
-                return new Missive(client, {
+                return new Missive({
                     version: henpojo.key,
                     timestamp: new pollenium_buttercup_1.Uint40(v0Henpojo.timestamp),
                     difficulty: v0Henpojo.difficulty[0],
@@ -117,10 +96,9 @@ var Missive = (function () {
                 throw new Error('Unhandled MISSIVE_KEY');
         }
     };
-    Missive.fromEncoding = function (client, encoding) {
-        return Missive.fromHenpojo(client, missive_1.missiveTemplate.decode(pollenium_uvaursi_1.Uu.wrap(encoding).unwrap()));
+    Missive.fromEncoding = function (encoding) {
+        return Missive.fromHenpojo(missive_1.missiveTemplate.decode(pollenium_uvaursi_1.Uu.wrap(encoding).unwrap()));
     };
     return Missive;
 }());
 exports.Missive = Missive;
-//# sourceMappingURL=Missive.js.map
