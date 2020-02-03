@@ -30,7 +30,8 @@ export enum DESTROY_REASON {
   WRTC_CLOSE = 'WRTC_CLOSE',
   WRTC_ERROR = 'WRTC_ERROR',
   ICE_DISCONNECT = 'ICE_DISCONNECT',
-  TOO_FAR = 'TOO_FAR'
+  TOO_FAR = 'TOO_FAR',
+  NEW_OFFER = 'NEW_OFFER'
 }
 
 export abstract class Friendship {

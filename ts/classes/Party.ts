@@ -225,7 +225,7 @@ export class Party {
     if (
       this.extrovertsGroup.getHasAnUnconnectedFriendship()
     ) {
-      this.extrovertsGroup.destroyAnUnconnectedFriendship()
+      this.extrovertsGroup.destroyAnUnconnectedFriendship(DESTROY_REASON.NEW_OFFER)
       return
     }
     const worstPeerClientIdAndDistance = this.getWorstPeerClientIdAndDistance()

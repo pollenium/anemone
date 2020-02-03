@@ -37,13 +37,14 @@ var FriendshipsGroup = /** @class */ (function () {
         }
         return false;
     };
-    FriendshipsGroup.prototype.destroyAnUnconnectedFriendship = function () {
+    FriendshipsGroup.prototype.destroyAnUnconnectedFriendship = function (reason) {
         var friendship = this.friendships.find(function (friendship) {
             return friendship.getStatus() !== Friendship_1.FRIENDSHIP_STATUS.CONNECTED;
         });
         if (!friendship) {
             throw new Error('No unconnected friendships');
         }
+        friendship.destroy(reason);
     };
     FriendshipsGroup.prototype.getPeerClientIds = function () {
         return this.friendships.map(function (friendship) {

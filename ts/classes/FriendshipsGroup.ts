@@ -44,13 +44,14 @@ export class FriendshipsGroup<FriendshipClass extends Friendship> {
     return false
   }
 
-  destroyAnUnconnectedFriendship(): void {
+  destroyAnUnconnectedFriendship(reason): void {
     const friendship = this.friendships.find((friendship) => {
       return friendship.getStatus() !== FRIENDSHIP_STATUS.CONNECTED
     })
     if (!friendship) {
       throw new Error('No unconnected friendships')
     }
+    friendship.destroy(reason)
   }
 
   getPeerClientIds(): Array<Bytes32> {

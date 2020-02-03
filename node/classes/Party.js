@@ -185,7 +185,7 @@ var Party = /** @class */ (function () {
             return;
         }
         if (this.extrovertsGroup.getHasAnUnconnectedFriendship()) {
-            this.extrovertsGroup.destroyAnUnconnectedFriendship();
+            this.extrovertsGroup.destroyAnUnconnectedFriendship(Friendship_1.DESTROY_REASON.NEW_OFFER);
             return;
         }
         var worstPeerClientIdAndDistance = this.getWorstPeerClientIdAndDistance();

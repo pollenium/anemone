@@ -34,6 +34,7 @@ var DESTROY_REASON;
     DESTROY_REASON["WRTC_ERROR"] = "WRTC_ERROR";
     DESTROY_REASON["ICE_DISCONNECT"] = "ICE_DISCONNECT";
     DESTROY_REASON["TOO_FAR"] = "TOO_FAR";
+    DESTROY_REASON["NEW_OFFER"] = "NEW_OFFER";
 })(DESTROY_REASON = exports.DESTROY_REASON || (exports.DESTROY_REASON = {}));
 var Friendship = /** @class */ (function () {
     function Friendship(options) {
