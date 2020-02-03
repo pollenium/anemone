@@ -4,10 +4,12 @@ import SimplePeer from 'simple-peer'
 import { genSimplePeerConfig } from '../../utils/genSimplePeerConfig'
 import Wrtc from 'wrtc'
 import delay from 'delay'
+import { IFriendshipPartyOptions } from '../../interfaces/Options'
+
 
 export class Introvert extends Friendship {
 
-  constructor(offer: Offer, options: { wrtc: any, missiveLatencyTolerance: number }) {
+  constructor(offer: Offer, options: IFriendshipPartyOptions) {
     super({
       ...options,
       initiator: false

@@ -12,6 +12,7 @@ import { Offer } from './Signal/Offer'
 import { Answer } from './Signal/Answer'
 import { Flush } from './Signal/Flush'
 import { Primrose } from 'pollenium-primrose'
+import { IClientOptions } from '../interfaces/Options'
 
 export class Client {
 
@@ -29,24 +30,10 @@ export class Client {
 
   private maxFriendshipsConnectedPrimrose: Primrose<void> = new Primrose<void>();
 
-  constructor(private options: {
-    maxFriendshipsCount: number,
-    signalingServerUrls: Array<string>,
-    bootstrapOffersTimeout: number,
-    maxOfferAttemptsCount: number,
-    wrtc: any,
-    missiveLatencyTolerance: number
-  }) {
+  constructor(private options: IClientOptions) {
 
-    this.party = new Party({
-      maxFriendshipsCount: options.maxFriendshipsCount,
-      bootstrapOffersTimeout: options.bootstrapOffersTimeout,
-      maxOfferAttemptsCount: options.maxOfferAttemptsCount,
-      wrtc: options.wrtc,
-      missiveLatencyTolerance: options.missiveLatencyTolerance,
-      clientId: this.id
-    })
-    this.signalingClientsManager = new SignalingClientsManager(options.signalingServerUrls)
+    this.party = new Party({ clientId: this.id, ...options })
+    this.signalingClientsManager = new SignalingClientsManager({ ...options })
 
     this.signalingClientsManager.offerSnowdrop.addHandle((offer) => {
       if (offer.clientId.uu.getIsEqual(this.id.uu)) {

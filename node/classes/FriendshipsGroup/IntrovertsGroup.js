@@ -59,13 +59,13 @@ var IntrovertsGroup = /** @class */ (function (_super) {
         _this.partialAnswerSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         return _this;
     }
-    IntrovertsGroup.prototype.create = function (offer, options) {
+    IntrovertsGroup.prototype.create = function (offer) {
         return __awaiter(this, void 0, void 0, function () {
             var introvert, sdpb;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        introvert = new Introvert_1.Introvert(offer, options);
+                        introvert = new Introvert_1.Introvert(offer, this.options);
                         this.addFriendship(introvert);
                         return [4 /*yield*/, introvert.fetchSdpb()];
                     case 1:

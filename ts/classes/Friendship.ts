@@ -8,6 +8,7 @@ import SimplePeer, { SignalData as SimplePeerSignalData } from 'simple-peer'
 import { Snowdrop } from 'pollenium-snowdrop'
 import { Primrose } from 'pollenium-primrose'
 import delay from 'delay'
+import { IFriendshipOptions } from '../interfaces/Options'
 
 export enum FRIENDSHIP_STATUS {
   DEFAULT = 0,
@@ -54,11 +55,7 @@ export abstract class Friendship {
   private banReason: BAN_REASON | null = null
   private destroyReason: DESTROY_REASON | null = null
 
-  constructor(options: {
-    initiator: boolean,
-    wrtc: any,
-    missiveLatencyTolerance: number
-  }) {
+  constructor(options: IFriendshipOptions) {
 
     this.simplePeer = new SimplePeer({
       initiator: options.initiator,

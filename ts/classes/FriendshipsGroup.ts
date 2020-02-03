@@ -3,6 +3,7 @@ import { Bytes32 } from 'pollenium-buttercup'
 import { Snowdrop } from 'pollenium-snowdrop'
 import { $enum } from 'ts-enum-util'
 import { Missive } from './Missive'
+import { IFriendshipPartyOptions } from '../interfaces/Options'
 
 export class FriendshipsGroup<FriendshipClass extends Friendship> {
 
@@ -11,6 +12,8 @@ export class FriendshipsGroup<FriendshipClass extends Friendship> {
   readonly banSnowdrop: Snowdrop<Bytes32> = new Snowdrop<Bytes32>();
 
   private friendships: Array<FriendshipClass> = [];
+
+  constructor(protected options: IFriendshipPartyOptions) {}
 
   protected addFriendship(friendship: FriendshipClass) {
     friendship.statusSnowdrop.addHandle((status) => {

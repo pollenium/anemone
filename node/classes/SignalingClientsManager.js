@@ -16,7 +16,7 @@ exports.__esModule = true;
 var SignalingClient_1 = require("./SignalingClient");
 var pollenium_snowdrop_1 = require("pollenium-snowdrop");
 var SignalingClientsManager = /** @class */ (function () {
-    function SignalingClientsManager(urls) {
+    function SignalingClientsManager(options) {
         var _this = this;
         this.signalingClients = [];
         this.signalingClientsByUrl = {};
@@ -26,7 +26,7 @@ var SignalingClientsManager = /** @class */ (function () {
         this.offersDb = new OffersDb;
         this.answersDb = new AnswersDb;
         this.flushesDb = new FlushesDb;
-        urls.forEach(function (url) {
+        options.signalingServerUrls.forEach(function (url) {
             _this.create(url);
         });
     }

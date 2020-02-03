@@ -13,11 +13,8 @@ export class ExtrovertsGroup extends FriendshipsGroup<Extrovert> {
   readonly partialOfferSnowdrop = new Snowdrop<IPartialOffer>();
   readonly partialFlushSnowdrop = new Snowdrop<IPartialFlush>();
 
-  create(options: {
-    wrtc: any
-    missiveLatencyTolerance: number
-  }): void {
-    const extrovert = new Extrovert(options)
+  create(): void {
+    const extrovert = new Extrovert(this.options)
     const offerId = Uu.genRandom(32)
     this.addFriendship(extrovert)
     extrovert.destroyedSnowdrop.addHandle(() => {

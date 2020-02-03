@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __spreadArrays = (this && this.__spreadArrays) || function () {
     for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
     for (var r = Array(s), k = 0, i = 0; i < il; i++)
@@ -57,8 +68,6 @@ var Party = /** @class */ (function () {
         this.options = options;
         this.offerInfos = [];
         this.isClientIdBanned = {};
-        this.introvertsGroup = new IntrovertsGroup_1.IntrovertsGroup;
-        this.extrovertsGroup = new ExtrovertsGroup_1.ExtrovertsGroup;
         this.introvertsGroupSummary = new FriendshipsGroup_1.FriendshipsGroupSummary([]);
         this.extrovertsGroupSummary = new FriendshipsGroup_1.FriendshipsGroupSummary([]);
         this.isBootstrapOffersComplete = false;
@@ -66,10 +75,8 @@ var Party = /** @class */ (function () {
         this.partialAnswerSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.partialOfferSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.partialFlushSnowdrop = new pollenium_snowdrop_1.Snowdrop();
-        this.friendshipOptions = {
-            wrtc: this.options.wrtc,
-            missiveLatencyTolerance: this.options.missiveLatencyTolerance
-        };
+        this.introvertsGroup = new IntrovertsGroup_1.IntrovertsGroup(__assign({}, options));
+        this.extrovertsGroup = new ExtrovertsGroup_1.ExtrovertsGroup(__assign({}, options));
         this.extrovertsGroup.partialOfferSnowdrop.addHandle(function (partialOffer) {
             _this.partialOfferSnowdrop.emit(partialOffer);
         });
@@ -173,10 +180,10 @@ var Party = /** @class */ (function () {
         var offerInfo = this.getBestConnectableOfferInfo();
         if (offerInfo) {
             offerInfo.incrementAttemptsCount();
-            this.introvertsGroup.create(offerInfo.offer, this.friendshipOptions);
+            this.introvertsGroup.create(offerInfo.offer);
         }
         else if (this.isBootstrapOffersComplete) {
-            this.extrovertsGroup.create(this.friendshipOptions);
+            this.extrovertsGroup.create();
         }
     };
     Party.prototype.maybeDestroyFriendship = function () {

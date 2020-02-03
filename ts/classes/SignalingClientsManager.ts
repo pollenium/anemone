@@ -5,6 +5,7 @@ import { Flush } from './Signal/Flush'
 import { SignalingClient } from './SignalingClient'
 import { Bytes32 } from 'pollenium-buttercup'
 import { Snowdrop } from 'pollenium-snowdrop'
+import { ISignalingClientsManagerOptions } from '../interfaces/Options'
 
 export class SignalingClientsManager {
 
@@ -19,8 +20,8 @@ export class SignalingClientsManager {
   private answersDb: AnswersDb = new AnswersDb;
   private flushesDb: FlushesDb = new FlushesDb;
 
-  constructor(urls: Array<string>) {
-    urls.forEach((url) => {
+  constructor(options: ISignalingClientsManagerOptions) {
+    options.signalingServerUrls.forEach((url) => {
       this.create(url)
     })
   }

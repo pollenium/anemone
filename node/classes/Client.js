@@ -33,15 +33,8 @@ var Client = /** @class */ (function () {
         this.summarySnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.missivesDb = new MissivesDb_1.MissivesDb;
         this.maxFriendshipsConnectedPrimrose = new pollenium_primrose_1.Primrose();
-        this.party = new Party_1.Party({
-            maxFriendshipsCount: options.maxFriendshipsCount,
-            bootstrapOffersTimeout: options.bootstrapOffersTimeout,
-            maxOfferAttemptsCount: options.maxOfferAttemptsCount,
-            wrtc: options.wrtc,
-            missiveLatencyTolerance: options.missiveLatencyTolerance,
-            clientId: this.id
-        });
-        this.signalingClientsManager = new SignalingClientsManager_1.SignalingClientsManager(options.signalingServerUrls);
+        this.party = new Party_1.Party(__assign({ clientId: this.id }, options));
+        this.signalingClientsManager = new SignalingClientsManager_1.SignalingClientsManager(__assign({}, options));
         this.signalingClientsManager.offerSnowdrop.addHandle(function (offer) {
             if (offer.clientId.uu.getIsEqual(_this.id.uu)) {
                 return;

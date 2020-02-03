@@ -4,18 +4,15 @@ import SimplePeer from 'simple-peer'
 import { genSimplePeerConfig } from '../../utils/genSimplePeerConfig'
 import { Bytes32 } from 'pollenium-buttercup'
 import { Uu } from 'pollenium-uvaursi'
+import { IFriendshipPartyOptions } from '../../interfaces/Options'
 
 export class Extrovert extends Friendship {
 
-  constructor(options: {
-    wrtc: any
-    missiveLatencyTolerance: number,
-  }) {
+  constructor(options: IFriendshipPartyOptions) {
     super({
       ...options,
       initiator: true
     })
-
   }
 
   handleAnswer(answer: Answer): void {

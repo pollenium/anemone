@@ -14,6 +14,7 @@ import { FRIENDSHIP_STATUS, DESTROY_REASON } from './Friendship'
 import { $enum } from 'ts-enum-util'
 import { genTime } from '../utils/genTime'
 import { Missive } from './Missive'
+import { IPartyOptions } from '../interfaces/Options'
 
 class OfferInfo {
 
@@ -63,33 +64,23 @@ export class Party {
   private offerInfos: Array<OfferInfo> = []
   private isClientIdBanned : {[clientIdHex: string]: boolean } = {}
 
-  private introvertsGroup: IntrovertsGroup = new IntrovertsGroup;
-  private extrovertsGroup: ExtrovertsGroup = new ExtrovertsGroup;
+  private introvertsGroup: IntrovertsGroup
+  private extrovertsGroup: ExtrovertsGroup
 
   private introvertsGroupSummary: FriendshipsGroupSummary = new FriendshipsGroupSummary([]);
   private extrovertsGroupSummary: FriendshipsGroupSummary = new FriendshipsGroupSummary([]);
 
   private isBootstrapOffersComplete: boolean = false
-  private friendshipOptions: { wrtc: any, missiveLatencyTolerance: number}
 
   readonly summarySnowdrop: Snowdrop<PartySummary> = new Snowdrop<PartySummary>();
   readonly partialAnswerSnowdrop: Snowdrop<IPartialAnswer> = new Snowdrop<IPartialAnswer>();
   readonly partialOfferSnowdrop: Snowdrop<IPartialAnswer> = new Snowdrop<IPartialAnswer>();
   readonly partialFlushSnowdrop: Snowdrop<IPartialFlush> = new Snowdrop<IPartialFlush>();
 
-  constructor(private options: {
-    maxFriendshipsCount: number,
-    bootstrapOffersTimeout: number,
-    maxOfferAttemptsCount: number
-    wrtc: any,
-    missiveLatencyTolerance: number,
-    clientId: Bytes32
-  }) {
+  constructor(private options: IPartyOptions) {
 
-    this.friendshipOptions = {
-      wrtc: this.options.wrtc,
-      missiveLatencyTolerance: this.options.missiveLatencyTolerance
-    }
+    this.introvertsGroup = new IntrovertsGroup({ ...options })
+    this.extrovertsGroup = new ExtrovertsGroup({ ...options })
 
 
     this.extrovertsGroup.partialOfferSnowdrop.addHandle((partialOffer) => {
@@ -211,9 +202,9 @@ export class Party {
     const offerInfo = this.getBestConnectableOfferInfo()
     if (offerInfo) {
       offerInfo.incrementAttemptsCount()
-      this.introvertsGroup.create(offerInfo.offer, this.friendshipOptions)
+      this.introvertsGroup.create(offerInfo.offer)
     } else if (this.isBootstrapOffersComplete) {
-      this.extrovertsGroup.create(this.friendshipOptions)
+      this.extrovertsGroup.create()
     }
   }
 

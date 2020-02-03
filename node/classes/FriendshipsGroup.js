@@ -4,7 +4,8 @@ var Friendship_1 = require("./Friendship");
 var pollenium_snowdrop_1 = require("pollenium-snowdrop");
 var ts_enum_util_1 = require("ts-enum-util");
 var FriendshipsGroup = /** @class */ (function () {
-    function FriendshipsGroup() {
+    function FriendshipsGroup(options) {
+        this.options = options;
         this.summarySnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.destroyedSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.banSnowdrop = new pollenium_snowdrop_1.Snowdrop();

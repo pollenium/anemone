@@ -26,9 +26,9 @@ var ExtrovertsGroup = /** @class */ (function (_super) {
         _this.partialFlushSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         return _this;
     }
-    ExtrovertsGroup.prototype.create = function (options) {
+    ExtrovertsGroup.prototype.create = function () {
         var _this = this;
-        var extrovert = new Extrovert_1.Extrovert(options);
+        var extrovert = new Extrovert_1.Extrovert(this.options);
         var offerId = pollenium_uvaursi_1.Uu.genRandom(32);
         this.addFriendship(extrovert);
         extrovert.destroyedSnowdrop.addHandle(function () {
