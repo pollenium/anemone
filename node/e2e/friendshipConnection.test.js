@@ -50,107 +50,115 @@ var wrtc_1 = __importDefault(require("wrtc"));
 var MissiveGenerator_1 = require("../classes/MissiveGenerator");
 var tiny_worker_1 = __importDefault(require("tiny-worker"));
 var clientId = pollenium_uvaursi_1.Uu.genRandom(32);
+var options = {
+    wrtc: wrtc_1["default"],
+    missiveLatencyTolerance: 30,
+    sdpTimeout: 5,
+    connectionTimeout: 10
+};
 var extrovert;
 var introvert;
 var offer;
 var answer;
 var missive;
-test('create extrovert', function () {
-    extrovert = new Extrovert_1.Extrovert({ wrtc: wrtc_1["default"], missiveLatencyTolerance: 30 });
-    extrovert.destroyedSnowdrop.addHandle(function () { });
-});
-test('create offer', function () { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, _b;
-    return __generator(this, function (_c) {
-        switch (_c.label) {
-            case 0:
-                _a = Offer_1.Offer.bind;
-                _b = {
-                    id: pollenium_uvaursi_1.Uu.genRandom(32),
-                    clientId: clientId
-                };
-                return [4 /*yield*/, extrovert.fetchSdpb()];
-            case 1:
-                offer = new (_a.apply(Offer_1.Offer, [void 0, (_b.sdpb = _c.sent(),
-                        _b)]))();
-                return [2 /*return*/];
-        }
+describe('friendshipConnection', function () {
+    test('create extrovert', function () {
+        extrovert = new Extrovert_1.Extrovert(options);
+        extrovert.destroyedSnowdrop.addHandle(function () { });
     });
-}); });
-test('create introvert', function () {
-    introvert = new Introvert_1.Introvert(offer, { wrtc: wrtc_1["default"], missiveLatencyTolerance: 30 });
-    introvert.destroyedSnowdrop.addHandle(function () { });
-});
-test('create answer', function () { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, _b;
-    return __generator(this, function (_c) {
-        switch (_c.label) {
-            case 0:
-                _a = Answer_1.Answer.bind;
-                _b = {
-                    clientId: clientId,
-                    offerId: offer.id
-                };
-                return [4 /*yield*/, introvert.fetchSdpb()];
-            case 1:
-                answer = new (_a.apply(Answer_1.Answer, [void 0, (_b.sdpb = _c.sent(),
-                        _b)]))();
-                return [2 /*return*/];
-        }
+    test('create offer', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var _a, _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    _a = Offer_1.Offer.bind;
+                    _b = {
+                        id: pollenium_uvaursi_1.Uu.genRandom(32),
+                        clientId: clientId
+                    };
+                    return [4 /*yield*/, extrovert.fetchSdpb()];
+                case 1:
+                    offer = new (_a.apply(Offer_1.Offer, [void 0, (_b.sdpb = _c.sent(),
+                            _b)]))();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    test('create introvert', function () {
+        introvert = new Introvert_1.Introvert(offer, options);
+        introvert.destroyedSnowdrop.addHandle(function () { });
     });
-}); });
-test('connect', function () {
-    var connectionPrimrose = new pollenium_primrose_1.Primrose();
-    extrovert.statusSnowdrop.addHandle(function (signal) {
-        if (signal === Friendship_1.FRIENDSHIP_STATUS.CONNECTED) {
-            connectionPrimrose.resolve();
-        }
+    test('create answer', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var _a, _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    _a = Answer_1.Answer.bind;
+                    _b = {
+                        clientId: clientId,
+                        offerId: offer.id
+                    };
+                    return [4 /*yield*/, introvert.fetchSdpb()];
+                case 1:
+                    answer = new (_a.apply(Answer_1.Answer, [void 0, (_b.sdpb = _c.sent(),
+                            _b)]))();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    test('connect', function () {
+        var connectionPrimrose = new pollenium_primrose_1.Primrose();
+        extrovert.statusSnowdrop.addHandle(function (signal) {
+            if (signal === Friendship_1.FRIENDSHIP_STATUS.CONNECTED) {
+                connectionPrimrose.resolve();
+            }
+        });
+        extrovert.handleAnswer(answer);
+        return connectionPrimrose.promise;
+    }, 30000);
+    test('create missive', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var missiveGenerator;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    missiveGenerator = new MissiveGenerator_1.MissiveGenerator({
+                        applicationId: pollenium_uvaursi_1.Uu.genRandom(32),
+                        applicationData: pollenium_uvaursi_1.Uu.genRandom(32),
+                        ttl: 30,
+                        difficulty: 4,
+                        hashcashWorker: new tiny_worker_1["default"](__dirname + "/../../node/hashcash-worker.js", [], { esm: true })
+                    });
+                    return [4 /*yield*/, missiveGenerator.fetchMissive()];
+                case 1:
+                    missive = _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    test('send missive', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var testPrimrose;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    testPrimrose = new pollenium_primrose_1.Primrose();
+                    introvert.missiveSnowdrop.addHandle(function (_missive) {
+                        if (missive.getHash().uu.getIsEqual(_missive.getHash().uu)) {
+                            testPrimrose.resolve();
+                        }
+                        else {
+                            testPrimrose.reject('Missive mismatch');
+                        }
+                    });
+                    extrovert.sendMissive(missive);
+                    return [4 /*yield*/, testPrimrose.promise];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); }, 30000);
+    test('destroy', function () {
+        introvert.destroy(Friendship_1.DESTROY_REASON.GOODBYE);
+        extrovert.destroy(Friendship_1.DESTROY_REASON.GOODBYE);
     });
-    extrovert.handleAnswer(answer);
-    return connectionPrimrose.promise;
-}, 30000);
-test('create missive', function () { return __awaiter(void 0, void 0, void 0, function () {
-    var missiveGenerator;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                missiveGenerator = new MissiveGenerator_1.MissiveGenerator({
-                    applicationId: pollenium_uvaursi_1.Uu.genRandom(32),
-                    applicationData: pollenium_uvaursi_1.Uu.genRandom(32),
-                    ttl: 30,
-                    difficulty: 4,
-                    hashcashWorker: new tiny_worker_1["default"](__dirname + "/../../node/hashcash-worker.js", [], { esm: true })
-                });
-                return [4 /*yield*/, missiveGenerator.fetchMissive()];
-            case 1:
-                missive = _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); });
-test('send missive', function () { return __awaiter(void 0, void 0, void 0, function () {
-    var testPrimrose;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                testPrimrose = new pollenium_primrose_1.Primrose();
-                introvert.missiveSnowdrop.addHandle(function (_missive) {
-                    if (missive.getHash().uu.getIsEqual(_missive.getHash().uu)) {
-                        testPrimrose.resolve();
-                    }
-                    else {
-                        testPrimrose.reject('Missive mismatch');
-                    }
-                });
-                extrovert.sendMissive(missive);
-                return [4 /*yield*/, testPrimrose.promise];
-            case 1:
-                _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); }, 30000);
-test('destroy', function () {
-    introvert.destroy(Friendship_1.DESTROY_REASON.GOODBYE);
-    extrovert.destroy(Friendship_1.DESTROY_REASON.GOODBYE);
 });

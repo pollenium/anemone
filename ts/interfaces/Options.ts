@@ -2,7 +2,9 @@ import { Bytes32 } from 'pollenium-buttercup'
 
 export interface IFriendshipPartyOptions {
   wrtc: any,
-  missiveLatencyTolerance: number
+  missiveLatencyTolerance: number,
+  sdpTimeout: number,
+  connectionTimeout: number
 }
 
 export interface IFriendshipOptions extends IFriendshipPartyOptions {

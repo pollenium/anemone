@@ -78,7 +78,9 @@ test('create clients', function () { return __awaiter(void 0, void 0, void 0, fu
                     bootstrapOffersTimeout: i % 2 ? 0 : 5,
                     maxOfferAttemptsCount: 2,
                     wrtc: wrtc_1["default"],
-                    missiveLatencyTolerance: 10
+                    missiveLatencyTolerance: 10,
+                    sdpTimeout: 5,
+                    connectionTimeout: 10
                 });
                 clients.push(client);
                 return [4 /*yield*/, delay_1["default"](1000)];

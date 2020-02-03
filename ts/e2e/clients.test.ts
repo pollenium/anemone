@@ -38,7 +38,9 @@ test('create clients', async () => {
       bootstrapOffersTimeout: i % 2 ? 0 : 5,
       maxOfferAttemptsCount: 2,
       wrtc: wrtc,
-      missiveLatencyTolerance: 10
+      missiveLatencyTolerance: 10,
+      sdpTimeout: 5,
+      connectionTimeout: 10
     })
     clients.push(client)
 
