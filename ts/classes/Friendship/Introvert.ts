@@ -20,7 +20,7 @@ export class Introvert extends Friendship {
       type: 'offer',
       sdpb: offer.sdpb
     })
-    this.startConnectOrDestroyTimeout(5)
+    this.startConnectOrDestroyTimeout()
   }
 
 }

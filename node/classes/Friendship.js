@@ -40,6 +40,7 @@ var DESTROY_REASON;
 var Friendship = /** @class */ (function () {
     function Friendship(options) {
         var _this = this;
+        this.options = options;
         this.status = FRIENDSHIP_STATUS.DEFAULT;
         this.peerClientId = null;
         this.isDestroyed = false;
@@ -105,7 +106,7 @@ var Friendship = /** @class */ (function () {
         this.fetchSdpb().then(function () {
             isSdpb = true;
         });
-        delay_1["default"](10000).then(function () {
+        delay_1["default"](options.sdpTimeout * 1000).then(function () {
             if (_this.isDestroyed) {
                 return;
             }
@@ -153,9 +154,9 @@ var Friendship = /** @class */ (function () {
         this.simplePeer.removeAllListeners();
         this.simplePeer.destroy();
     };
-    Friendship.prototype.startConnectOrDestroyTimeout = function (timeout) {
+    Friendship.prototype.startConnectOrDestroyTimeout = function () {
         var _this = this;
-        delay_1["default"](timeout * 1000).then(function () {
+        delay_1["default"](this.options.connectionTimeout * 1000).then(function () {
             if (_this.isDestroyed) {
                 return;
             }

@@ -55,7 +55,7 @@ export abstract class Friendship {
   private banReason: BAN_REASON | null = null
   private destroyReason: DESTROY_REASON | null = null
 
-  constructor(options: IFriendshipOptions) {
+  constructor(private options: IFriendshipOptions) {
 
     this.simplePeer = new SimplePeer({
       initiator: options.initiator,
@@ -114,7 +114,7 @@ export abstract class Friendship {
       isSdpb = true
     })
 
-    delay(10000).then(() => {
+    delay(options.sdpTimeout * 1000).then(() => {
       if (this.isDestroyed) {
         return
       }
@@ -171,8 +171,8 @@ export abstract class Friendship {
     this.simplePeer.destroy()
   }
 
-  protected startConnectOrDestroyTimeout(timeout: number): void {
-    delay(timeout * 1000).then(() => {
+  protected startConnectOrDestroyTimeout(): void {
+    delay(this.options.connectionTimeout * 1000).then(() => {
       if (this.isDestroyed) {
         return
       }
