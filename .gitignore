@@ -2,3 +2,4 @@ node_modules
 .tscache
 tscommand-*
 test/e2e/browser/index.js
+clients.test.json
