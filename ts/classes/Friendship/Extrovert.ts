@@ -28,7 +28,7 @@ export class Extrovert extends Friendship {
       type: 'answer',
       sdpb: answer.sdpb
     })
-    this.startConnectOrDestroyTimeout()
+    this.startConnectOrDestroyTimeout(5)
   }
 
   getIsConnectable(): boolean {

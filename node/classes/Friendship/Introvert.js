@@ -35,7 +35,7 @@ var Introvert = /** @class */ (function (_super) {
             type: 'offer',
             sdpb: offer.sdpb
         });
-        _this.startConnectOrDestroyTimeout();
+        _this.startConnectOrDestroyTimeout(5);
         return _this;
     }
     return Introvert;

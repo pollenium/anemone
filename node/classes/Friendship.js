@@ -29,12 +29,13 @@ var DESTROY_REASON;
 (function (DESTROY_REASON) {
     DESTROY_REASON["GOODBYE"] = "GOODBYE";
     DESTROY_REASON["BAN"] = "BAN";
-    DESTROY_REASON["TOO_LONG"] = "TOO_LONG";
     DESTROY_REASON["WRTC_CLOSE"] = "WRTC_CLOSE";
     DESTROY_REASON["WRTC_ERROR"] = "WRTC_ERROR";
     DESTROY_REASON["ICE_DISCONNECT"] = "ICE_DISCONNECT";
     DESTROY_REASON["TOO_FAR"] = "TOO_FAR";
     DESTROY_REASON["NEW_OFFER"] = "NEW_OFFER";
+    DESTROY_REASON["SDP_TIMEOUT"] = "SDP_TIMEOUT";
+    DESTROY_REASON["CONNECTION_TIMEOUT"] = "CONNECTION_TIMEOUT";
 })(DESTROY_REASON = exports.DESTROY_REASON || (exports.DESTROY_REASON = {}));
 var Friendship = /** @class */ (function () {
     function Friendship(options) {
@@ -100,6 +101,19 @@ var Friendship = /** @class */ (function () {
             }
             _this.missiveSnowdrop.emit(missive);
         });
+        var isSdpb = false;
+        this.fetchSdpb().then(function () {
+            isSdpb = true;
+        });
+        delay_1["default"](10000).then(function () {
+            if (_this.isDestroyed) {
+                return;
+            }
+            if (isSdpb) {
+                return;
+            }
+            _this.destroy(DESTROY_REASON.SDP_TIMEOUT);
+        });
     }
     Friendship.prototype.getPeerClientId = function () {
         return this.peerClientId;
@@ -129,25 +143,26 @@ var Friendship = /** @class */ (function () {
         this.simplePeer.send(bytes.unwrap());
     };
     Friendship.prototype.destroy = function (reason) {
+        console.log('DESTROY', reason);
         if (this.isDestroyed) {
             throw new Error("Cannot destroy: " + reason + ", already destroyed: " + this.destroyReason);
         }
         this.destroyReason = reason;
         this.isDestroyed = true;
+        this.destroyedSnowdrop.emit();
         this.simplePeer.removeAllListeners();
         this.simplePeer.destroy();
-        this.destroyedSnowdrop.emit();
     };
-    Friendship.prototype.startConnectOrDestroyTimeout = function () {
+    Friendship.prototype.startConnectOrDestroyTimeout = function (timeout) {
         var _this = this;
-        delay_1["default"](5000).then(function () {
+        delay_1["default"](timeout * 1000).then(function () {
             if (_this.isDestroyed) {
                 return;
             }
             if (_this.status === FRIENDSHIP_STATUS.CONNECTED) {
                 return;
             }
-            _this.destroy(DESTROY_REASON.TOO_LONG);
+            _this.destroy(DESTROY_REASON.CONNECTION_TIMEOUT);
         });
     };
     Friendship.prototype.setPeerClientId = function (peerClientId) {

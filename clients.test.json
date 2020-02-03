@@ -1,37 +1,167 @@
 [
-  "Fully Connected",
   {
-    "idHex": "9cfbfcb06f1c3169ba422bc5d09ea795190656d99e1245540c61d04c32800117",
+    "idHex": "edca3dc1958bb73f4620aaf92cbf1070e16ac5871a57114692384ad5bf0f409c",
     "partySummary": {
-      "createdAt": 1580743955,
+      "createdAt": 1580771465,
+      "createdAgo": 0,
+      "friendshipsCount": 4,
+      "connectedFriendshipsCount": 2,
+      "offersCount": 2,
+      "offerInfos": [
+        {
+          "idHex": "dfa1913a40a4892131e1bdbacd804bfd0dd6265089eac157fac9845a37d9a50a",
+          "offerClientIdHex": "f4611f5554693b729a2b9463c0e84bb30850c0bd58989412b6cf13041f5d34bc",
+          "attemptsCount": 1,
+          "firstReceivedAgo": 2,
+          "lastReceivedAgo": 2,
+          "distance": "19ab2294c1e28c4ddc0b3e9aec575bc3e93a053a42cf855424f759d1a0527420"
+        },
+        {
+          "idHex": "7db8942c043939819c21a99a7fe0eac32b112c347d793ceae3f391f4f95df9f8",
+          "offerClientIdHex": "88273283941ed6333c0d48b686baee667ea3021ed84fb5d385125dfda2da3a39",
+          "attemptsCount": 0,
+          "firstReceivedAgo": 2,
+          "lastReceivedAgo": 2,
+          "distance": "65ed0f420195610c7a2de24faa05fe169fc9c799c218a495172a17281dd57aa5"
+        }
+      ],
+      "friendshipsCountsByStatus": {
+        "0": 1,
+        "1": 1,
+        "2": 2
+      },
+      "introvertsGroup": {
+        "friendshipsCount": 2,
+        "friendshipsCountsByStatus": {
+          "0": 0,
+          "1": 1,
+          "2": 1
+        }
+      },
+      "extrovertsGroup": {
+        "friendshipsCount": 2,
+        "friendshipsCountsByStatus": {
+          "0": 1,
+          "1": 0,
+          "2": 1
+        }
+      }
+    }
+  },
+  {
+    "idHex": "e38737f8e8251033bdefa87abe70eb61cc6467dd5633671396913bbcfb516414",
+    "partySummary": {
+      "createdAt": 1580771465,
+      "createdAgo": 0,
+      "friendshipsCount": 4,
+      "connectedFriendshipsCount": 1,
+      "offersCount": 2,
+      "offerInfos": [
+        {
+          "idHex": "dfa1913a40a4892131e1bdbacd804bfd0dd6265089eac157fac9845a37d9a50a",
+          "offerClientIdHex": "f4611f5554693b729a2b9463c0e84bb30850c0bd58989412b6cf13041f5d34bc",
+          "attemptsCount": 1,
+          "firstReceivedAgo": 2,
+          "lastReceivedAgo": 2,
+          "distance": "17e628adbc4c2b4127c43c197e98a0d2c434a7600eabf301205e28b8e40c50a8"
+        },
+        {
+          "idHex": "7db8942c043939819c21a99a7fe0eac32b112c347d793ceae3f391f4f95df9f8",
+          "offerClientIdHex": "88273283941ed6333c0d48b686baee667ea3021ed84fb5d385125dfda2da3a39",
+          "attemptsCount": 1,
+          "firstReceivedAgo": 2,
+          "lastReceivedAgo": 2,
+          "distance": "6ba0057b7c3bc60081e2e0cc38ca0507b2c765c38e7cd2c013836641598b5e2d"
+        }
+      ],
+      "friendshipsCountsByStatus": {
+        "0": 0,
+        "1": 3,
+        "2": 1
+      },
+      "introvertsGroup": {
+        "friendshipsCount": 3,
+        "friendshipsCountsByStatus": {
+          "0": 0,
+          "1": 3,
+          "2": 0
+        }
+      },
+      "extrovertsGroup": {
+        "friendshipsCount": 1,
+        "friendshipsCountsByStatus": {
+          "0": 0,
+          "1": 0,
+          "2": 1
+        }
+      }
+    }
+  },
+  {
+    "idHex": "4a6224f30c28e262411b5119a5a678df16c17c6c93eb572bfc0e28532210c75d",
+    "partySummary": {
+      "createdAt": 1580771465,
+      "createdAgo": 0,
+      "friendshipsCount": 4,
+      "connectedFriendshipsCount": 1,
+      "offersCount": 2,
+      "offerInfos": [
+        {
+          "idHex": "dfa1913a40a4892131e1bdbacd804bfd0dd6265089eac157fac9845a37d9a50a",
+          "offerClientIdHex": "f4611f5554693b729a2b9463c0e84bb30850c0bd58989412b6cf13041f5d34bc",
+          "attemptsCount": 1,
+          "firstReceivedAgo": 2,
+          "lastReceivedAgo": 2,
+          "distance": "be033ba65841d910db30c57a654e336c1e91bcd1cb73c3394ac13b573d4df3e1"
+        },
+        {
+          "idHex": "7db8942c043939819c21a99a7fe0eac32b112c347d793ceae3f391f4f95df9f8",
+          "offerClientIdHex": "88273283941ed6333c0d48b686baee667ea3021ed84fb5d385125dfda2da3a39",
+          "attemptsCount": 1,
+          "firstReceivedAgo": 2,
+          "lastReceivedAgo": 2,
+          "distance": "c2451670983634517d1619af231c96b968627e724ba4e2f8791c75ae80cafd64"
+        }
+      ],
+      "friendshipsCountsByStatus": {
+        "0": 0,
+        "1": 3,
+        "2": 1
+      },
+      "introvertsGroup": {
+        "friendshipsCount": 4,
+        "friendshipsCountsByStatus": {
+          "0": 0,
+          "1": 3,
+          "2": 1
+        }
+      },
+      "extrovertsGroup": {
+        "friendshipsCount": 0,
+        "friendshipsCountsByStatus": {
+          "0": 0,
+          "1": 0,
+          "2": 0
+        }
+      }
+    }
+  },
+  {
+    "idHex": "88273283941ed6333c0d48b686baee667ea3021ed84fb5d385125dfda2da3a39",
+    "partySummary": {
+      "createdAt": 1580771465,
       "createdAgo": 0,
       "friendshipsCount": 4,
       "connectedFriendshipsCount": 3,
-      "offersCount": 3,
+      "offersCount": 1,
       "offerInfos": [
         {
-          "idHex": "6ddc178a772f29b6fb732b21622d1380939294ca120fbf93e3c3fd58c95209bc",
-          "offerClientIdHex": "36ef62d94f3eb65f01cd805ef8a97ac2206fdd8f5dc010e9e6f217c56864cebc",
-          "attemptsCount": 0,
-          "firstReceivedAgo": 13,
-          "lastReceivedAgo": 3,
-          "distance": "aa149e6920228736bb8fab9b2837dd5739698b56c3d255bdea93c7895ae4cfab"
-        },
-        {
-          "idHex": "fc29baf43dc59728738d513b990f91df109aa7a1afe259a11a9e2bb49dfa4e03",
-          "offerClientIdHex": "1de81bc3fa0330a535c926e23f8a7717a87f3d4370abea6895b84c4c2b6efb6e",
+          "idHex": "dfa1913a40a4892131e1bdbacd804bfd0dd6265089eac157fac9845a37d9a50a",
+          "offerClientIdHex": "f4611f5554693b729a2b9463c0e84bb30850c0bd58989412b6cf13041f5d34bc",
           "attemptsCount": 1,
-          "firstReceivedAgo": 13,
-          "lastReceivedAgo": 3,
-          "distance": "8113e773951f01cc8f8b0d27ef14d082b1796b9aeeb9af3c99d99c0019eefa79"
-        },
-        {
-          "idHex": "446ab290ab7a08091d0fa87411911990884d1656a6553d1f4c14635428b7162c",
-          "offerClientIdHex": "9a369ac91a9be82e092757c5e70c90a7a49b2e02fbd02b7181e9c7752c4008a2",
-          "attemptsCount": 1,
-          "firstReceivedAgo": 11,
-          "lastReceivedAgo": 11,
-          "distance": "06cd66797587d947b3657c0037923732bd9d78db65c26e258d8817391ec009b5"
+          "firstReceivedAgo": 2,
+          "lastReceivedAgo": 2,
+          "distance": "7c462dd6c077ed41a626dcd54652a5d576f3c2a380d721c133dd4ef9bd870e85"
         }
       ],
       "friendshipsCountsByStatus": {
@@ -40,70 +170,150 @@
         "2": 3
       },
       "introvertsGroup": {
-        "friendshipsCount": 4,
+        "friendshipsCount": 2,
         "friendshipsCountsByStatus": {
           "0": 0,
           "1": 1,
-          "2": 3
+          "2": 1
         }
       },
       "extrovertsGroup": {
-        "friendshipsCount": 0,
+        "friendshipsCount": 2,
         "friendshipsCountsByStatus": {
           "0": 0,
           "1": 0,
-          "2": 0
+          "2": 2
         }
       }
     }
   },
-  "Fully Connected",
-  "Fully Connected",
   {
-    "idHex": "553b7d216bbcb6b76ca287ab9663d2a1ef2077fc91cac474169da971c9d2850e",
+    "idHex": "f4611f5554693b729a2b9463c0e84bb30850c0bd58989412b6cf13041f5d34bc",
     "partySummary": {
-      "createdAt": 1580743955,
+      "createdAt": 1580771465,
       "createdAgo": 0,
       "friendshipsCount": 4,
-      "connectedFriendshipsCount": 2,
-      "offersCount": 3,
+      "connectedFriendshipsCount": 1,
+      "offersCount": 1,
       "offerInfos": [
         {
-          "idHex": "6ddc178a772f29b6fb732b21622d1380939294ca120fbf93e3c3fd58c95209bc",
-          "offerClientIdHex": "36ef62d94f3eb65f01cd805ef8a97ac2206fdd8f5dc010e9e6f217c56864cebc",
-          "attemptsCount": 1,
-          "firstReceivedAgo": 13,
-          "lastReceivedAgo": 3,
-          "distance": "63d41ff8248200e86d6f07f56ecaa863cf4faa73cc0ad49df06fbeb4a1b64bb2"
-        },
-        {
-          "idHex": "fc29baf43dc59728738d513b990f91df109aa7a1afe259a11a9e2bb49dfa4e03",
-          "offerClientIdHex": "1de81bc3fa0330a535c926e23f8a7717a87f3d4370abea6895b84c4c2b6efb6e",
-          "attemptsCount": 1,
-          "firstReceivedAgo": 13,
-          "lastReceivedAgo": 3,
-          "distance": "48d366e291bf8612596ba149a9e9a5b6475f4abfe1612e1c8325e53de2bc7e60"
-        },
-        {
-          "idHex": "446ab290ab7a08091d0fa87411911990884d1656a6553d1f4c14635428b7162c",
-          "offerClientIdHex": "9a369ac91a9be82e092757c5e70c90a7a49b2e02fbd02b7181e9c7752c4008a2",
-          "attemptsCount": 2,
-          "firstReceivedAgo": 11,
-          "lastReceivedAgo": 11,
-          "distance": "cf0de7e871275e996585d06e716f42064bbb59fe6a1aef0597746e04e5928dac"
+          "idHex": "7db8942c043939819c21a99a7fe0eac32b112c347d793ceae3f391f4f95df9f8",
+          "offerClientIdHex": "88273283941ed6333c0d48b686baee667ea3021ed84fb5d385125dfda2da3a39",
+          "attemptsCount": 0,
+          "firstReceivedAgo": 2,
+          "lastReceivedAgo": 2,
+          "distance": "7c462dd6c077ed41a626dcd54652a5d576f3c2a380d721c133dd4ef9bd870e85"
         }
       ],
       "friendshipsCountsByStatus": {
         "0": 0,
-        "1": 2,
-        "2": 2
+        "1": 3,
+        "2": 1
+      },
+      "introvertsGroup": {
+        "friendshipsCount": 2,
+        "friendshipsCountsByStatus": {
+          "0": 0,
+          "1": 2,
+          "2": 0
+        }
+      },
+      "extrovertsGroup": {
+        "friendshipsCount": 2,
+        "friendshipsCountsByStatus": {
+          "0": 0,
+          "1": 1,
+          "2": 1
+        }
+      }
+    }
+  },
+  {
+    "idHex": "7ddf9ab30e59f0e882622e497c9bfeb6d994e5f21827163c4366773756ba1e26",
+    "partySummary": {
+      "createdAt": 1580771465,
+      "createdAgo": 0,
+      "friendshipsCount": 4,
+      "connectedFriendshipsCount": 3,
+      "offersCount": 2,
+      "offerInfos": [
+        {
+          "idHex": "dfa1913a40a4892131e1bdbacd804bfd0dd6265089eac157fac9845a37d9a50a",
+          "offerClientIdHex": "f4611f5554693b729a2b9463c0e84bb30850c0bd58989412b6cf13041f5d34bc",
+          "attemptsCount": 0,
+          "firstReceivedAgo": 2,
+          "lastReceivedAgo": 2,
+          "distance": "89be85e65a30cb9a1849ba2abc73b505d1c4254f40bf822ef5a9643349e72a9a"
+        },
+        {
+          "idHex": "7db8942c043939819c21a99a7fe0eac32b112c347d793ceae3f391f4f95df9f8",
+          "offerClientIdHex": "88273283941ed6333c0d48b686baee667ea3021ed84fb5d385125dfda2da3a39",
+          "attemptsCount": 0,
+          "firstReceivedAgo": 2,
+          "lastReceivedAgo": 2,
+          "distance": "f5f8a8309a4726dbbe6f66fffa2110d0a737e7ecc068a3efc6742acaf460241f"
+        }
+      ],
+      "friendshipsCountsByStatus": {
+        "0": 1,
+        "1": 0,
+        "2": 3
+      },
+      "introvertsGroup": {
+        "friendshipsCount": 2,
+        "friendshipsCountsByStatus": {
+          "0": 0,
+          "1": 0,
+          "2": 2
+        }
+      },
+      "extrovertsGroup": {
+        "friendshipsCount": 2,
+        "friendshipsCountsByStatus": {
+          "0": 1,
+          "1": 0,
+          "2": 1
+        }
+      }
+    }
+  },
+  {
+    "idHex": "bc01e3de72d4a064d731684ad9e3dd4074b107c991271889623f7889eb33659d",
+    "partySummary": {
+      "createdAt": 1580771465,
+      "createdAgo": 0,
+      "friendshipsCount": 4,
+      "connectedFriendshipsCount": 1,
+      "offersCount": 2,
+      "offerInfos": [
+        {
+          "idHex": "dfa1913a40a4892131e1bdbacd804bfd0dd6265089eac157fac9845a37d9a50a",
+          "offerClientIdHex": "f4611f5554693b729a2b9463c0e84bb30850c0bd58989412b6cf13041f5d34bc",
+          "attemptsCount": 1,
+          "firstReceivedAgo": 2,
+          "lastReceivedAgo": 2,
+          "distance": "4860fc8b26bd9b164d1afc29190b96f37ce1c774c9bf8c9bd4f06b8df46e5121"
+        },
+        {
+          "idHex": "7db8942c043939819c21a99a7fe0eac32b112c347d793ceae3f391f4f95df9f8",
+          "offerClientIdHex": "88273283941ed6333c0d48b686baee667ea3021ed84fb5d385125dfda2da3a39",
+          "attemptsCount": 1,
+          "firstReceivedAgo": 2,
+          "lastReceivedAgo": 2,
+          "distance": "3426d15de6ca7657eb3c20fc5f5933260a1205d74968ad5ae72d257449e95fa4"
+        }
+      ],
+      "friendshipsCountsByStatus": {
+        "0": 0,
+        "1": 3,
+        "2": 1
       },
       "introvertsGroup": {
         "friendshipsCount": 4,
         "friendshipsCountsByStatus": {
           "0": 0,
-          "1": 2,
-          "2": 2
+          "1": 3,
+          "2": 1
         }
       },
       "extrovertsGroup": {
@@ -115,7 +325,5 @@
         }
       }
     }
-  },
-  "Fully Connected",
-  "Fully Connected"
+  }
 ]

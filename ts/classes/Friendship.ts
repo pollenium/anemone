@@ -26,12 +26,13 @@ export enum BAN_REASON {
 export enum DESTROY_REASON {
   GOODBYE = 'GOODBYE',
   BAN = 'BAN',
-  TOO_LONG = 'TOO_LONG',
   WRTC_CLOSE = 'WRTC_CLOSE',
   WRTC_ERROR = 'WRTC_ERROR',
   ICE_DISCONNECT = 'ICE_DISCONNECT',
   TOO_FAR = 'TOO_FAR',
-  NEW_OFFER = 'NEW_OFFER'
+  NEW_OFFER = 'NEW_OFFER',
+  SDP_TIMEOUT = 'SDP_TIMEOUT',
+  CONNECTION_TIMEOUT = 'CONNECTION_TIMEOUT',
 }
 
 export abstract class Friendship {
@@ -110,6 +111,22 @@ export abstract class Friendship {
       this.missiveSnowdrop.emit(missive)
     })
 
+    let isSdpb: boolean = false
+
+    this.fetchSdpb().then(() => {
+      isSdpb = true
+    })
+
+    delay(10000).then(() => {
+      if (this.isDestroyed) {
+        return
+      }
+      if (isSdpb) {
+        return
+      }
+      this.destroy(DESTROY_REASON.SDP_TIMEOUT)
+    })
+
   }
 
   getPeerClientId(): Bytes32 | null  {
@@ -146,25 +163,26 @@ export abstract class Friendship {
   }
 
   destroy(reason: DESTROY_REASON): void {
+    console.log('DESTROY', reason)
     if (this.isDestroyed) {
      throw new Error(`Cannot destroy: ${reason}, already destroyed: ${this.destroyReason}`)
     }
     this.destroyReason = reason
     this.isDestroyed = true
+    this.destroyedSnowdrop.emit()
     this.simplePeer.removeAllListeners()
     this.simplePeer.destroy()
-    this.destroyedSnowdrop.emit()
   }
 
-  protected startConnectOrDestroyTimeout(): void {
-    delay(5000).then(() => {
+  protected startConnectOrDestroyTimeout(timeout: number): void {
+    delay(timeout * 1000).then(() => {
       if (this.isDestroyed) {
         return
       }
       if (this.status === FRIENDSHIP_STATUS.CONNECTED) {
         return
       }
-      this.destroy(DESTROY_REASON.TOO_LONG)
+      this.destroy(DESTROY_REASON.CONNECTION_TIMEOUT)
     })
   }
 

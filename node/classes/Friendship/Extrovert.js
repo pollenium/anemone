@@ -40,7 +40,7 @@ var Extrovert = /** @class */ (function (_super) {
             type: 'answer',
             sdpb: answer.sdpb
         });
-        this.startConnectOrDestroyTimeout();
+        this.startConnectOrDestroyTimeout(5);
     };
     Extrovert.prototype.getIsConnectable = function () {
         if (this.getIsDestroyed()) {
