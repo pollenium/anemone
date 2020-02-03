@@ -62,7 +62,7 @@ const missive = await missiveGenerator.fetchMissive()
 client.broadcastMissive(missve)
 ````
 
-Listen for incoming missives on the client's missive Snowdrop
+Listen for incoming missives on the client's missive snowdrop
 
 ````
 client.missiveSnowdrop.addHandle((missive) => {
