@@ -14,7 +14,7 @@ const clientId = Uu.genRandom(32)
 const options = {
   wrtc,
   missiveLatencyTolerance: 30,
-  sdpTimeout: 5,
+  sdpTimeout: 30,
   connectionTimeout: 10
 }
 
@@ -30,7 +30,7 @@ describe('friendshipConnection', () => {
   test('create extrovert', () => {
     extrovert = new Extrovert(options)
     extrovert.destroyedSnowdrop.addHandle(() => {})
-  })
+  }, 20000)
 
   test('create offer', async () => {
     offer = new Offer({

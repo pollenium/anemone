@@ -101,6 +101,9 @@ var FriendshipsGroup = /** @class */ (function () {
     };
     FriendshipsGroup.prototype.broadcastMissive = function (missive) {
         this.friendships.forEach(function (friendship) {
+            if (friendship.getStatus() !== Friendship_1.FRIENDSHIP_STATUS.CONNECTED) {
+                return;
+            }
             friendship.sendMissive(missive);
         });
     };

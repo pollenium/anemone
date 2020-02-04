@@ -7,4 +7,4 @@ exports.signalingServerUrls = exports.signalingServerPorts.map(function (port) {
 exports.clientsCount = 7;
 exports.maxFriendshipsCount = 4;
 exports.missivesCount = 4;
-exports.missivesReceivesCount = exports.missivesCount * (exports.clientsCount - 1);
+exports.expectedMissiveReceivesCount = exports.missivesCount * (exports.clientsCount - 1);

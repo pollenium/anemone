@@ -40,17 +40,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 exports.__esModule = true;
 var Client_1 = require("../classes/Client");
+var MissiveGenerator_1 = require("../classes/MissiveGenerator");
+var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var params_1 = require("./lib/params");
 var delay_1 = __importDefault(require("delay"));
 var fs_1 = __importDefault(require("fs"));
-var pollenium_primrose_1 = require("pollenium-primrose");
 var wrtc_1 = __importDefault(require("wrtc"));
+var tiny_worker_1 = __importDefault(require("tiny-worker"));
+var missives = [];
 var clients = [];
-var clientsPrimrose = new pollenium_primrose_1.Primrose();
-function fetchClients() {
-    return clientsPrimrose.promise;
-}
-exports.fetchClients = fetchClients;
 var intervalId = setInterval(function () {
     fs_1["default"].writeFileSync(__dirname + "/../../clients.test.json", JSON.stringify(clients.map(function (client) {
         return client.getSummary().toJsonable();
@@ -116,8 +114,64 @@ test('await fullyConnected', function () { return __awaiter(void 0, void 0, void
             case 1:
                 _a.sent();
                 clearInterval(intervalId);
-                clientsPrimrose.resolve(clients);
                 return [2 /*return*/];
         }
     });
 }); }, 600000);
+test('create missives', function () { return __awaiter(void 0, void 0, void 0, function () {
+    var i, missiveGenerator, missive;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                i = 0;
+                _a.label = 1;
+            case 1:
+                if (!(i < params_1.missivesCount)) return [3 /*break*/, 4];
+                missiveGenerator = new MissiveGenerator_1.MissiveGenerator({
+                    applicationId: pollenium_uvaursi_1.Uu.genRandom(32),
+                    applicationData: pollenium_uvaursi_1.Uu.genRandom(32),
+                    difficulty: 1,
+                    ttl: 30,
+                    hashcashWorker: new tiny_worker_1["default"](__dirname + "/../../node/hashcash-worker.js", [], { esm: true })
+                });
+                return [4 /*yield*/, missiveGenerator.fetchMissive()];
+            case 2:
+                missive = _a.sent();
+                missives.push(missive);
+                _a.label = 3;
+            case 3:
+                i++;
+                return [3 /*break*/, 1];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
+test('missive', function () { return __awaiter(void 0, void 0, void 0, function () {
+    var receivesCount;
+    return __generator(this, function (_a) {
+        receivesCount = 0;
+        clients.forEach(function (client) {
+            client.missiveSnowdrop.addHandle(function (_missive) { return __awaiter(void 0, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            receivesCount++;
+                            if (!(receivesCount === params_1.expectedMissiveReceivesCount)) return [3 /*break*/, 2];
+                            return [4 /*yield*/, delay_1["default"](2000)];
+                        case 1:
+                            _a.sent();
+                            if (receivesCount !== params_1.expectedMissiveReceivesCount) {
+                                throw new Error('Received too many times');
+                            }
+                            _a.label = 2;
+                        case 2: return [2 /*return*/];
+                    }
+                });
+            }); });
+        });
+        missives.forEach(function (missive) {
+            clients[0].broadcastMissive(missive);
+        });
+        return [2 /*return*/];
+    });
+}); });

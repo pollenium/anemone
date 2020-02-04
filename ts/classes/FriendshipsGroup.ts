@@ -116,6 +116,9 @@ export class FriendshipsGroup<FriendshipClass extends Friendship> {
 
   broadcastMissive(missive: Missive) {
     this.friendships.forEach((friendship) => {
+      if (friendship.getStatus() !== FRIENDSHIP_STATUS.CONNECTED) {
+        return
+      }
       friendship.sendMissive(missive)
     })
   }

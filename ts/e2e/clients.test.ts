@@ -1,16 +1,23 @@
 import { Client, ClientSummary } from '../classes/Client'
-import { signalingServerUrls, clientsCount, maxFriendshipsCount } from './lib/params'
+import { MissiveGenerator } from '../classes/MissiveGenerator'
+import { Missive } from '../classes/Missive'
+import { Uu } from 'pollenium-uvaursi'
+import {
+  signalingServerUrls,
+  clientsCount,
+  maxFriendshipsCount,
+  missivesCount,
+  expectedMissiveReceivesCount
+} from './lib/params'
 import delay from 'delay'
 import fs from 'fs'
 import { Primrose } from 'pollenium-primrose'
 import wrtc from 'wrtc'
+import TinyWorker from 'tiny-worker'
+const missives: Array<Missive> = []
+
 
 let clients: Array<Client> = []
-const clientsPrimrose = new Primrose<Array<Client>>()
-
-export function fetchClients() {
-  return clientsPrimrose.promise
-}
 
 const intervalId = setInterval(() => {
   fs.writeFileSync(
@@ -66,5 +73,37 @@ test('await fullyConnected', async () => {
   }))
 
   clearInterval(intervalId)
-  clientsPrimrose.resolve(clients)
 }, 600000)
+
+test('create missives', async () => {
+  for (let i = 0; i < missivesCount; i++) {
+    const missiveGenerator = new MissiveGenerator({
+      applicationId: Uu.genRandom(32),
+      applicationData: Uu.genRandom(32),
+      difficulty: 1,
+      ttl: 30,
+      hashcashWorker: new TinyWorker(`${__dirname}/../../node/hashcash-worker.js`, [], { esm: true })
+    })
+
+    const missive = await missiveGenerator.fetchMissive()
+    missives.push(missive)
+  }
+})
+
+test('missive', async () => {
+  let receivesCount = 0
+  clients.forEach((client) => {
+    client.missiveSnowdrop.addHandle(async (_missive) => {
+      receivesCount++
+      if (receivesCount === expectedMissiveReceivesCount) {
+        await delay(2000)
+        if (receivesCount !== expectedMissiveReceivesCount) {
+          throw new Error('Received too many times')
+        }
+      }
+    })
+  })
+  missives.forEach((missive) => {
+    clients[0].broadcastMissive(missive)
+  })
+})

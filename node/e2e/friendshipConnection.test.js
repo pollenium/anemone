@@ -53,7 +53,7 @@ var clientId = pollenium_uvaursi_1.Uu.genRandom(32);
 var options = {
     wrtc: wrtc_1["default"],
     missiveLatencyTolerance: 30,
-    sdpTimeout: 5,
+    sdpTimeout: 30,
     connectionTimeout: 10
 };
 var extrovert;
@@ -65,7 +65,7 @@ describe('friendshipConnection', function () {
     test('create extrovert', function () {
         extrovert = new Extrovert_1.Extrovert(options);
         extrovert.destroyedSnowdrop.addHandle(function () { });
-    });
+    }, 20000);
     test('create offer', function () { return __awaiter(void 0, void 0, void 0, function () {
         var _a, _b;
         return __generator(this, function (_c) {

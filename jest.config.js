@@ -12,5 +12,7 @@ module.exports = {
   "verbose": true,
   "maxWorkers": "100%",
   "logHeapUsage": true,
-  "testTimeout": 10000
+  "testTimeout": 10000,
+  "maxConcurrency": 1,
+  "bail": true
 }

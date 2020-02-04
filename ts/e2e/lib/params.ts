@@ -5,4 +5,4 @@ export const signalingServerUrls: Array<string> = signalingServerPorts.map((port
 export const clientsCount = 7
 export const maxFriendshipsCount = 4
 export const missivesCount = 4
-export const missivesReceivesCount = missivesCount * (clientsCount - 1)
+export const expectedMissiveReceivesCount = missivesCount * (clientsCount - 1)
