@@ -79,8 +79,10 @@ test('create clients', function () { return __awaiter(void 0, void 0, void 0, fu
                     maxOfferAttemptsCount: 2,
                     wrtc: wrtc_1["default"],
                     missiveLatencyTolerance: 10,
-                    sdpTimeout: 5,
-                    connectionTimeout: 10
+                    sdpTimeout: 10,
+                    connectionTimeout: 10,
+                    maxOfferLastReceivedAgo: 10,
+                    offerReuploadInterval: 5
                 });
                 clients.push(client);
                 return [4 /*yield*/, delay_1["default"](1000)];

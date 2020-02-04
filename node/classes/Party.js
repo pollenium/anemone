@@ -117,10 +117,11 @@ var Party = /** @class */ (function () {
         }, 1000);
     }
     Party.prototype.clearOldOffers = function () {
+        var _this = this;
         var now = genTime_1.genTime();
         this.offerInfos = this.offerInfos.filter(function (offerInfo) {
             var lastReceivedAgo = offerInfo.getLastReceivedAgo();
-            if (lastReceivedAgo <= 10) {
+            if (lastReceivedAgo <= _this.options.maxOfferLastReceivedAgo) {
                 return true;
             }
             else {

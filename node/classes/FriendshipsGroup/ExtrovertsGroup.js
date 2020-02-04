@@ -12,6 +12,17 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 exports.__esModule = true;
 var FriendshipsGroup_1 = require("../FriendshipsGroup");
 var Extrovert_1 = require("../Friendship/Extrovert");
@@ -19,8 +30,9 @@ var pollenium_snowdrop_1 = require("pollenium-snowdrop");
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var ExtrovertsGroup = /** @class */ (function (_super) {
     __extends(ExtrovertsGroup, _super);
-    function ExtrovertsGroup() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
+    function ExtrovertsGroup(extrovertGroupOptions) {
+        var _this = _super.call(this, __assign({}, extrovertGroupOptions)) || this;
+        _this.extrovertGroupOptions = extrovertGroupOptions;
         _this.extrovertsByOfferIdHex = {};
         _this.partialOfferSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         _this.partialFlushSnowdrop = new pollenium_snowdrop_1.Snowdrop();
@@ -51,7 +63,7 @@ var ExtrovertsGroup = /** @class */ (function (_super) {
                 else {
                     clearInterval(intervalId);
                 }
-            }, 5000);
+            }, _this.extrovertGroupOptions.offerReuploadInterval * 1000);
         });
     };
     ExtrovertsGroup.prototype.handleAnswer = function (answer) {

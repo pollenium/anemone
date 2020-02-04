@@ -5,8 +5,13 @@ import { Snowdrop } from 'pollenium-snowdrop'
 import { Answer } from '../Signal/Answer'
 import { Bytes32 } from 'pollenium-buttercup'
 import { Uu } from 'pollenium-uvaursi'
+import { IExtrovertsGroupOptions } from '../../interfaces/Options'
 
 export class ExtrovertsGroup extends FriendshipsGroup<Extrovert> {
+
+  constructor(private extrovertGroupOptions: IExtrovertsGroupOptions) {
+    super({ ...extrovertGroupOptions })
+  }
 
   private extrovertsByOfferIdHex: { [offerIdHex: string]: Extrovert } = {}
 
@@ -36,7 +41,7 @@ export class ExtrovertsGroup extends FriendshipsGroup<Extrovert> {
         } else {
           clearInterval(intervalId)
         }
-      }, 5000)
+      }, this.extrovertGroupOptions.offerReuploadInterval * 1000)
 
     })
 

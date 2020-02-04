@@ -11,11 +11,16 @@ export interface IFriendshipOptions extends IFriendshipPartyOptions {
   initiator: boolean
 }
 
+export interface IExtrovertsGroupOptions extends IFriendshipPartyOptions {
+  offerReuploadInterval: number
+}
 
-export interface IClientPartyOptions extends IFriendshipPartyOptions {
+
+export interface IClientPartyOptions extends IFriendshipPartyOptions, IExtrovertsGroupOptions {
   bootstrapOffersTimeout: number;
   maxFriendshipsCount: number;
   maxOfferAttemptsCount: number;
+  maxOfferLastReceivedAgo: number;
 }
 
 export interface IPartyOptions extends IClientPartyOptions {

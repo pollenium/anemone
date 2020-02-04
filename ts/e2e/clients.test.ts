@@ -39,8 +39,10 @@ test('create clients', async () => {
       maxOfferAttemptsCount: 2,
       wrtc: wrtc,
       missiveLatencyTolerance: 10,
-      sdpTimeout: 5,
-      connectionTimeout: 10
+      sdpTimeout: 10,
+      connectionTimeout: 10,
+      maxOfferLastReceivedAgo: 10,
+      offerReuploadInterval: 5
     })
     clients.push(client)
 

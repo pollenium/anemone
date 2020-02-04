@@ -133,7 +133,7 @@ export class Party {
     const now = genTime()
     this.offerInfos = this.offerInfos.filter((offerInfo) => {
       const lastReceivedAgo = offerInfo.getLastReceivedAgo()
-      if (lastReceivedAgo <= 10) {
+      if (lastReceivedAgo <= this.options.maxOfferLastReceivedAgo) {
         return true
       } else {
         return false
