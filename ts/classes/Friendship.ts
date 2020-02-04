@@ -160,7 +160,6 @@ export abstract class Friendship {
   }
 
   destroy(reason: DESTROY_REASON): void {
-    console.log('DESTROY', reason)
     if (this.isDestroyed) {
      throw new Error(`Cannot destroy: ${reason}, already destroyed: ${this.destroyReason}`)
     }

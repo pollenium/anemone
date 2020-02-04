@@ -144,7 +144,6 @@ var Friendship = /** @class */ (function () {
         this.simplePeer.send(bytes.unwrap());
     };
     Friendship.prototype.destroy = function (reason) {
-        console.log('DESTROY', reason);
         if (this.isDestroyed) {
             throw new Error("Cannot destroy: " + reason + ", already destroyed: " + this.destroyReason);
         }

@@ -1,21 +1,23 @@
 [
   "Fully Connected",
+  "Fully Connected",
+  "Fully Connected",
   {
-    "idHex": "9b282084cde5b52787f47c636a1768db27f8aa8d69fa5700d3f56def540b1c9e",
+    "idHex": "5842c92c611c3b291e2d73445ce10849c3f4adf6ed0d41131a795c2655b5dd25",
     "partySummary": {
-      "createdAt": 1580774897,
+      "createdAt": 1580775893,
       "createdAgo": 0,
       "friendshipsCount": 4,
       "connectedFriendshipsCount": 3,
       "offersCount": 1,
       "offerInfos": [
         {
-          "idHex": "eab58ddee9fdb66c555f02b8390d25b6c76d9f0cbf274171d3d5a0fb6a030cdd",
-          "offerClientIdHex": "ebdacbce3b09c5218e21b5388d354062dea68679075d09e5dbe79bdd21bf800d",
+          "idHex": "3ac1b9bbf316941390f6c5922f8237be29c122ac898fe35d783af7cacaa09544",
+          "offerClientIdHex": "fd3105cdb06013b1aba51ac753ff2b7c3173c33019eb672555bcf23078d85642",
           "attemptsCount": 0,
           "firstReceivedAgo": 5,
           "lastReceivedAgo": 5,
-          "distance": "70f2eb4af6ec700609d5c95be72228b9f95e2cf46ea75ee50812f63275b49c93"
+          "distance": "a573cce1d17c2898b58869830f1e2335f2876ec6f4e626364fc5ae162d6d8b67"
         }
       ],
       "friendshipsCountsByStatus": {
@@ -24,84 +26,11 @@
         "2": 3
       },
       "introvertsGroup": {
-        "friendshipsCount": 1,
-        "friendshipsCountsByStatus": {
-          "0": 0,
-          "1": 0,
-          "2": 1
-        }
-      },
-      "extrovertsGroup": {
-        "friendshipsCount": 3,
+        "friendshipsCount": 2,
         "friendshipsCountsByStatus": {
           "0": 0,
           "1": 1,
-          "2": 2
-        }
-      }
-    }
-  },
-  {
-    "idHex": "ebdacbce3b09c5218e21b5388d354062dea68679075d09e5dbe79bdd21bf800d",
-    "partySummary": {
-      "createdAt": 1580774897,
-      "createdAgo": 0,
-      "friendshipsCount": 4,
-      "connectedFriendshipsCount": 3,
-      "offersCount": 0,
-      "offerInfos": [],
-      "friendshipsCountsByStatus": {
-        "0": 1,
-        "1": 0,
-        "2": 3
-      },
-      "introvertsGroup": {
-        "friendshipsCount": 2,
-        "friendshipsCountsByStatus": {
-          "0": 0,
-          "1": 0,
-          "2": 2
-        }
-      },
-      "extrovertsGroup": {
-        "friendshipsCount": 2,
-        "friendshipsCountsByStatus": {
-          "0": 1,
-          "1": 0,
           "2": 1
-        }
-      }
-    }
-  },
-  {
-    "idHex": "a2c7370cc5d55ffc1d5f4b802756bd4e28b8f65b9eaa06247669ec7fff65d6b6",
-    "partySummary": {
-      "createdAt": 1580774897,
-      "createdAgo": 0,
-      "friendshipsCount": 4,
-      "connectedFriendshipsCount": 2,
-      "offersCount": 1,
-      "offerInfos": [
-        {
-          "idHex": "eab58ddee9fdb66c555f02b8390d25b6c76d9f0cbf274171d3d5a0fb6a030cdd",
-          "offerClientIdHex": "ebdacbce3b09c5218e21b5388d354062dea68679075d09e5dbe79bdd21bf800d",
-          "attemptsCount": 0,
-          "firstReceivedAgo": 5,
-          "lastReceivedAgo": 5,
-          "distance": "491dfcc2fedc9add937efeb8aa63fd2cf61e702299f70fc1ad8e77a2deda56bb"
-        }
-      ],
-      "friendshipsCountsByStatus": {
-        "0": 0,
-        "1": 2,
-        "2": 2
-      },
-      "introvertsGroup": {
-        "friendshipsCount": 2,
-        "friendshipsCountsByStatus": {
-          "0": 0,
-          "1": 2,
-          "2": 0
         }
       },
       "extrovertsGroup": {
@@ -116,85 +45,36 @@
   },
   "Fully Connected",
   {
-    "idHex": "9ff7832b4a34e8d470f787d4b3580cff9caba21165ad9faa1e644408dea3c9c6",
+    "idHex": "fd3105cdb06013b1aba51ac753ff2b7c3173c33019eb672555bcf23078d85642",
     "partySummary": {
-      "createdAt": 1580774897,
+      "createdAt": 1580775893,
       "createdAgo": 0,
       "friendshipsCount": 4,
       "connectedFriendshipsCount": 3,
-      "offersCount": 1,
-      "offerInfos": [
-        {
-          "idHex": "eab58ddee9fdb66c555f02b8390d25b6c76d9f0cbf274171d3d5a0fb6a030cdd",
-          "offerClientIdHex": "ebdacbce3b09c5218e21b5388d354062dea68679075d09e5dbe79bdd21bf800d",
-          "attemptsCount": 0,
-          "firstReceivedAgo": 5,
-          "lastReceivedAgo": 5,
-          "distance": "742d48e5713d2df5fed632ec3e6d4c9d420d246862f0964fc583dfd5ff1c49cb"
-        }
-      ],
+      "offersCount": 0,
+      "offerInfos": [],
       "friendshipsCountsByStatus": {
-        "0": 0,
-        "1": 1,
+        "0": 1,
+        "1": 0,
         "2": 3
       },
       "introvertsGroup": {
-        "friendshipsCount": 1,
-        "friendshipsCountsByStatus": {
-          "0": 0,
-          "1": 1,
-          "2": 0
-        }
-      },
-      "extrovertsGroup": {
-        "friendshipsCount": 3,
-        "friendshipsCountsByStatus": {
-          "0": 0,
-          "1": 0,
-          "2": 3
-        }
-      }
-    }
-  },
-  {
-    "idHex": "eacc10707fdf22a263a2a3e9b82533a82333512d43fc1e3d25ee11ab316df109",
-    "partySummary": {
-      "createdAt": 1580774897,
-      "createdAgo": 0,
-      "friendshipsCount": 4,
-      "connectedFriendshipsCount": 3,
-      "offersCount": 1,
-      "offerInfos": [
-        {
-          "idHex": "eab58ddee9fdb66c555f02b8390d25b6c76d9f0cbf274171d3d5a0fb6a030cdd",
-          "offerClientIdHex": "ebdacbce3b09c5218e21b5388d354062dea68679075d09e5dbe79bdd21bf800d",
-          "attemptsCount": 0,
-          "firstReceivedAgo": 5,
-          "lastReceivedAgo": 5,
-          "distance": "0116dbbe44d6e783ed8316d1351073cafd95d75444a117d8fe098a7610d27104"
-        }
-      ],
-      "friendshipsCountsByStatus": {
-        "0": 0,
-        "1": 1,
-        "2": 3
-      },
-      "introvertsGroup": {
-        "friendshipsCount": 3,
-        "friendshipsCountsByStatus": {
-          "0": 0,
-          "1": 1,
-          "2": 2
-        }
-      },
-      "extrovertsGroup": {
         "friendshipsCount": 1,
         "friendshipsCountsByStatus": {
           "0": 0,
           "1": 0,
           "2": 1
         }
+      },
+      "extrovertsGroup": {
+        "friendshipsCount": 3,
+        "friendshipsCountsByStatus": {
+          "0": 1,
+          "1": 0,
+          "2": 2
+        }
       }
     }
-  }
+  },
+  "Fully Connected"
 ]
