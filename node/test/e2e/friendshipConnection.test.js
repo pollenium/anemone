@@ -126,7 +126,9 @@ describe('friendshipConnection', function () {
                         applicationData: pollenium_uvaursi_1.Uu.genRandom(32),
                         ttl: 30,
                         difficulty: 4,
-                        hashcashWorker: new tiny_worker_1.default(__dirname + "/../../node/hashcash-worker.js", [], { esm: true }),
+                        hashcashWorker: new tiny_worker_1.default(__dirname + "/../../../node/hashcash-worker.js", [], {
+                            esm: true,
+                        }),
                     });
                     return [4, missiveGenerator.fetchMissive()];
                 case 1:
@@ -134,7 +136,7 @@ describe('friendshipConnection', function () {
                     return [2];
             }
         });
-    }); });
+    }); }, 20000);
     test('send missive', function () { return __awaiter(void 0, void 0, void 0, function () {
         var testPrimrose;
         return __generator(this, function (_a) {

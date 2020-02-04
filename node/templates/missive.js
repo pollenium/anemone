@@ -16,18 +16,6 @@ var MISSIVE_KEY;
     MISSIVE_KEY["V0"] = "V0";
 })(MISSIVE_KEY = exports.MISSIVE_KEY || (exports.MISSIVE_KEY = {}));
 exports.missiveTemplate = new Split_1.default(['V0'], [
-    new Dictionary_1.default([
-        'timestamp',
-        'difficulty',
-        'applicationId',
-        'applicationData',
-        'nonce',
-    ], [
-        fixed5,
-        fixed1,
-        fixed32,
-        dynamic2,
-        fixed32,
-    ]),
+    new Dictionary_1.default(['timestamp', 'difficulty', 'applicationId', 'applicationData', 'nonce'], [fixed5, fixed1, fixed32, dynamic2, fixed32]),
 ]);
 //# sourceMappingURL=missive.js.map

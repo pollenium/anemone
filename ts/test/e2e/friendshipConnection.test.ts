@@ -73,10 +73,12 @@ describe('friendshipConnection', () => {
       applicationData: Uu.genRandom(32),
       ttl: 30,
       difficulty: 4,
-      hashcashWorker: new TinyWorker(`${__dirname}/../../node/hashcash-worker.js`, [], { esm: true }),
+      hashcashWorker: new TinyWorker(`${__dirname}/../../../node/hashcash-worker.js`, [], {
+        esm: true,
+      }),
     })
     missive = await missiveGenerator.fetchMissive()
-  })
+  }, 20000)
 
   test('send missive', async () => {
     const testPrimrose = new Primrose<void>()

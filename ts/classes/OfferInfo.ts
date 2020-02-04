@@ -1,17 +1,17 @@
-import { Offer } from './Signal/Offer'
 import { Bytes32, Uint256 } from 'pollenium-buttercup'
+import { Offer } from './Signal/Offer'
 import { genTime } from '../utils/genTime'
 
 export class OfferInfo {
 
   readonly offer: Offer;
   readonly clientId: Bytes32;
-  private attemptsCount: number = 0
-  private firstReceivedAt: number = genTime()
-  private lastReceivedAt: number = genTime()
-  private distance: Uint256
+  private attemptsCount: number = 0;
+  private firstReceivedAt: number = genTime();
+  private lastReceivedAt: number = genTime();
+  private distance: Uint256;
 
-  constructor(struct: { offer: Offer, clientId: Bytes32 }) {
+  constructor(struct: { offer: Offer; clientId: Bytes32; }) {
     this.offer = struct.offer
     this.clientId = struct.clientId
   }
@@ -43,4 +43,5 @@ export class OfferInfo {
     const xor = this.offer.clientId.uu.genXor(this.clientId.uu)
     return new Uint256(xor)
   }
+
 }

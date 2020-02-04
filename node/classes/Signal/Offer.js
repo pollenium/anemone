@@ -33,15 +33,8 @@ var Offer = (function (_super) {
                 id: this.id.uu.unwrap(),
                 clientId: this.clientId.uu.unwrap(),
                 sdpb: this.sdpb.unwrap(),
-            }
+            },
         }));
-    };
-    Offer.fromHenpojo = function (henpojo) {
-        return new Offer({
-            id: henpojo.id,
-            clientId: henpojo.clientId,
-            sdpb: henpojo.sdpb
-        });
     };
     return Offer;
 }(Signal_1.Signal));

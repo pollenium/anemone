@@ -11,7 +11,11 @@ module.exports = (grunt) => {
 
   grunt.initConfig({
     eslint: {
-      target: ['ts/**/*.ts']
+      target: ['ts/**/*.ts'],
+      options: {
+        fix: true,
+        configFile: '.eslintrc.js'
+      }
     },
     watch: {
       files: [
@@ -19,6 +23,7 @@ module.exports = (grunt) => {
         'package.json',
         'tsconfig.json',
         '.eslintrc.js',
+        '.prettierrc.js'
         'ts/**/*.ts',
         'test/**/*',
         '!test/e2e/browser/index.js'

@@ -27,13 +27,8 @@ var Flush = (function (_super) {
         return signalingMessage_1.signalingMessageTemplate.encode({
             key: signalingMessage_1.SIGNALING_MESSAGE_KEY.FLUSH,
             value: {
-                offerId: this.offerId.uu.unwrap()
-            }
-        });
-    };
-    Flush.fromHenpojo = function (henpojo) {
-        return new Flush({
-            offerId: henpojo.offerId
+                offerId: this.offerId.uu.unwrap(),
+            },
         });
     };
     return Flush;

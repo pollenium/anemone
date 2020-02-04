@@ -49,9 +49,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var pollenium_snowdrop_1 = require("pollenium-snowdrop");
 var FriendshipsGroup_1 = require("../FriendshipsGroup");
 var Introvert_1 = require("../Friendship/Introvert");
-var pollenium_snowdrop_1 = require("pollenium-snowdrop");
 var IntrovertsGroup = (function (_super) {
     __extends(IntrovertsGroup, _super);
     function IntrovertsGroup() {
@@ -72,7 +72,7 @@ var IntrovertsGroup = (function (_super) {
                         sdpb = _a.sent();
                         this.partialAnswerSnowdrop.emit({
                             offerId: offer.id,
-                            sdpb: sdpb
+                            sdpb: sdpb,
                         });
                         return [2];
                 }

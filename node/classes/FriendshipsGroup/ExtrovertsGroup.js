@@ -24,10 +24,10 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var FriendshipsGroup_1 = require("../FriendshipsGroup");
-var Extrovert_1 = require("../Friendship/Extrovert");
 var pollenium_snowdrop_1 = require("pollenium-snowdrop");
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
+var FriendshipsGroup_1 = require("../FriendshipsGroup");
+var Extrovert_1 = require("../Friendship/Extrovert");
 var ExtrovertsGroup = (function (_super) {
     __extends(ExtrovertsGroup, _super);
     function ExtrovertsGroup(extrovertGroupStruct) {
@@ -46,14 +46,14 @@ var ExtrovertsGroup = (function (_super) {
         extrovert.destroyedSnowdrop.addHandle(function () {
             delete _this.extrovertsByOfferIdHex[offerId.toHex()];
             _this.partialFlushSnowdrop.emit({
-                offerId: offerId
+                offerId: offerId,
             });
         });
         extrovert.fetchSdpb().then(function (sdpb) {
             _this.extrovertsByOfferIdHex[offerId.toHex()] = extrovert;
             var partialOffer = {
                 id: offerId,
-                sdpb: sdpb
+                sdpb: sdpb,
             };
             _this.partialOfferSnowdrop.emit(partialOffer);
             var intervalId = setInterval(function () {
@@ -78,9 +78,7 @@ var ExtrovertsGroup = (function (_super) {
         if (extrovert) {
             return extrovert;
         }
-        else {
-            return null;
-        }
+        return null;
     };
     return ExtrovertsGroup;
 }(FriendshipsGroup_1.FriendshipsGroup));

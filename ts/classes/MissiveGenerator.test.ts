@@ -1,9 +1,8 @@
-import { Uu } from 'pollenium-uvaursi'
-import { MissiveGenerator } from './MissiveGenerator'
-import { Client } from './Client'
-import TinyWorker from 'tiny-worker'
+/* globals test, expect */
 
-let client
+import { Uu } from 'pollenium-uvaursi'
+import TinyWorker from 'tiny-worker'
+import { MissiveGenerator } from './MissiveGenerator'
 
 for (let i = 0; i <= 13; i++) {
   const difficulty = i * 1
@@ -15,7 +14,9 @@ for (let i = 0; i <= 13; i++) {
       applicationData,
       difficulty,
       ttl: 60,
-      hashcashWorker:new TinyWorker(`${__dirname}/../../node/hashcash-worker.js`, [], { esm: true })
+      hashcashWorker: new TinyWorker(`${__dirname}/../../node/hashcash-worker.js`, [], {
+        esm: true,
+      }),
     })
     const missive = await missiveGenerator.fetchMissive()
     expect(missive.getIsValid()).toBe(true)

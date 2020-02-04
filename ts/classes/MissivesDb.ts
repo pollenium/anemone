@@ -2,7 +2,7 @@ import { Missive } from './Missive'
 
 export class MissivesDb {
 
-  private isReceivedByIdHex: { [missiveIdHex: string]: boolean } = {};
+  private isReceivedByIdHex: Record<string, boolean> = {};
 
   getIsReceived(missive: Missive): boolean {
     const missiveIdHex = missive.getId().uu.toHex()

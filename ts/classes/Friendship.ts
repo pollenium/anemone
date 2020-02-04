@@ -1,13 +1,13 @@
-import { Client } from './Client'
 import { Uu } from 'pollenium-uvaursi'
-import { Uint256, Bytes32 } from 'pollenium-buttercup'
-import { Missive } from './Missive'
-import { genTime } from '../utils/genTime'
-import { genSimplePeerConfig } from '../utils/genSimplePeerConfig'
+import { Bytes32 } from 'pollenium-buttercup'
 import SimplePeer, { SignalData as SimplePeerSignalData } from 'simple-peer'
 import { Snowdrop } from 'pollenium-snowdrop'
 import { Primrose } from 'pollenium-primrose'
 import delay from 'delay'
+import wrtc from 'wrtc'
+import { genSimplePeerConfig } from '../utils/genSimplePeerConfig'
+import { genTime } from '../utils/genTime'
+import { Missive } from './Missive'
 
 export enum FRIENDSHIP_STATUS {
   DEFAULT = 0,
@@ -32,44 +32,44 @@ export enum DESTROY_REASON {
   TOO_FAR = 'TOO_FAR',
   NEW_OFFER = 'NEW_OFFER',
   SDP_TIMEOUT = 'SDP_TIMEOUT',
-  CONNECTION_TIMEOUT = 'CONNECTION_TIMEOUT',
+  CONNECTION_TIMEOUT = 'CONNECTION_TIMEOUT'
 }
 
 export interface FriendshipStruct {
   initiator: boolean;
-  wrtc: any;
+  wrtc?: wrtc;
   missiveLatencyTolerance: number;
   sdpTimeout: number;
   connectionTimeout: number;
 }
-
 
 export abstract class Friendship {
 
   private status: FRIENDSHIP_STATUS = FRIENDSHIP_STATUS.DEFAULT;
   private peerClientId: Bytes32 | null = null;
   private isDestroyed: boolean = false;
-  private sdpbPrimrose: Primrose<Uu> = new Primrose<Uu>()
+  private sdpbPrimrose: Primrose<Uu> = new Primrose<Uu>();
 
   private simplePeer: SimplePeer;
 
-  private isMissiveReceivedByHashHex: { [hashHex: string]: boolean } = {}
+  private isMissiveReceivedByHashHex: Record<string, boolean> = {};
 
-  readonly destroyedSnowdrop: Snowdrop<void> = new Snowdrop<void>({ maxEmitsCount: 1 })
-  readonly statusSnowdrop: Snowdrop<FRIENDSHIP_STATUS> = new Snowdrop<FRIENDSHIP_STATUS>()
-  readonly missiveSnowdrop: Snowdrop<Missive> = new Snowdrop<Missive>()
-  readonly banSnowdrop: Snowdrop<Bytes32> = new Snowdrop<Bytes32>()
+  readonly destroyedSnowdrop: Snowdrop<void> = new Snowdrop<void>({ maxEmitsCount: 1 });
+  readonly statusSnowdrop: Snowdrop<FRIENDSHIP_STATUS> = new Snowdrop<
+    FRIENDSHIP_STATUS
+  >();
+  readonly missiveSnowdrop: Snowdrop<Missive> = new Snowdrop<Missive>();
+  readonly banSnowdrop: Snowdrop<Bytes32> = new Snowdrop<Bytes32>();
 
-  private banReason: BAN_REASON | null = null
-  private destroyReason: DESTROY_REASON | null = null
+  private banReason: BAN_REASON | null = null;
+  private destroyReason: DESTROY_REASON | null = null;
 
   constructor(private struct: FriendshipStruct) {
-
     this.simplePeer = new SimplePeer({
       initiator: struct.initiator,
       trickle: false,
       wrtc: struct.wrtc,
-      config: genSimplePeerConfig()
+      config: genSimplePeerConfig(),
     })
 
     this.simplePeer.on('iceStateChange', (iceConnectionState) => {
@@ -80,7 +80,7 @@ export abstract class Friendship {
     this.simplePeer.on('connect', () => {
       this.setStatus(FRIENDSHIP_STATUS.CONNECTED)
     })
-    this.simplePeer.once('error', (error) => {
+    this.simplePeer.once('error', () => {
       this.destroy(DESTROY_REASON.WRTC_ERROR)
     })
     this.simplePeer.once('close', () => {
@@ -97,7 +97,7 @@ export abstract class Friendship {
       let missive: Missive
       try {
         missive = Missive.fromEncoding(encoding)
-      } catch(error) {
+      } catch (error) {
         this.banAndDestroy(BAN_REASON.MISSIVE_NONDECODABLE)
       }
       if (this.getIsMissiveReceived(missive)) {
@@ -116,7 +116,7 @@ export abstract class Friendship {
       this.missiveSnowdrop.emit(missive)
     })
 
-    let isSdpb: boolean = false
+    let isSdpb = false
 
     this.fetchSdpb().then(() => {
       isSdpb = true
@@ -131,10 +131,9 @@ export abstract class Friendship {
       }
       this.destroy(DESTROY_REASON.SDP_TIMEOUT)
     })
-
   }
 
-  getPeerClientId(): Bytes32 | null  {
+  getPeerClientId(): Bytes32 | null {
     return this.peerClientId
   }
 
@@ -156,7 +155,7 @@ export abstract class Friendship {
     return true
   }
 
-  sendMissive(missive: Missive) {
+  sendMissive(missive: Missive): void {
     this.send(missive.getEncoding())
   }
 
@@ -169,7 +168,9 @@ export abstract class Friendship {
 
   destroy(reason: DESTROY_REASON): void {
     if (this.isDestroyed) {
-     throw new Error(`Cannot destroy: ${reason}, already destroyed: ${this.destroyReason}`)
+      throw new Error(
+        `Cannot destroy: ${reason}, already destroyed: ${this.destroyReason}`,
+      )
     }
     this.destroyReason = reason
     this.isDestroyed = true
@@ -190,7 +191,6 @@ export abstract class Friendship {
     })
   }
 
-
   protected setPeerClientId(peerClientId: Bytes32): void {
     this.peerClientId = peerClientId
   }
@@ -207,19 +207,16 @@ export abstract class Friendship {
     return this.isDestroyed
   }
 
-  protected sendSignal(struct: {
-    type: string,
-    sdpb: Uu
-  }) {
+  protected sendSignal(struct: { type: string; sdpb: Uu; }): void {
     this.simplePeer.signal({
       type: struct.type,
-      sdp: struct.sdpb.toUtf8()
+      sdp: struct.sdpb.toUtf8(),
     })
   }
 
   private getIsMissiveReceived(missive: Missive): boolean {
     const missiveHashHex = missive.getHash().uu.toHex()
-    return this.isMissiveReceivedByHashHex[missiveHashHex] ? true : false
+    return !!this.isMissiveReceivedByHashHex[missiveHashHex]
   }
 
   private markIsMissiveReceived(missive: Missive): void {
@@ -227,11 +224,10 @@ export abstract class Friendship {
     this.isMissiveReceivedByHashHex[missiveHashHex] = true
   }
 
-  private banAndDestroy(reason: BAN_REASON) {
+  private banAndDestroy(reason: BAN_REASON): void {
     this.banReason = reason
     this.banSnowdrop.emit(this.peerClientId)
     this.destroy(DESTROY_REASON.BAN)
   }
-
 
 }

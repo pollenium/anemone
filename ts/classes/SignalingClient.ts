@@ -1,9 +1,13 @@
 import { Uu } from 'pollenium-uvaursi'
 import { Snowdrop } from 'pollenium-snowdrop'
+import WebSocket from 'ws'
 import { Offer } from './Signal/Offer'
 import { Flush } from './Signal/Flush'
 import { Answer } from './Signal/Answer'
-import { SIGNALING_MESSAGE_KEY, signalingMessageTemplate } from '../templates/signalingMessage'
+import {
+  SIGNALING_MESSAGE_KEY,
+  signalingMessageTemplate,
+} from '../templates/signalingMessage'
 import { Wisteria } from './Wisteria'
 
 export class SignalingClient {
@@ -20,16 +24,16 @@ export class SignalingClient {
       const signalingMessageHenpojo = signalingMessageTemplate.decode(data.u)
       switch (signalingMessageHenpojo.key) {
         case SIGNALING_MESSAGE_KEY.OFFER: {
-          const offer = Offer.fromHenpojo(signalingMessageHenpojo.value)
+          const offer = new Offer(signalingMessageHenpojo.value)
           this.offerSnowdrop.emit(offer)
           break
         }
         case SIGNALING_MESSAGE_KEY.ANSWER: {
-          this.answerSnowdrop.emit(Answer.fromHenpojo(signalingMessageHenpojo.value))
+          this.answerSnowdrop.emit(new Answer(signalingMessageHenpojo.value))
           break
         }
         case SIGNALING_MESSAGE_KEY.FLUSH: {
-          this.flushOfferSnowdrop.emit(Flush.fromHenpojo(signalingMessageHenpojo.value))
+          this.flushOfferSnowdrop.emit(new Flush(signalingMessageHenpojo.value))
           break
         }
         default:

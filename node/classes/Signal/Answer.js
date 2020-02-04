@@ -14,9 +14,9 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
+var pollenium_buttercup_1 = require("pollenium-buttercup");
 var signalingMessage_1 = require("../../templates/signalingMessage");
 var Signal_1 = require("../Signal");
-var pollenium_buttercup_1 = require("pollenium-buttercup");
 var Answer = (function (_super) {
     __extends(Answer, _super);
     function Answer(struct) {
@@ -32,16 +32,9 @@ var Answer = (function (_super) {
             value: {
                 clientId: this.clientId.uu.unwrap(),
                 offerId: this.offerId.uu.unwrap(),
-                sdpb: this.sdpb.unwrap()
-            }
+                sdpb: this.sdpb.unwrap(),
+            },
         }));
-    };
-    Answer.fromHenpojo = function (henpojo) {
-        return new Answer({
-            clientId: henpojo.clientId,
-            offerId: henpojo.offerId,
-            sdpb: henpojo.sdpb
-        });
     };
     return Answer;
 }(Signal_1.Signal));

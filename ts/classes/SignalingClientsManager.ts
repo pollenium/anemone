@@ -1,13 +1,10 @@
 import { Snowdrop } from 'pollenium-snowdrop'
+import WebSocket from 'ws'
 import { Offer } from './Signal/Offer'
 import { Answer } from './Signal/Answer'
 import { Flush } from './Signal/Flush'
 import { SignalingClient } from './SignalingClient'
-import {
-  OffersDb,
-  AnswersDb,
-  FlushesDb,
-} from './SignalsDb'
+import { OffersDb, AnswersDb, FlushesDb } from './SignalsDb'
 
 export interface SignalingClientsManagerStruct {
   WebSocket: typeof WebSocket;
@@ -16,16 +13,16 @@ export interface SignalingClientsManagerStruct {
 
 export class SignalingClientsManager {
 
-  private signalingClients: SignalingClient[] = []
-  private signalingClientsByUrl: { [url: string]: SignalingClient; } = {}
+  private signalingClients: SignalingClient[] = [];
+  private signalingClientsByUrl: Record<string, SignalingClient> = {};
 
-  readonly offerSnowdrop: Snowdrop<Offer> = new Snowdrop<Offer>()
-  readonly answerSnowdrop: Snowdrop<Answer> = new Snowdrop<Answer>()
-  readonly flushSnowdrop: Snowdrop<Flush> = new Snowdrop<Flush>()
+  readonly offerSnowdrop: Snowdrop<Offer> = new Snowdrop<Offer>();
+  readonly answerSnowdrop: Snowdrop<Answer> = new Snowdrop<Answer>();
+  readonly flushSnowdrop: Snowdrop<Flush> = new Snowdrop<Flush>();
 
-  private offersDb: OffersDb = new OffersDb()
-  private answersDb: AnswersDb = new AnswersDb()
-  private flushesDb: FlushesDb = new FlushesDb()
+  private offersDb: OffersDb = new OffersDb();
+  private answersDb: AnswersDb = new AnswersDb();
+  private flushesDb: FlushesDb = new FlushesDb();
 
   constructor(private struct: SignalingClientsManagerStruct) {
     struct.signalingServerUrls.forEach((url) => {

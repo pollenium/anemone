@@ -40,9 +40,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
-var MissiveGenerator_1 = require("./MissiveGenerator");
 var tiny_worker_1 = __importDefault(require("tiny-worker"));
-var client;
+var MissiveGenerator_1 = require("./MissiveGenerator");
 var _loop_1 = function (i) {
     var difficulty = i * 1;
     test("generate missive with difficulty " + difficulty, function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -57,7 +56,9 @@ var _loop_1 = function (i) {
                         applicationData: applicationData,
                         difficulty: difficulty,
                         ttl: 60,
-                        hashcashWorker: new tiny_worker_1.default(__dirname + "/../../node/hashcash-worker.js", [], { esm: true })
+                        hashcashWorker: new tiny_worker_1.default(__dirname + "/../../node/hashcash-worker.js", [], {
+                            esm: true,
+                        }),
                     });
                     return [4, missiveGenerator.fetchMissive()];
                 case 1:

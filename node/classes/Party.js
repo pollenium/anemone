@@ -21,24 +21,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var IntrovertsGroup_1 = require("./FriendshipsGroup/IntrovertsGroup");
-var ExtrovertsGroup_1 = require("./FriendshipsGroup/ExtrovertsGroup");
 var pollenium_snowdrop_1 = require("pollenium-snowdrop");
 var delay_1 = __importDefault(require("delay"));
 var pollenium_buttercup_1 = require("pollenium-buttercup");
-var FriendshipsGroup_1 = require("./FriendshipsGroup");
+var IntrovertsGroup_1 = require("./FriendshipsGroup/IntrovertsGroup");
+var ExtrovertsGroup_1 = require("./FriendshipsGroup/ExtrovertsGroup");
+var FriendshipsGroupSummary_1 = require("./FriendshipsGroupSummary");
 var Friendship_1 = require("./Friendship");
-var ts_enum_util_1 = require("ts-enum-util");
-var genTime_1 = require("../utils/genTime");
 var OfferInfo_1 = require("./OfferInfo");
+var PartySummary_1 = require("./PartySummary");
 var Party = (function () {
     function Party(struct) {
         var _this = this;
         this.struct = struct;
         this.offerInfos = [];
         this.isClientIdBanned = {};
-        this.introvertsGroupSummary = new FriendshipsGroup_1.FriendshipsGroupSummary([]);
-        this.extrovertsGroupSummary = new FriendshipsGroup_1.FriendshipsGroupSummary([]);
+        this.introvertsGroupSummary = new FriendshipsGroupSummary_1.FriendshipsGroupSummary([]);
+        this.extrovertsGroupSummary = new FriendshipsGroupSummary_1.FriendshipsGroupSummary([]);
         this.isBootstrapOffersComplete = false;
         this.summarySnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.partialAnswerSnowdrop = new pollenium_snowdrop_1.Snowdrop();
@@ -87,15 +86,12 @@ var Party = (function () {
     }
     Party.prototype.clearOldOffers = function () {
         var _this = this;
-        var now = genTime_1.genTime();
         this.offerInfos = this.offerInfos.filter(function (offerInfo) {
             var lastReceivedAgo = offerInfo.getLastReceivedAgo();
             if (lastReceivedAgo <= _this.struct.maxOfferLastReceivedAgo) {
                 return true;
             }
-            else {
-                return false;
-            }
+            return false;
         });
     };
     Party.prototype.getBestConnectableOfferInfo = function () {
@@ -117,20 +113,18 @@ var Party = (function () {
                 if (offerInfoA.getDistance() < offerInfoB.getDistance()) {
                     return -1;
                 }
-                else {
-                    return 1;
-                }
+                return 1;
             }
             if (offerInfoA.getLastReceivedAgo() < offerInfoB.getLastReceivedAgo()) {
                 return -1;
             }
-            else if (offerInfoA.getLastReceivedAgo() > offerInfoB.getLastReceivedAgo()) {
-                return;
+            if (offerInfoA.getLastReceivedAgo() > offerInfoB.getLastReceivedAgo()) {
+                return 1;
             }
             if (offerInfoA.getAttemptsCount() < offerInfoB.getAttemptsCount()) {
                 return -1;
             }
-            else if (offerInfoA.getAttemptsCount() > offerInfoB.getAttemptsCount()) {
+            if (offerInfoA.getAttemptsCount() > offerInfoB.getAttemptsCount()) {
                 return 1;
             }
             return 0;
@@ -138,9 +132,7 @@ var Party = (function () {
         if (sortedConnectableOfferInfos.length === 0) {
             return null;
         }
-        else {
-            return sortedConnectableOfferInfos[0];
-        }
+        return sortedConnectableOfferInfos[0];
     };
     Party.prototype.maybeCreateFriendship = function () {
         if (this.getFriendshipsCount() >= this.struct.maxFriendshipsCount) {
@@ -180,12 +172,14 @@ var Party = (function () {
         if (peerClientIds.length === 0) {
             return null;
         }
-        var peerClientIdAndDistances = peerClientIds.map(function (peerClientId) {
+        var peerClientIdAndDistances = peerClientIds
+            .map(function (peerClientId) {
             return {
                 peerClientId: peerClientId,
-                distance: new pollenium_buttercup_1.Uint256(peerClientId.uu.genXor(_this.struct.clientId.uu))
+                distance: new pollenium_buttercup_1.Uint256(peerClientId.uu.genXor(_this.struct.clientId.uu)),
             };
-        }).sort(function (peerClientIdAndDistanceA, peerClientIdAndDistanceB) {
+        })
+            .sort(function (peerClientIdAndDistanceA, peerClientIdAndDistanceB) {
             var distanceA = peerClientIdAndDistanceA.distance;
             var distanceB = peerClientIdAndDistanceB.distance;
             if (distanceA.compLt(distanceB)) {
@@ -213,21 +207,22 @@ var Party = (function () {
         this.summarySnowdrop.emit(this.getSummary());
     };
     Party.prototype.getSummary = function () {
-        return new PartySummary({
+        return new PartySummary_1.PartySummary({
             introvertsGroupSummary: this.introvertsGroupSummary,
             extrovertsGroupSummary: this.extrovertsGroupSummary,
-            offerInfos: this.offerInfos
+            offerInfos: this.offerInfos,
         });
     };
     Party.prototype.getFriendshipsCount = function () {
-        return this.introvertsGroup.getFriendshipsCount() + this.extrovertsGroup.getFriendshipsCount();
+        return (this.introvertsGroup.getFriendshipsCount()
+            + this.extrovertsGroup.getFriendshipsCount());
     };
     Party.prototype.handleOffer = function (offer) {
         if (this.isClientIdBanned[offer.clientId.uu.toHex()]) {
             return;
         }
-        var offerInfo = this.offerInfos.find(function (offerInfo) {
-            return offerInfo.offer.id.uu.getIsEqual(offer.id.uu);
+        var offerInfo = this.offerInfos.find(function (_offerInfo) {
+            return _offerInfo.offer.id.uu.getIsEqual(offer.id.uu);
         });
         if (offerInfo === undefined) {
             this.offerInfos.push(new OfferInfo_1.OfferInfo({ offer: offer, clientId: this.struct.clientId }));
@@ -246,9 +241,7 @@ var Party = (function () {
             if (offerInfo.offer.id.uu.getIsEqual(flush.offerId)) {
                 return false;
             }
-            else {
-                return true;
-            }
+            return true;
         });
     };
     Party.prototype.getPeerClientIds = function () {
@@ -267,55 +260,4 @@ var Party = (function () {
     return Party;
 }());
 exports.Party = Party;
-var PartySummary = (function () {
-    function PartySummary(struct) {
-        this.struct = struct;
-        this.createdAt = genTime_1.genTime();
-    }
-    PartySummary.prototype.getFriendshipsCount = function () {
-        return (this.struct.extrovertsGroupSummary.getFriendshipsCount()
-            +
-                this.struct.introvertsGroupSummary.getFriendshipsCount());
-    };
-    PartySummary.prototype.getFriendshipsCountByStatus = function (friendshipStatus) {
-        return (this.struct.extrovertsGroupSummary.getFriendshipsCountByStatus(friendshipStatus)
-            +
-                this.struct.introvertsGroupSummary.getFriendshipsCountByStatus(friendshipStatus));
-    };
-    PartySummary.prototype.getFriendshipsCountsByStatus = function () {
-        var _this = this;
-        var friendshipsCountsByStatus = {};
-        ts_enum_util_1.$enum(Friendship_1.FRIENDSHIP_STATUS).forEach(function (status) {
-            friendshipsCountsByStatus[status] = _this.getFriendshipsCountByStatus(status);
-        });
-        return friendshipsCountsByStatus;
-    };
-    PartySummary.prototype.toJsonable = function () {
-        return {
-            createdAt: this.createdAt,
-            createdAgo: genTime_1.genTime() - this.createdAt,
-            friendshipsCount: this.getFriendshipsCount(),
-            connectedFriendshipsCount: this.getFriendshipsCountsByStatus()['2'],
-            offersCount: this.struct.offerInfos.length,
-            offerInfos: this.struct.offerInfos.map(function (offerInfo) {
-                return {
-                    idHex: offerInfo.offer.id.uu.toHex(),
-                    offerClientIdHex: offerInfo.offer.clientId.uu.toHex(),
-                    attemptsCount: offerInfo.getAttemptsCount(),
-                    firstReceivedAgo: offerInfo.getFirstReceivedAgo(),
-                    lastReceivedAgo: offerInfo.getLastReceivedAgo(),
-                    distance: offerInfo.getDistance().uu.toHex()
-                };
-            }),
-            friendshipsCountsByStatus: this.getFriendshipsCountsByStatus(),
-            introvertsGroup: this.struct.introvertsGroupSummary.toJsonable(),
-            extrovertsGroup: this.struct.extrovertsGroupSummary.toJsonable()
-        };
-    };
-    PartySummary.prototype.toJson = function () {
-        return JSON.stringify(this.toJsonable(), null, 2);
-    };
-    return PartySummary;
-}());
-exports.PartySummary = PartySummary;
 //# sourceMappingURL=Party.js.map

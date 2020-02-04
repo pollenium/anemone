@@ -7,7 +7,8 @@ import { Answer } from './Signal/Answer'
 import { Flush } from './Signal/Flush'
 
 abstract class SignalsDb<SignalClass extends Signal> {
-  private isReceivedByHashHex: { [idHex: string]: boolean; } = {};
+
+  private isReceivedByHashHex: Record<string, boolean> = {};
 
   markIsReceived(signal: SignalClass): void {
     const hashHex = signal.getHash().uu.toHex()
@@ -18,11 +19,12 @@ abstract class SignalsDb<SignalClass extends Signal> {
     const hashHex = signal.getHash().uu.toHex()
     return this.isReceivedByHashHex[hashHex] === true
   }
+
 }
 
 export class OffersDb extends SignalsDb<Offer> {
 
-  private urlsByOfferIdHex: { [offerIdHex: string]: string; } = {}
+  private urlsByOfferIdHex: Record<string, string> = {};
 
   getUrlByOfferId(offerId: Bytes32): string | null {
     return this.urlsByOfferIdHex[offerId.uu.toHex()]
@@ -34,10 +36,6 @@ export class OffersDb extends SignalsDb<Offer> {
 
 }
 
-export class AnswersDb extends SignalsDb<Answer> {
+export class AnswersDb extends SignalsDb<Answer> {}
 
-}
-
-export class FlushesDb extends SignalsDb<Flush> {
-
-}
+export class FlushesDb extends SignalsDb<Flush> {}

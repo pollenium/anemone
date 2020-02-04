@@ -48,18 +48,20 @@ var tiny_worker_1 = __importDefault(require("tiny-worker"));
 var Client_1 = require("../../classes/Client");
 var MissiveGenerator_1 = require("../../classes/MissiveGenerator");
 var params_1 = require("./lib/params");
+var Friendship_1 = require("../../classes/Friendship");
 var missives = [];
 var clients = [];
 var intervalId = setInterval(function () {
     var clientSummaryJsonables = clients.map(function (client) {
-        var clientSummaryJsonable = client.getSummary().toJsonable();
-        if (clientSummaryJsonable.partySummary.connectedFriendshipsCount === params_1.maxFriendshipsCount) {
+        var clientSummary = client.getSummary();
+        if (clientSummary.struct.partySummary.getFriendshipsCountByStatus(Friendship_1.FRIENDSHIP_STATUS.CONNECTED)
+            === params_1.maxFriendshipsCount) {
             return 'Fully Connected';
         }
-        return clientSummaryJsonable;
+        return clientSummary.toJsonable();
     });
     var clientSummariesJson = JSON.stringify(clientSummaryJsonables, null, 2);
-    fs_1.default.writeFileSync(__dirname + "/../../clients.test.json", clientSummariesJson);
+    fs_1.default.writeFileSync(__dirname + "/../../../clients.test.json", clientSummariesJson);
 }, 1000);
 test('create clients', function () { return __awaiter(void 0, void 0, void 0, function () {
     var i, client;
@@ -101,8 +103,10 @@ test('await fullyConnected', function () { return __awaiter(void 0, void 0, void
             case 0: return [4, Promise.all(clients.map(function (client) {
                     return new Promise(function (resolve) {
                         var handleId = client.summarySnowdrop.addHandle(function (summary) {
-                            var connectedFriendshipsCount = summary.partySummary.getFriendshipsCountByStatus(2);
+                            var connectedFriendshipsCount = summary.struct.partySummary.getFriendshipsCountByStatus(Friendship_1.FRIENDSHIP_STATUS.CONNECTED);
+                            console.log('connectedFriendshipsCount', connectedFriendshipsCount);
                             if (connectedFriendshipsCount === params_1.maxFriendshipsCount) {
+                                console.log('resolve');
                                 client.summarySnowdrop.removeHandleById(handleId);
                                 resolve();
                             }
@@ -130,7 +134,9 @@ test('create missives', function () { return __awaiter(void 0, void 0, void 0, f
                     applicationData: pollenium_uvaursi_1.Uu.genRandom(32),
                     difficulty: 1,
                     ttl: 30,
-                    hashcashWorker: new tiny_worker_1.default(__dirname + "/../../node/hashcash-worker.js", [], { esm: true }),
+                    hashcashWorker: new tiny_worker_1.default(__dirname + "/../../../node/hashcash-worker.js", [], {
+                        esm: true,
+                    }),
                 });
                 return [4, missiveGenerator.fetchMissive()];
             case 2:

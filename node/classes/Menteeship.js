@@ -37,11 +37,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
+var pollenium_snowdrop_1 = require("pollenium-snowdrop");
 var Offer_1 = require("./Signal/Offer");
 var Answer_1 = require("./Signal/Answer");
 var Flush_1 = require("./Signal/Flush");
 var signalingMessage_1 = require("../templates/signalingMessage");
-var pollenium_snowdrop_1 = require("pollenium-snowdrop");
 var Menteeship = (function () {
     function Menteeship(signalingServer, wsConnection) {
         this.signalingServer = signalingServer;
@@ -62,14 +62,14 @@ var Menteeship = (function () {
                     var signalingMessageHenpojo = signalingMessage_1.signalingMessageTemplate.decode(new Uint8Array(message.binaryData));
                     switch (signalingMessageHenpojo.key) {
                         case signalingMessage_1.SIGNALING_MESSAGE_KEY.OFFER:
-                            var offer = Offer_1.Offer.fromHenpojo(signalingMessageHenpojo.value);
+                            var offer = new Offer_1.Offer(signalingMessageHenpojo.value);
                             _this.offerSnowdrop.emit(offer);
                             break;
                         case signalingMessage_1.SIGNALING_MESSAGE_KEY.ANSWER:
-                            _this.answerSnowdrop.emit(Answer_1.Answer.fromHenpojo(signalingMessageHenpojo.value));
+                            _this.answerSnowdrop.emit(new Answer_1.Answer(signalingMessageHenpojo.value));
                             break;
                         case signalingMessage_1.SIGNALING_MESSAGE_KEY.FLUSH:
-                            _this.flushOfferSnowdrop.emit(Flush_1.Flush.fromHenpojo(signalingMessageHenpojo.value));
+                            _this.flushOfferSnowdrop.emit(new Flush_1.Flush(signalingMessageHenpojo.value));
                             break;
                         default:
                             throw new Error('Unhandled SIGNALING_MESSAGE_KEY');

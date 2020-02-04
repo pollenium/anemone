@@ -5,9 +5,11 @@ import { genTime } from './genTime'
 import { genMaxHash } from './genMaxHash'
 
 export class TimeoutError extends Error {
+
   constructor() {
     super('genNonce Timeout')
   }
+
 }
 
 export function genNonce(struct: {

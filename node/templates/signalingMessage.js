@@ -20,28 +20,8 @@ exports.signalingMessageTemplate = new Split_1.default([
     SIGNALING_MESSAGE_KEY.ANSWER,
     SIGNALING_MESSAGE_KEY.FLUSH,
 ], [
-    new Dictionary_1.default([
-        'id',
-        'clientId',
-        'sdpb',
-    ], [
-        fixed32,
-        fixed32,
-        dynamic2,
-    ]),
-    new Dictionary_1.default([
-        'clientId',
-        'offerId',
-        'sdpb',
-    ], [
-        fixed32,
-        fixed32,
-        dynamic2,
-    ]),
-    new Dictionary_1.default([
-        'offerId',
-    ], [
-        fixed32,
-    ]),
+    new Dictionary_1.default(['id', 'clientId', 'sdpb'], [fixed32, fixed32, dynamic2]),
+    new Dictionary_1.default(['clientId', 'offerId', 'sdpb'], [fixed32, fixed32, dynamic2]),
+    new Dictionary_1.default(['offerId'], [fixed32]),
 ]);
 //# sourceMappingURL=signalingMessage.js.map

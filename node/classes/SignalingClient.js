@@ -53,16 +53,16 @@ var SignalingClient = (function () {
             var signalingMessageHenpojo = signalingMessage_1.signalingMessageTemplate.decode(data.u);
             switch (signalingMessageHenpojo.key) {
                 case signalingMessage_1.SIGNALING_MESSAGE_KEY.OFFER: {
-                    var offer = Offer_1.Offer.fromHenpojo(signalingMessageHenpojo.value);
+                    var offer = new Offer_1.Offer(signalingMessageHenpojo.value);
                     _this.offerSnowdrop.emit(offer);
                     break;
                 }
                 case signalingMessage_1.SIGNALING_MESSAGE_KEY.ANSWER: {
-                    _this.answerSnowdrop.emit(Answer_1.Answer.fromHenpojo(signalingMessageHenpojo.value));
+                    _this.answerSnowdrop.emit(new Answer_1.Answer(signalingMessageHenpojo.value));
                     break;
                 }
                 case signalingMessage_1.SIGNALING_MESSAGE_KEY.FLUSH: {
-                    _this.flushOfferSnowdrop.emit(Flush_1.Flush.fromHenpojo(signalingMessageHenpojo.value));
+                    _this.flushOfferSnowdrop.emit(new Flush_1.Flush(signalingMessageHenpojo.value));
                     break;
                 }
                 default:

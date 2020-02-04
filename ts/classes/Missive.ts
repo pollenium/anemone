@@ -1,9 +1,10 @@
-import { Uintable, Uint40, Uint256, Uint8, Bytes32 } from 'pollenium-buttercup'
+import {
+  Uintable, Uint40, Uint256, Uint8, Bytes32,
+} from 'pollenium-buttercup'
 import { Uu, Uish } from 'pollenium-uvaursi'
-import { MISSIVE_KEY, missiveTemplate } from '../templates/missive'
-import { genTimestamp, genEra, genMaxHash } from '../utils'
-import { Client } from './Client'
 import * as shasta from 'pollenium-shasta'
+import { MISSIVE_KEY, missiveTemplate } from '../templates/missive'
+import { genEra, genMaxHash } from '../utils'
 
 export enum MISSIVE_COVER {
   V0 = 69
@@ -20,12 +21,12 @@ export class Missive {
   readonly applicationData: Uu;
 
   constructor(struct: {
-    version: MISSIVE_KEY,
-    nonce: Uish,
-    applicationId: Uish,
-    applicationData: Uish,
-    timestamp: Uintable,
-    difficulty: Uintable
+    version: MISSIVE_KEY;
+    nonce: Uish;
+    applicationId: Uish;
+    applicationData: Uish;
+    timestamp: Uintable;
+    difficulty: Uintable;
   }) {
     this.cover = MISSIVE_COVER.V0
     this.version = struct.version
@@ -34,7 +35,6 @@ export class Missive {
     this.applicationData = Uu.wrap(struct.applicationData)
     this.timestamp = Uint40.fromUintable(struct.timestamp)
     this.difficulty = Uint8.fromUintable(struct.difficulty)
-
   }
 
   getEncoding(): Uu {
@@ -46,9 +46,9 @@ export class Missive {
           difficulty: this.difficulty.u,
           applicationId: this.applicationId.u,
           nonce: this.nonce.u,
-          applicationData: this.applicationData.u
-        }
-      })
+          applicationData: this.applicationData.u,
+        },
+      }),
     )
   }
 
@@ -86,7 +86,7 @@ export class Missive {
     return genMaxHash({
       difficulty: this.difficulty,
       cover: this.cover,
-      applicationDataLength: this.applicationData.u.length
+      applicationDataLength: this.applicationData.u.length,
     })
   }
 
@@ -110,7 +110,7 @@ export class Missive {
           difficulty: v0Henpojo.difficulty[0],
           nonce: v0Henpojo.nonce,
           applicationId: v0Henpojo.applicationId,
-          applicationData: v0Henpojo.applicationData
+          applicationData: v0Henpojo.applicationData,
         })
       }
       default:

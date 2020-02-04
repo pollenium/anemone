@@ -38,14 +38,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_buttercup_1 = require("pollenium-buttercup");
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
+var pollenium_primrose_1 = require("pollenium-primrose");
 var Missive_1 = require("./Missive");
 var genTimestamp_1 = require("../utils/genTimestamp");
 var genTime_1 = require("../utils/genTime");
 var genNonce_1 = require("../utils/genNonce");
 var missive_1 = require("../templates/missive");
 var HashcashWorker_1 = require("../interfaces/HashcashWorker");
-var pollenium_primrose_1 = require("pollenium-primrose");
-var nullNonce = (new Uint8Array(32)).fill(0);
+var nullNonce = new Uint8Array(32).fill(0);
 var MissiveGenerator = (function () {
     function MissiveGenerator(struct) {
         this.applicationId = pollenium_uvaursi_1.Uu.wrap(struct.applicationId);
@@ -62,8 +62,8 @@ var MissiveGenerator = (function () {
                 difficulty: this.difficulty.u,
                 timestamp: genTimestamp_1.genTimestamp().u,
                 applicationId: this.applicationId.u,
-                applicationData: this.applicationData.u
-            }
+                applicationData: this.applicationData.u,
+            },
         });
         return new pollenium_uvaursi_1.Uu(encoding.slice(0, encoding.length - 32));
     };
@@ -80,7 +80,7 @@ var MissiveGenerator = (function () {
                         noncePrimrose.resolve(new pollenium_buttercup_1.Bytes32(pollenium_uvaursi_1.Uu.fromHexish(hashcashResolution.value)));
                         break;
                     case HashcashWorker_1.HASHCASH_WORKER_RESOLUTION_KEY.TIMEOUT_ERROR:
-                        noncePrimrose.reject(new genNonce_1.TimeoutError);
+                        noncePrimrose.reject(new genNonce_1.TimeoutError());
                         break;
                     case HashcashWorker_1.HASHCASH_WORKER_RESOLUTION_KEY.GENERIC_ERROR:
                         noncePrimrose.reject(new Error('Generic Errror '));
@@ -96,13 +96,12 @@ var MissiveGenerator = (function () {
             noncePrimrose.reject(error);
         };
         var timeoutAt = genTime_1.genTime() + this.ttl;
-        var noncelessPrehash = this.getNoncelessPrehash();
         var request = {
             noncelessPrehashHex: this.getNoncelessPrehash().toHex(),
             difficulty: this.difficulty.toNumber(),
             cover: Missive_1.MISSIVE_COVER.V0,
             applicationDataLength: this.applicationData.u.length,
-            timeoutAt: timeoutAt
+            timeoutAt: timeoutAt,
         };
         this.hashcashWorker.postMessage(request);
         return noncePrimrose.promise;
@@ -123,7 +122,7 @@ var MissiveGenerator = (function () {
                                 difficulty: this.difficulty,
                                 nonce: nonce,
                                 applicationId: this.applicationId,
-                                applicationData: this.applicationData
+                                applicationData: this.applicationData,
                             })];
                 }
             });

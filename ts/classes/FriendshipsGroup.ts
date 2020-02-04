@@ -1,14 +1,21 @@
-import { Friendship, FriendshipStruct, FRIENDSHIP_STATUS, DESTROY_REASON } from './Friendship'
 import { Bytes32 } from 'pollenium-buttercup'
 import { Snowdrop } from 'pollenium-snowdrop'
-import { $enum } from 'ts-enum-util'
+import {
+  Friendship,
+  FriendshipStruct,
+  FRIENDSHIP_STATUS,
+  DESTROY_REASON,
+} from './Friendship'
 import { Missive } from './Missive'
+import { FriendshipsGroupSummary } from './FriendshipsGroupSummary'
 
 export interface FriendshipsGroupStruct extends Omit<FriendshipStruct, 'initiator'> {}
 
 export class FriendshipsGroup<FriendshipClass extends Friendship> {
 
-  readonly summarySnowdrop: Snowdrop<FriendshipsGroupSummary> = new Snowdrop<FriendshipsGroupSummary>();
+  readonly summarySnowdrop: Snowdrop<FriendshipsGroupSummary> = new Snowdrop<
+    FriendshipsGroupSummary
+  >();
   readonly destroyedSnowdrop: Snowdrop<void> = new Snowdrop<void>();
   readonly banSnowdrop: Snowdrop<Bytes32> = new Snowdrop<Bytes32>();
 
@@ -16,8 +23,8 @@ export class FriendshipsGroup<FriendshipClass extends Friendship> {
 
   constructor(protected struct: FriendshipsGroupStruct) {}
 
-  protected addFriendship(friendship: FriendshipClass) {
-    friendship.statusSnowdrop.addHandle((status) => {
+  protected addFriendship(friendship: FriendshipClass): void {
+    friendship.statusSnowdrop.addHandle(() => {
       this.emitSummary()
     })
 
@@ -49,8 +56,8 @@ export class FriendshipsGroup<FriendshipClass extends Friendship> {
   }
 
   destroyAnUnconnectedFriendship(reason): void {
-    const friendship = this.friendships.find((friendship) => {
-      return friendship.getStatus() !== FRIENDSHIP_STATUS.CONNECTED
+    const friendship = this.friendships.find((_friendship) => {
+      return _friendship.getStatus() !== FRIENDSHIP_STATUS.CONNECTED
     })
     if (!friendship) {
       throw new Error('No unconnected friendships')
@@ -59,37 +66,40 @@ export class FriendshipsGroup<FriendshipClass extends Friendship> {
   }
 
   getPeerClientIds(): Array<Bytes32> {
-    return this.friendships.map((friendship) => {
-      return friendship.getPeerClientId()
-    }).filter((peerClientId) => {
-      return peerClientId !== null
-    })
+    return this.friendships
+      .map((friendship) => {
+        return friendship.getPeerClientId()
+      })
+      .filter((peerClientId) => {
+        return peerClientId !== null
+      })
   }
 
   private getFriendshipWithPeerClientId(peerClientId: Bytes32): Friendship | null {
-    const friendship = this.friendships.find((friendship) => {
-      const _peerClientId = friendship.getPeerClientId()
+    const friendship = this.friendships.find((_friendship) => {
+      const _peerClientId = _friendship.getPeerClientId()
       if (_peerClientId === null) {
         return false
       }
       if (_peerClientId.uu.getIsEqual(peerClientId.uu)) {
         return true
-      } else {
-        return false
       }
+      return false
     })
     if (friendship) {
       return friendship
-    } else {
-      return null
     }
+    return null
   }
 
   getHasFriendshipWithPeerClientId(peerClientId: Bytes32): boolean {
-    return this.getFriendshipWithPeerClientId(peerClientId) ? true : false
+    return !!this.getFriendshipWithPeerClientId(peerClientId)
   }
 
-  destroyFriendshipWithPeerClientId(peerClientId: Bytes32, destroyReason: DESTROY_REASON): void {
+  destroyFriendshipWithPeerClientId(
+    peerClientId: Bytes32,
+    destroyReason: DESTROY_REASON,
+  ): void {
     const friendship = this.getFriendshipWithPeerClientId(peerClientId)
     if (friendship) {
       friendship.destroy(destroyReason)
@@ -97,7 +107,6 @@ export class FriendshipsGroup<FriendshipClass extends Friendship> {
       throw new Error('No friendship with that peer client id')
     }
   }
-
 
   private removeFriendship(friendship: FriendshipClass): void {
     const index = this.friendships.indexOf(friendship)
@@ -115,56 +124,13 @@ export class FriendshipsGroup<FriendshipClass extends Friendship> {
     return new FriendshipsGroupSummary(this.friendships)
   }
 
-  broadcastMissive(missive: Missive) {
+  broadcastMissive(missive: Missive): void {
     this.friendships.forEach((friendship) => {
       if (friendship.getStatus() !== FRIENDSHIP_STATUS.CONNECTED) {
         return
       }
       friendship.sendMissive(missive)
     })
-  }
-
-
-}
-
-export class FriendshipsGroupSummary {
-
-  private statuses: Array<FRIENDSHIP_STATUS> = []
-
-  constructor(private friendships: Array<Friendship>) {
-    this.statuses.push(...friendships.map((friendship) => {
-      return friendship.getStatus()
-    }))
-  }
-
-  getFriendshipsCount(): number {
-    return this.friendships.length
-  }
-
-  getFriendshipsCountByStatus(status: FRIENDSHIP_STATUS): number {
-    return this.statuses.filter((_status) => {
-      return status === _status
-    }).length
-  }
-
-  getFriendshipsCountsByStatus(): { [status: number]: number } {
-    const friendshipsCountsByStatus: { [status: number]: number } = {}
-    $enum(FRIENDSHIP_STATUS).forEach((status) => {
-      friendshipsCountsByStatus[status] = this.getFriendshipsCountByStatus(status)
-    })
-    return friendshipsCountsByStatus
-  }
-
-  toJsonable(): Object {
-    return {
-      friendshipsCount: this.getFriendshipsCount(),
-      friendshipsCountsByStatus: this.getFriendshipsCountsByStatus()
-    }
-
-  }
-
-  toJson(): string {
-    return JSON.stringify(this.toJsonable(), null, 2)
   }
 
 }

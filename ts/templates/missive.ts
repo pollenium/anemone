@@ -12,19 +12,12 @@ export enum MISSIVE_KEY {
   V0 = 'V0'
 }
 
-
-export const missiveTemplate = new Split(['V0'], [
-  new Dictionary([
-    'timestamp',
-    'difficulty',
-    'applicationId',
-    'applicationData',
-    'nonce',
-  ], [
-    fixed5,
-    fixed1,
-    fixed32,
-    dynamic2,
-    fixed32,
-  ]),
-])
+export const missiveTemplate = new Split(
+  ['V0'],
+  [
+    new Dictionary(
+      ['timestamp', 'difficulty', 'applicationId', 'applicationData', 'nonce'],
+      [fixed5, fixed1, fixed32, dynamic2, fixed32],
+    ),
+  ],
+)

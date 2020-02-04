@@ -33,7 +33,7 @@ var Introvert = (function (_super) {
         _this.setStatus(Friendship_1.FRIENDSHIP_STATUS.CONNECTING);
         _this.sendSignal({
             type: 'offer',
-            sdpb: offer.sdpb
+            sdpb: offer.sdpb,
         });
         _this.startConnectOrDestroyTimeout();
         return _this;

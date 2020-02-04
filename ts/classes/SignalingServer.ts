@@ -6,7 +6,7 @@ import { Menteeship } from './Menteeship'
 export class SignalingServer {
 
   menteeships: Menteeship[] = [];
-  menteeshipsByOfferIdHex: { [id: string]: Menteeship; } = {};
+  menteeshipsByOfferIdHex: Record<string, Menteeship> = {};
   httpServer: http.Server;
   wsServer: WsServer;
 
@@ -34,14 +34,16 @@ export class SignalingServer {
       menteeship.offerSnowdrop.addHandle((offer) => {
         const offerIdHex = offer.id.uu.toHex()
         this.menteeshipsByOfferIdHex[offerIdHex] = menteeship
-        this.menteeships.sort(() => {
-          return Math.random() - 0.5
-        }).forEach((_menteeship) => {
-          if (menteeship === _menteeship) {
-            return
-          }
-          _menteeship.sendOffer(offer)
-        })
+        this.menteeships
+          .sort(() => {
+            return Math.random() - 0.5
+          })
+          .forEach((_menteeship) => {
+            if (menteeship === _menteeship) {
+              return
+            }
+            _menteeship.sendOffer(offer)
+          })
       })
 
       menteeship.answerSnowdrop.addHandle((answer) => {
@@ -49,11 +51,13 @@ export class SignalingServer {
       })
 
       menteeship.flushOfferSnowdrop.addHandle((flushOffer) => {
-        this.menteeships.sort(() => {
-          return Math.random() - 0.5
-        }).forEach((_menteeship) => {
-          _menteeship.sendFlush(flushOffer)
-        })
+        this.menteeships
+          .sort(() => {
+            return Math.random() - 0.5
+          })
+          .forEach((_menteeship) => {
+            _menteeship.sendFlush(flushOffer)
+          })
       })
     })
   }
@@ -62,4 +66,5 @@ export class SignalingServer {
     this.wsServer.shutDown()
     this.httpServer.close()
   }
+
 }

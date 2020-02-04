@@ -4,13 +4,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
-var Missive_1 = require("./Missive");
-var genTime_1 = require("../utils/genTime");
-var genSimplePeerConfig_1 = require("../utils/genSimplePeerConfig");
 var simple_peer_1 = __importDefault(require("simple-peer"));
 var pollenium_snowdrop_1 = require("pollenium-snowdrop");
 var pollenium_primrose_1 = require("pollenium-primrose");
 var delay_1 = __importDefault(require("delay"));
+var genSimplePeerConfig_1 = require("../utils/genSimplePeerConfig");
+var genTime_1 = require("../utils/genTime");
+var Missive_1 = require("./Missive");
 var FRIENDSHIP_STATUS;
 (function (FRIENDSHIP_STATUS) {
     FRIENDSHIP_STATUS[FRIENDSHIP_STATUS["DEFAULT"] = 0] = "DEFAULT";
@@ -56,7 +56,7 @@ var Friendship = (function () {
             initiator: struct.initiator,
             trickle: false,
             wrtc: struct.wrtc,
-            config: genSimplePeerConfig_1.genSimplePeerConfig()
+            config: genSimplePeerConfig_1.genSimplePeerConfig(),
         });
         this.simplePeer.on('iceStateChange', function (iceConnectionState) {
             if (iceConnectionState === 'disconnected') {
@@ -66,7 +66,7 @@ var Friendship = (function () {
         this.simplePeer.on('connect', function () {
             _this.setStatus(FRIENDSHIP_STATUS.CONNECTED);
         });
-        this.simplePeer.once('error', function (error) {
+        this.simplePeer.once('error', function () {
             _this.destroy(DESTROY_REASON.WRTC_ERROR);
         });
         this.simplePeer.once('close', function () {
@@ -181,12 +181,12 @@ var Friendship = (function () {
     Friendship.prototype.sendSignal = function (struct) {
         this.simplePeer.signal({
             type: struct.type,
-            sdp: struct.sdpb.toUtf8()
+            sdp: struct.sdpb.toUtf8(),
         });
     };
     Friendship.prototype.getIsMissiveReceived = function (missive) {
         var missiveHashHex = missive.getHash().uu.toHex();
-        return this.isMissiveReceivedByHashHex[missiveHashHex] ? true : false;
+        return !!this.isMissiveReceivedByHashHex[missiveHashHex];
     };
     Friendship.prototype.markIsMissiveReceived = function (missive) {
         var missiveHashHex = missive.getHash().uu.toHex();

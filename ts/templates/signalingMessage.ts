@@ -12,32 +12,15 @@ export enum SIGNALING_MESSAGE_KEY {
   FLUSH = 'FLUSH'
 }
 
-export const signalingMessageTemplate = new Split([
-  SIGNALING_MESSAGE_KEY.OFFER,
-  SIGNALING_MESSAGE_KEY.ANSWER,
-  SIGNALING_MESSAGE_KEY.FLUSH,
-], [
-  new Dictionary([
-    'id',
-    'clientId',
-    'sdpb',
-  ], [
-    fixed32,
-    fixed32,
-    dynamic2,
-  ]),
-  new Dictionary([
-    'clientId',
-    'offerId',
-    'sdpb',
-  ], [
-    fixed32,
-    fixed32,
-    dynamic2,
-  ]),
-  new Dictionary([
-    'offerId',
-  ], [
-    fixed32,
-  ]),
-])
+export const signalingMessageTemplate = new Split(
+  [
+    SIGNALING_MESSAGE_KEY.OFFER,
+    SIGNALING_MESSAGE_KEY.ANSWER,
+    SIGNALING_MESSAGE_KEY.FLUSH,
+  ],
+  [
+    new Dictionary(['id', 'clientId', 'sdpb'], [fixed32, fixed32, dynamic2]),
+    new Dictionary(['clientId', 'offerId', 'sdpb'], [fixed32, fixed32, dynamic2]),
+    new Dictionary(['offerId'], [fixed32]),
+  ],
+)

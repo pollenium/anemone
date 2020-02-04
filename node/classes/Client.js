@@ -11,16 +11,17 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var SignalingClientsManager_1 = require("./SignalingClientsManager");
-var Party_1 = require("./Party");
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var pollenium_buttercup_1 = require("pollenium-buttercup");
-var MissivesDb_1 = require("./MissivesDb");
 var pollenium_snowdrop_1 = require("pollenium-snowdrop");
+var pollenium_primrose_1 = require("pollenium-primrose");
+var SignalingClientsManager_1 = require("./SignalingClientsManager");
+var Party_1 = require("./Party");
+var MissivesDb_1 = require("./MissivesDb");
 var Offer_1 = require("./Signal/Offer");
 var Answer_1 = require("./Signal/Answer");
 var Flush_1 = require("./Signal/Flush");
-var pollenium_primrose_1 = require("pollenium-primrose");
+var ClientSummary_1 = require("./ClientSummary");
 var Client = (function () {
     function Client(struct) {
         var _this = this;
@@ -31,7 +32,7 @@ var Client = (function () {
         this.introvertSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.missiveSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.summarySnowdrop = new pollenium_snowdrop_1.Snowdrop();
-        this.missivesDb = new MissivesDb_1.MissivesDb;
+        this.missivesDb = new MissivesDb_1.MissivesDb();
         this.maxFriendshipsConnectedPrimrose = new pollenium_primrose_1.Primrose();
         this.party = new Party_1.Party(__assign({ clientId: this.id }, struct));
         this.signalingClientsManager = new SignalingClientsManager_1.SignalingClientsManager(__assign({}, struct));
@@ -59,14 +60,14 @@ var Client = (function () {
             var flush = new Flush_1.Flush(__assign({ clientId: _this.id }, partialFlush));
             _this.signalingClientsManager.handleFlush(flush);
         });
-        this.party.summarySnowdrop.addHandle(function (partySummary) {
+        this.party.summarySnowdrop.addHandle(function () {
             _this.summarySnowdrop.emitIfHandle(_this.getSummary());
         });
     }
     Client.prototype.getSummary = function () {
-        return new ClientSummary({
+        return new ClientSummary_1.ClientSummary({
             id: this.id,
-            partySummary: this.party.getSummary()
+            partySummary: this.party.getSummary(),
         });
     };
     Client.prototype.broadcastMissive = function (missive) {
@@ -75,18 +76,4 @@ var Client = (function () {
     return Client;
 }());
 exports.Client = Client;
-var ClientSummary = (function () {
-    function ClientSummary(struct) {
-        this.id = struct.id;
-        this.partySummary = struct.partySummary;
-    }
-    ClientSummary.prototype.toJsonable = function () {
-        return {
-            idHex: this.id.uu.toHex(),
-            partySummary: this.partySummary.toJsonable()
-        };
-    };
-    return ClientSummary;
-}());
-exports.ClientSummary = ClientSummary;
 //# sourceMappingURL=Client.js.map

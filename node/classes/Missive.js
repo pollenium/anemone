@@ -9,9 +9,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_buttercup_1 = require("pollenium-buttercup");
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
+var shasta = __importStar(require("pollenium-shasta"));
 var missive_1 = require("../templates/missive");
 var utils_1 = require("../utils");
-var shasta = __importStar(require("pollenium-shasta"));
 var MISSIVE_COVER;
 (function (MISSIVE_COVER) {
     MISSIVE_COVER[MISSIVE_COVER["V0"] = 69] = "V0";
@@ -34,8 +34,8 @@ var Missive = (function () {
                 difficulty: this.difficulty.u,
                 applicationId: this.applicationId.u,
                 nonce: this.nonce.u,
-                applicationData: this.applicationData.u
-            }
+                applicationData: this.applicationData.u,
+            },
         }));
     };
     Missive.prototype.getId = function () {
@@ -51,7 +51,7 @@ var Missive = (function () {
         return utils_1.genMaxHash({
             difficulty: this.difficulty,
             cover: this.cover,
-            applicationDataLength: this.applicationData.u.length
+            applicationDataLength: this.applicationData.u.length,
         });
     };
     Missive.prototype.getIsValid = function () {
@@ -73,7 +73,7 @@ var Missive = (function () {
                     difficulty: v0Henpojo.difficulty[0],
                     nonce: v0Henpojo.nonce,
                     applicationId: v0Henpojo.applicationId,
-                    applicationData: v0Henpojo.applicationData
+                    applicationData: v0Henpojo.applicationData,
                 });
             }
             default:

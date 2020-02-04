@@ -15,4 +15,5 @@ export abstract class Signal {
   }
 
   abstract getEncoding(): Uu;
+
 }

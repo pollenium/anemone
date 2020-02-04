@@ -38,7 +38,7 @@ var Extrovert = (function (_super) {
         this.setStatus(Friendship_1.FRIENDSHIP_STATUS.CONNECTING);
         this.sendSignal({
             type: 'answer',
-            sdpb: answer.sdpb
+            sdpb: answer.sdpb,
         });
         this.startConnectOrDestroyTimeout();
     };

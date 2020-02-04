@@ -10,9 +10,12 @@ exports.stunServers = [
 ];
 function genSimplePeerConfig() {
     return {
-        iceServers: exports.stunServers.sort(function () {
+        iceServers: exports.stunServers
+            .sort(function () {
             return Math.random() - 0.5;
-        }).slice(0, 2).map(function (stunServer) {
+        })
+            .slice(0, 2)
+            .map(function (stunServer) {
             return {
                 urls: "stun:" + stunServer,
             };

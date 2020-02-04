@@ -1,11 +1,11 @@
+import { Snowdrop } from 'pollenium-snowdrop'
+import { Bytes32 } from 'pollenium-buttercup'
+import { Uu } from 'pollenium-uvaursi'
 import { FriendshipsGroup, FriendshipsGroupStruct } from '../FriendshipsGroup'
 import { Extrovert } from '../Friendship/Extrovert'
-import { Snowdrop } from 'pollenium-snowdrop'
 import { PartialOffer } from '../Signal/Offer'
 import { Answer } from '../Signal/Answer'
 import { PartialFlush } from '../Signal/Flush'
-import { Bytes32 } from 'pollenium-buttercup'
-import { Uu } from 'pollenium-uvaursi'
 
 export interface ExtrovertsGroupStruct extends FriendshipsGroupStruct {
   offerReuploadInterval: number;
@@ -17,7 +17,7 @@ export class ExtrovertsGroup extends FriendshipsGroup<Extrovert> {
     super({ ...extrovertGroupStruct })
   }
 
-  private extrovertsByOfferIdHex: { [offerIdHex: string]: Extrovert } = {}
+  private extrovertsByOfferIdHex: Record<string, Extrovert> = {};
 
   readonly partialOfferSnowdrop = new Snowdrop<PartialOffer>();
   readonly partialFlushSnowdrop = new Snowdrop<PartialFlush>();
@@ -29,14 +29,14 @@ export class ExtrovertsGroup extends FriendshipsGroup<Extrovert> {
     extrovert.destroyedSnowdrop.addHandle(() => {
       delete this.extrovertsByOfferIdHex[offerId.toHex()]
       this.partialFlushSnowdrop.emit({
-        offerId
+        offerId,
       })
     })
     extrovert.fetchSdpb().then((sdpb) => {
       this.extrovertsByOfferIdHex[offerId.toHex()] = extrovert
       const partialOffer = {
         id: offerId,
-        sdpb
+        sdpb,
       }
       this.partialOfferSnowdrop.emit(partialOffer)
       const intervalId = setInterval(() => {
@@ -46,10 +46,7 @@ export class ExtrovertsGroup extends FriendshipsGroup<Extrovert> {
           clearInterval(intervalId)
         }
       }, this.extrovertGroupStruct.offerReuploadInterval * 1000)
-
     })
-
-
   }
 
   handleAnswer(answer: Answer): void {
@@ -64,8 +61,8 @@ export class ExtrovertsGroup extends FriendshipsGroup<Extrovert> {
     const extrovert = this.extrovertsByOfferIdHex[offerId.uu.toHex()]
     if (extrovert) {
       return extrovert
-    } else {
-      return null
     }
+    return null
   }
+
 }

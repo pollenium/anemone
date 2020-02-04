@@ -8,7 +8,6 @@ import {
   HASHCASH_WORKER_RESOLUTION_KEY,
 } from './interfaces/HashcashWorker'
 
-
 // eslint-disable-next-line no-undef
 onmessage = (event): void => {
   const request: HashcashWorkerRequest = event.data

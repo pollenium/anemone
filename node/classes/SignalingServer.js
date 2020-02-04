@@ -39,9 +39,11 @@ var SignalingServer = (function () {
             menteeship.offerSnowdrop.addHandle(function (offer) {
                 var offerIdHex = offer.id.uu.toHex();
                 _this.menteeshipsByOfferIdHex[offerIdHex] = menteeship;
-                _this.menteeships.sort(function () {
+                _this.menteeships
+                    .sort(function () {
                     return Math.random() - 0.5;
-                }).forEach(function (_menteeship) {
+                })
+                    .forEach(function (_menteeship) {
                     if (menteeship === _menteeship) {
                         return;
                     }
@@ -52,9 +54,11 @@ var SignalingServer = (function () {
                 _this.menteeshipsByOfferIdHex[answer.offerId.uu.toHex()].sendAnswer(answer);
             });
             menteeship.flushOfferSnowdrop.addHandle(function (flushOffer) {
-                _this.menteeships.sort(function () {
+                _this.menteeships
+                    .sort(function () {
                     return Math.random() - 0.5;
-                }).forEach(function (_menteeship) {
+                })
+                    .forEach(function (_menteeship) {
                     _menteeship.sendFlush(flushOffer);
                 });
             });

@@ -2,6 +2,7 @@ import { Snowdrop } from 'pollenium-snowdrop'
 import { Uu, Uish } from 'pollenium-uvaursi'
 import { Primrose } from 'pollenium-primrose'
 import delay from 'delay'
+import WebSocket from 'ws'
 
 export interface WisteriaStruct {
   WebSocket: typeof WebSocket;
@@ -12,7 +13,7 @@ export class Wisteria {
 
   private openPrimrose: Primrose<void>;
   private closePrimrose: Primrose<void> = new Primrose<void>();
-  private webSocket: WebSocket
+  private webSocket: WebSocket;
 
   readonly dataSnowdrop: Snowdrop<Uu> = new Snowdrop<Uu>();
 
@@ -39,7 +40,7 @@ export class Wisteria {
       this.connect()
     }
     webSocket.onmessage = (message): void => {
-      this.dataSnowdrop.emit(Uu.wrap(message.data))
+      this.dataSnowdrop.emit(Uu.wrap(message.data as ArrayBuffer))
     }
     this.webSocket = webSocket
   }
@@ -55,6 +56,5 @@ export class Wisteria {
   private send(data: Uish): void {
     this.webSocket.send(Uu.wrap(data).unwrap())
   }
-
 
 }

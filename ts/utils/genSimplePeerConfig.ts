@@ -7,15 +7,17 @@ export const stunServers = [
   'global.stun.twilio.com:3478?transport=udp',
 ]
 
-
 export function genSimplePeerConfig(): { iceServers: Array<{ urls: string; }>; } {
   return {
-    iceServers: stunServers.sort(() => {
-      return Math.random() - 0.5
-    }).slice(0, 2).map((stunServer) => {
-      return {
-        urls: `stun:${stunServer}`,
-      }
-    }),
+    iceServers: stunServers
+      .sort(() => {
+        return Math.random() - 0.5
+      })
+      .slice(0, 2)
+      .map((stunServer) => {
+        return {
+          urls: `stun:${stunServer}`,
+        }
+      }),
   }
 }

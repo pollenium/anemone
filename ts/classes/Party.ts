@@ -1,19 +1,20 @@
-import { IntrovertsGroup } from './FriendshipsGroup/IntrovertsGroup'
-import { ExtrovertsGroup, ExtrovertsGroupStruct } from './FriendshipsGroup/ExtrovertsGroup'
 import { Snowdrop } from 'pollenium-snowdrop'
-import { Offer, PartialOffer } from './Signal/Offer'
-import { Answer, PartialAnswer } from './Signal/Answer'
-import { Flush, PartialFlush } from './Signal/Flush'
-import { Uu } from 'pollenium-uvaursi'
 import delay from 'delay'
 import { Bytes32, Uint256 } from 'pollenium-buttercup'
-import { Primrose } from 'pollenium-primrose'
-import { FriendshipsGroupStruct, FriendshipsGroupSummary } from './FriendshipsGroup'
-import { FRIENDSHIP_STATUS, DESTROY_REASON } from './Friendship'
-import { $enum } from 'ts-enum-util'
-import { genTime } from '../utils/genTime'
+import { IntrovertsGroup } from './FriendshipsGroup/IntrovertsGroup'
+import {
+  ExtrovertsGroup,
+  ExtrovertsGroupStruct,
+} from './FriendshipsGroup/ExtrovertsGroup'
+import { Offer } from './Signal/Offer'
+import { Answer, PartialAnswer } from './Signal/Answer'
+import { Flush, PartialFlush } from './Signal/Flush'
+import { FriendshipsGroupStruct } from './FriendshipsGroup'
+import { FriendshipsGroupSummary } from './FriendshipsGroupSummary'
+import { DESTROY_REASON } from './Friendship'
 import { Missive } from './Missive'
 import { OfferInfo } from './OfferInfo'
+import { PartySummary } from './PartySummary'
 
 export interface PartyStruct extends FriendshipsGroupStruct, ExtrovertsGroupStruct {
   clientId: Bytes32;
@@ -25,16 +26,20 @@ export interface PartyStruct extends FriendshipsGroupStruct, ExtrovertsGroupStru
 
 export class Party {
 
-  private offerInfos: Array<OfferInfo> = []
-  private isClientIdBanned : {[clientIdHex: string]: boolean } = {}
+  private offerInfos: Array<OfferInfo> = [];
+  private isClientIdBanned: Record<string, boolean> = {};
 
-  private introvertsGroup: IntrovertsGroup
-  private extrovertsGroup: ExtrovertsGroup
+  private introvertsGroup: IntrovertsGroup;
+  private extrovertsGroup: ExtrovertsGroup;
 
-  private introvertsGroupSummary: FriendshipsGroupSummary = new FriendshipsGroupSummary([]);
-  private extrovertsGroupSummary: FriendshipsGroupSummary = new FriendshipsGroupSummary([]);
+  private introvertsGroupSummary: FriendshipsGroupSummary = new FriendshipsGroupSummary(
+    [],
+  );
+  private extrovertsGroupSummary: FriendshipsGroupSummary = new FriendshipsGroupSummary(
+    [],
+  );
 
-  private isBootstrapOffersComplete: boolean = false
+  private isBootstrapOffersComplete: boolean = false;
 
   readonly summarySnowdrop: Snowdrop<PartySummary> = new Snowdrop<PartySummary>();
   readonly partialAnswerSnowdrop: Snowdrop<PartialAnswer> = new Snowdrop<PartialAnswer>();
@@ -42,10 +47,8 @@ export class Party {
   readonly partialFlushSnowdrop: Snowdrop<PartialFlush> = new Snowdrop<PartialFlush>();
 
   constructor(private struct: PartyStruct) {
-
     this.introvertsGroup = new IntrovertsGroup({ ...struct })
     this.extrovertsGroup = new ExtrovertsGroup({ ...struct })
-
 
     this.extrovertsGroup.partialOfferSnowdrop.addHandle((partialOffer) => {
       this.partialOfferSnowdrop.emit(partialOffer)
@@ -80,7 +83,6 @@ export class Party {
       this.banClientId(clientId)
     })
 
-
     delay(struct.bootstrapOffersTimeout * 1000).then(() => {
       this.isBootstrapOffersComplete = true
       for (let i = this.getFriendshipsCount(); i < struct.maxFriendshipsCount; i++) {
@@ -93,15 +95,13 @@ export class Party {
     }, 1000)
   }
 
-  private clearOldOffers() {
-    const now = genTime()
+  private clearOldOffers(): void {
     this.offerInfos = this.offerInfos.filter((offerInfo) => {
       const lastReceivedAgo = offerInfo.getLastReceivedAgo()
       if (lastReceivedAgo <= this.struct.maxOfferLastReceivedAgo) {
         return true
-      } else {
-        return false
       }
+      return false
     })
   }
 
@@ -112,7 +112,7 @@ export class Party {
       if (offerInfo.getAttemptsCount() >= this.struct.maxOfferAttemptsCount) {
         return false
       }
-      for (let i = 0; i < peerClientIds.length; i ++) {
+      for (let i = 0; i < peerClientIds.length; i++) {
         if (peerClientIds[i].uu.getIsEqual(offerInfo.offer.clientId.uu)) {
           return false
         }
@@ -120,42 +120,35 @@ export class Party {
       return true
     })
 
-    const sortedConnectableOfferInfos = connectableOfferInfos.sort((offerInfoA, offerInfoB): number => {
-
-      if (!offerInfoA.offer.clientId.uu.getIsEqual(offerInfoB.offer.clientId)) {
-        if (offerInfoA.getDistance() < offerInfoB.getDistance()) {
-          return -1
-        } else {
+    const sortedConnectableOfferInfos = connectableOfferInfos.sort(
+      (offerInfoA, offerInfoB): number => {
+        if (!offerInfoA.offer.clientId.uu.getIsEqual(offerInfoB.offer.clientId)) {
+          if (offerInfoA.getDistance() < offerInfoB.getDistance()) {
+            return -1
+          }
           return 1
         }
-      }
 
-      if (
-        offerInfoA.getLastReceivedAgo() < offerInfoB.getLastReceivedAgo()
-      ) {
-        return -1
-      } else if (
-        offerInfoA.getLastReceivedAgo() > offerInfoB.getLastReceivedAgo()
-      ) {
-        return
-      }
-      if (
-        offerInfoA.getAttemptsCount() < offerInfoB.getAttemptsCount()
-      ) {
-        return -1
-      } else if (
-        offerInfoA.getAttemptsCount() > offerInfoB.getAttemptsCount()
-      ) {
-        return 1
-      }
-      return 0
-    })
+        if (offerInfoA.getLastReceivedAgo() < offerInfoB.getLastReceivedAgo()) {
+          return -1
+        }
+        if (offerInfoA.getLastReceivedAgo() > offerInfoB.getLastReceivedAgo()) {
+          return 1
+        }
+        if (offerInfoA.getAttemptsCount() < offerInfoB.getAttemptsCount()) {
+          return -1
+        }
+        if (offerInfoA.getAttemptsCount() > offerInfoB.getAttemptsCount()) {
+          return 1
+        }
+        return 0
+      },
+    )
 
     if (sortedConnectableOfferInfos.length === 0) {
       return null
-    } else {
-      return sortedConnectableOfferInfos[0]
     }
+    return sortedConnectableOfferInfos[0]
   }
 
   private maybeCreateFriendship(): void {
@@ -172,14 +165,12 @@ export class Party {
     }
   }
 
-  private maybeDestroyFriendship (): void {
+  private maybeDestroyFriendship(): void {
     const offerInfo = this.getBestConnectableOfferInfo()
     if (offerInfo === null) {
       return
     }
-    if (
-      this.extrovertsGroup.getHasAnUnconnectedFriendship()
-    ) {
+    if (this.extrovertsGroup.getHasAnUnconnectedFriendship()) {
       this.extrovertsGroup.destroyAnUnconnectedFriendship(DESTROY_REASON.NEW_OFFER)
       return
     }
@@ -193,18 +184,25 @@ export class Party {
     }
   }
 
-  private getWorstPeerClientIdAndDistance(): { peerClientId: Bytes32, distance: Uint256 } | null {
+  private getWorstPeerClientIdAndDistance(): {
+    peerClientId: Bytes32;
+    distance: Uint256;
+  } | null {
     const peerClientIds = this.getPeerClientIds()
     if (peerClientIds.length === 0) {
       return null
     }
-    const peerClientIdAndDistances: Array<{ peerClientId: Bytes32, distance: Uint256 }> =
-      peerClientIds.map((peerClientId) => {
+    const peerClientIdAndDistances: Array<{
+      peerClientId: Bytes32;
+      distance: Uint256;
+    }> = peerClientIds
+      .map((peerClientId) => {
         return {
           peerClientId,
-          distance: new Uint256(peerClientId.uu.genXor(this.struct.clientId.uu))
+          distance: new Uint256(peerClientId.uu.genXor(this.struct.clientId.uu)),
         }
-      }).sort((peerClientIdAndDistanceA, peerClientIdAndDistanceB) => {
+      })
+      .sort((peerClientIdAndDistanceA, peerClientIdAndDistanceB) => {
         const distanceA = peerClientIdAndDistanceA.distance
         const distanceB = peerClientIdAndDistanceB.distance
         if (distanceA.compLt(distanceB)) {
@@ -218,7 +216,10 @@ export class Party {
     return peerClientIdAndDistances[0]
   }
 
-  private destroyFriendshipWithPeerClientId(peerClientId: Bytes32, destroyReason: DESTROY_REASON): void {
+  private destroyFriendshipWithPeerClientId(
+    peerClientId: Bytes32,
+    destroyReason: DESTROY_REASON,
+  ): void {
     if (this.introvertsGroup.getHasFriendshipWithPeerClientId(peerClientId)) {
       this.introvertsGroup.destroyFriendshipWithPeerClientId(peerClientId, destroyReason)
       return
@@ -238,20 +239,23 @@ export class Party {
     return new PartySummary({
       introvertsGroupSummary: this.introvertsGroupSummary,
       extrovertsGroupSummary: this.extrovertsGroupSummary,
-      offerInfos: this.offerInfos
+      offerInfos: this.offerInfos,
     })
   }
 
   private getFriendshipsCount(): number {
-    return this.introvertsGroup.getFriendshipsCount() + this.extrovertsGroup.getFriendshipsCount()
+    return (
+      this.introvertsGroup.getFriendshipsCount()
+      + this.extrovertsGroup.getFriendshipsCount()
+    )
   }
 
   handleOffer(offer: Offer): void {
     if (this.isClientIdBanned[offer.clientId.uu.toHex()]) {
       return
     }
-    const offerInfo = this.offerInfos.find((offerInfo) => {
-      return offerInfo.offer.id.uu.getIsEqual(offer.id.uu)
+    const offerInfo = this.offerInfos.find((_offerInfo) => {
+      return _offerInfo.offer.id.uu.getIsEqual(offer.id.uu)
     })
     if (offerInfo === undefined) {
       this.offerInfos.push(new OfferInfo({ offer, clientId: this.struct.clientId }))
@@ -270,16 +274,15 @@ export class Party {
     this.offerInfos = this.offerInfos.filter((offerInfo) => {
       if (offerInfo.offer.id.uu.getIsEqual(flush.offerId)) {
         return false
-      } else {
-        return true
       }
+      return true
     })
   }
 
   getPeerClientIds(): Array<Bytes32> {
     return [
       ...this.introvertsGroup.getPeerClientIds(),
-      ...this.extrovertsGroup.getPeerClientIds()
+      ...this.extrovertsGroup.getPeerClientIds(),
     ]
   }
 
@@ -288,75 +291,11 @@ export class Party {
     this.extrovertsGroup.broadcastMissive(missive)
   }
 
-  private banClientId(clientId: Bytes32) {
+  private banClientId(clientId: Bytes32): void {
     this.isClientIdBanned[clientId.uu.toHex()] = true
     this.offerInfos = this.offerInfos.filter((offerInfo) => {
       return offerInfo.offer.clientId.uu.getIsEqual(clientId.uu)
     })
-  }
-
-}
-
-export class PartySummary{
-
-  readonly createdAt: number = genTime();
-
-  constructor(private struct: {
-    extrovertsGroupSummary: FriendshipsGroupSummary,
-    introvertsGroupSummary: FriendshipsGroupSummary,
-    offerInfos: Array<OfferInfo>
-  }) {}
-
-  getFriendshipsCount(): number {
-    return (
-      this.struct.extrovertsGroupSummary.getFriendshipsCount()
-      +
-      this.struct.introvertsGroupSummary.getFriendshipsCount()
-    )
-  }
-
-  getFriendshipsCountByStatus(friendshipStatus: FRIENDSHIP_STATUS): number {
-    return (
-      this.struct.extrovertsGroupSummary.getFriendshipsCountByStatus(friendshipStatus)
-      +
-      this.struct.introvertsGroupSummary.getFriendshipsCountByStatus(friendshipStatus)
-    )
-  }
-
-  getFriendshipsCountsByStatus(): { [status: number]: number }  {
-    const friendshipsCountsByStatus: { [status: number]: number } = {}
-    $enum(FRIENDSHIP_STATUS).forEach((status) => {
-      friendshipsCountsByStatus[status] = this.getFriendshipsCountByStatus(status)
-    })
-    return friendshipsCountsByStatus
-  }
-
-  toJsonable() {
-    return {
-      createdAt: this.createdAt,
-      createdAgo: genTime() - this.createdAt,
-      friendshipsCount: this.getFriendshipsCount(),
-      connectedFriendshipsCount: this.getFriendshipsCountsByStatus()['2'],
-      offersCount: this.struct.offerInfos.length,
-      offerInfos: this.struct.offerInfos.map((offerInfo) => {
-       return {
-         idHex: offerInfo.offer.id.uu.toHex(),
-         offerClientIdHex: offerInfo.offer.clientId.uu.toHex(),
-         attemptsCount: offerInfo.getAttemptsCount(),
-         firstReceivedAgo: offerInfo.getFirstReceivedAgo(),
-         lastReceivedAgo: offerInfo.getLastReceivedAgo(),
-         distance: offerInfo.getDistance().uu.toHex()
-        }
-      }),
-    friendshipsCountsByStatus: this.getFriendshipsCountsByStatus(),
-    introvertsGroup: this.struct.introvertsGroupSummary.toJsonable(),
-    extrovertsGroup: this.struct.extrovertsGroupSummary.toJsonable()
-  }
-
-}
-
-  toJson(): string {
-    return JSON.stringify(this.toJsonable(), null, 2)
   }
 
 }

@@ -1,16 +1,16 @@
-import { Friendship, FRIENDSHIP_STATUS, DESTROY_REASON, FriendshipStruct } from '../Friendship'
+import {
+  Friendship,
+  FRIENDSHIP_STATUS,
+  FriendshipStruct,
+} from '../Friendship'
 import { Answer } from '../Signal/Answer'
-import SimplePeer from 'simple-peer'
-import { genSimplePeerConfig } from '../../utils/genSimplePeerConfig'
-import { Bytes32 } from 'pollenium-buttercup'
-import { Uu } from 'pollenium-uvaursi'
 
 export class Extrovert extends Friendship {
 
-  constructor(struct: Omit<FriendshipStruct, 'initiator'> ) {
+  constructor(struct: Omit<FriendshipStruct, 'initiator'>) {
     super({
       ...struct,
-      initiator: true
+      initiator: true,
     })
   }
 
@@ -22,7 +22,7 @@ export class Extrovert extends Friendship {
     this.setStatus(FRIENDSHIP_STATUS.CONNECTING)
     this.sendSignal({
       type: 'answer',
-      sdpb: answer.sdpb
+      sdpb: answer.sdpb,
     })
     this.startConnectOrDestroyTimeout()
   }
