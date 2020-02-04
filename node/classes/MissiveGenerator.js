@@ -35,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_buttercup_1 = require("pollenium-buttercup");
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var Missive_1 = require("./Missive");
@@ -46,7 +46,7 @@ var missive_1 = require("../templates/missive");
 var HashcashWorker_1 = require("../interfaces/HashcashWorker");
 var pollenium_primrose_1 = require("pollenium-primrose");
 var nullNonce = (new Uint8Array(32)).fill(0);
-var MissiveGenerator = /** @class */ (function () {
+var MissiveGenerator = (function () {
     function MissiveGenerator(struct) {
         this.applicationId = pollenium_uvaursi_1.Uu.wrap(struct.applicationId);
         this.applicationData = pollenium_uvaursi_1.Uu.wrap(struct.applicationData);
@@ -76,19 +76,19 @@ var MissiveGenerator = /** @class */ (function () {
                 this.hashcashWorker.terminate();
                 hashcashResolution = event.data;
                 switch (hashcashResolution.key) {
-                    case HashcashWorker_1.RESOLUTION_KEY.SUCCESS:
+                    case HashcashWorker_1.HASHCASH_WORKER_RESOLUTION_KEY.SUCCESS:
                         noncePrimrose.resolve(new pollenium_buttercup_1.Bytes32(pollenium_uvaursi_1.Uu.fromHexish(hashcashResolution.value)));
                         break;
-                    case HashcashWorker_1.RESOLUTION_KEY.TIMEOUT_ERROR:
+                    case HashcashWorker_1.HASHCASH_WORKER_RESOLUTION_KEY.TIMEOUT_ERROR:
                         noncePrimrose.reject(new genNonce_1.TimeoutError);
                         break;
-                    case HashcashWorker_1.RESOLUTION_KEY.GENERIC_ERROR:
+                    case HashcashWorker_1.HASHCASH_WORKER_RESOLUTION_KEY.GENERIC_ERROR:
                         noncePrimrose.reject(new Error('Generic Errror '));
                         break;
                     default:
-                        noncePrimrose.reject(Error('Unhandled RESOLUTION_KEY'));
+                        noncePrimrose.reject(Error('Unhandled HASHCASH_WORKER_RESOLUTION_KEY'));
                 }
-                return [2 /*return*/];
+                return [2];
             });
         }); };
         this.hashcashWorker.addEventListener('message', onMessage);
@@ -114,10 +114,10 @@ var MissiveGenerator = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         timestamp = genTimestamp_1.genTimestamp();
-                        return [4 /*yield*/, this.fetchNonce()];
+                        return [4, this.fetchNonce()];
                     case 1:
                         nonce = _a.sent();
-                        return [2 /*return*/, new Missive_1.Missive({
+                        return [2, new Missive_1.Missive({
                                 version: missive_1.MISSIVE_KEY.V0,
                                 timestamp: timestamp,
                                 difficulty: this.difficulty,
@@ -132,3 +132,4 @@ var MissiveGenerator = /** @class */ (function () {
     return MissiveGenerator;
 }());
 exports.MissiveGenerator = MissiveGenerator;
+//# sourceMappingURL=MissiveGenerator.js.map

@@ -1,7 +1,4 @@
-import { Uintable } from 'pollenium-buttercup'
-import { Uish } from 'pollenium-uvaursi'
-
-export interface IRequest {
+export interface HashcashWorkerRequest {
   noncelessPrehashHex: string;
   difficulty: number;
   cover: number;
@@ -9,14 +6,13 @@ export interface IRequest {
   timeoutAt: number;
 }
 
-
-export enum RESOLUTION_KEY {
+export enum HASHCASH_WORKER_RESOLUTION_KEY {
   SUCCESS = 0,
   TIMEOUT_ERROR = 1,
   GENERIC_ERROR = 2
 }
 
-export interface IResolution {
-  key: RESOLUTION_KEY;
+export interface HashcashWorkerResolution {
+  key: HASHCASH_WORKER_RESOLUTION_KEY;
   value: string;
 }

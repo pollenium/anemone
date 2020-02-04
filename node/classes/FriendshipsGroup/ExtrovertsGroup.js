@@ -23,16 +23,16 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var FriendshipsGroup_1 = require("../FriendshipsGroup");
 var Extrovert_1 = require("../Friendship/Extrovert");
 var pollenium_snowdrop_1 = require("pollenium-snowdrop");
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
-var ExtrovertsGroup = /** @class */ (function (_super) {
+var ExtrovertsGroup = (function (_super) {
     __extends(ExtrovertsGroup, _super);
-    function ExtrovertsGroup(extrovertGroupOptions) {
-        var _this = _super.call(this, __assign({}, extrovertGroupOptions)) || this;
-        _this.extrovertGroupOptions = extrovertGroupOptions;
+    function ExtrovertsGroup(extrovertGroupStruct) {
+        var _this = _super.call(this, __assign({}, extrovertGroupStruct)) || this;
+        _this.extrovertGroupStruct = extrovertGroupStruct;
         _this.extrovertsByOfferIdHex = {};
         _this.partialOfferSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         _this.partialFlushSnowdrop = new pollenium_snowdrop_1.Snowdrop();
@@ -40,7 +40,7 @@ var ExtrovertsGroup = /** @class */ (function (_super) {
     }
     ExtrovertsGroup.prototype.create = function () {
         var _this = this;
-        var extrovert = new Extrovert_1.Extrovert(this.options);
+        var extrovert = new Extrovert_1.Extrovert(this.struct);
         var offerId = pollenium_uvaursi_1.Uu.genRandom(32);
         this.addFriendship(extrovert);
         extrovert.destroyedSnowdrop.addHandle(function () {
@@ -63,7 +63,7 @@ var ExtrovertsGroup = /** @class */ (function (_super) {
                 else {
                     clearInterval(intervalId);
                 }
-            }, _this.extrovertGroupOptions.offerReuploadInterval * 1000);
+            }, _this.extrovertGroupStruct.offerReuploadInterval * 1000);
         });
     };
     ExtrovertsGroup.prototype.handleAnswer = function (answer) {
@@ -85,3 +85,4 @@ var ExtrovertsGroup = /** @class */ (function (_super) {
     return ExtrovertsGroup;
 }(FriendshipsGroup_1.FriendshipsGroup));
 exports.ExtrovertsGroup = ExtrovertsGroup;
+//# sourceMappingURL=ExtrovertsGroup.js.map

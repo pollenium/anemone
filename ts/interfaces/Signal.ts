@@ -1,22 +1,15 @@
 import { Uish } from 'pollenium-uvaursi'
 
-export interface ISignal {
-  clientId: Uish;
-}
-
-export interface IPartialOffer {
+export interface PartialOffer {
   id: Uish;
   sdpb: Uish;
 }
 
-export interface IPartialAnswer {
+export interface PartialAnswer {
   offerId: Uish;
   sdpb: Uish;
 }
 
-export interface IPartialFlush {
-  offerId: Uish
+export interface PartialFlush {
+  offerId: Uish;
 }
-
-export interface IOffer extends ISignal, IPartialOffer {}
-export interface IAnswer extends ISignal, IPartialAnswer {}

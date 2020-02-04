@@ -1,42 +1,50 @@
-import { Signal } from './Signal'
+import { Snowdrop } from 'pollenium-snowdrop'
 import { Offer } from './Signal/Offer'
 import { Answer } from './Signal/Answer'
 import { Flush } from './Signal/Flush'
 import { SignalingClient } from './SignalingClient'
-import { Bytes32 } from 'pollenium-buttercup'
-import { Snowdrop } from 'pollenium-snowdrop'
-import { ISignalingClientsManagerOptions } from '../interfaces/Options'
+import {
+  OffersDb,
+  AnswersDb,
+  FlushesDb,
+} from './SignalsDb'
+
+export interface SignalingClientsManagerStruct {
+  WebSocket: typeof WebSocket;
+  signalingServerUrls: string[];
+}
 
 export class SignalingClientsManager {
 
-  private signalingClients: SignalingClient[] = [];
-  private signalingClientsByUrl: { [url: string]: SignalingClient } = {}
+  private signalingClients: SignalingClient[] = []
+  private signalingClientsByUrl: { [url: string]: SignalingClient; } = {}
 
-  readonly offerSnowdrop: Snowdrop<Offer> = new Snowdrop<Offer>();
-  readonly answerSnowdrop: Snowdrop<Answer> = new Snowdrop<Answer>();
-  readonly flushSnowdrop: Snowdrop<Flush> = new Snowdrop<Flush>();
+  readonly offerSnowdrop: Snowdrop<Offer> = new Snowdrop<Offer>()
+  readonly answerSnowdrop: Snowdrop<Answer> = new Snowdrop<Answer>()
+  readonly flushSnowdrop: Snowdrop<Flush> = new Snowdrop<Flush>()
 
-  private offersDb: OffersDb = new OffersDb;
-  private answersDb: AnswersDb = new AnswersDb;
-  private flushesDb: FlushesDb = new FlushesDb;
+  private offersDb: OffersDb = new OffersDb()
+  private answersDb: AnswersDb = new AnswersDb()
+  private flushesDb: FlushesDb = new FlushesDb()
 
-  constructor(options: ISignalingClientsManagerOptions) {
-    options.signalingServerUrls.forEach((url) => {
+  constructor(private struct: SignalingClientsManagerStruct) {
+    struct.signalingServerUrls.forEach((url) => {
       this.create(url)
     })
   }
 
   private create(url: string): void {
-    const signalingClient = new SignalingClient(url)
+    const signalingClient = new SignalingClient({
+      url,
+      WebSocket: this.struct.WebSocket,
+    })
     this.signalingClients.push(signalingClient)
     this.signalingClientsByUrl[url] = signalingClient
-
     signalingClient.offerSnowdrop.addHandle((offer) => {
       this.offersDb.setUrlByOfferId(url, offer.id)
       this.offersDb.markIsReceived(offer)
       this.offerSnowdrop.emit(offer)
     })
-
     signalingClient.answerSnowdrop.addHandle((answer) => {
       if (this.answersDb.getIsReceived(answer)) {
         return
@@ -44,7 +52,6 @@ export class SignalingClientsManager {
       this.answersDb.markIsReceived(answer)
       this.answerSnowdrop.emit(answer)
     })
-
     signalingClient.flushOfferSnowdrop.addHandle((flushOffer) => {
       if (this.flushesDb.getIsReceived(flushOffer)) {
         return
@@ -52,16 +59,15 @@ export class SignalingClientsManager {
       this.flushesDb.markIsReceived(flushOffer)
       this.flushSnowdrop.emit(flushOffer)
     })
-
   }
 
-  handleOffer(offer: Offer) {
+  handleOffer(offer: Offer): void {
     this.signalingClients.forEach((signalingClient) => {
       signalingClient.sendOffer(offer)
     })
   }
 
-  handleAnswer(answer: Answer) {
+  handleAnswer(answer: Answer): void {
     const url = this.offersDb.getUrlByOfferId(answer.offerId)
     if (url === null) {
       throw new Error('Unknown url')
@@ -69,51 +75,10 @@ export class SignalingClientsManager {
     this.signalingClientsByUrl[url].sendAnswer(answer)
   }
 
-  handleFlush(flush: Flush) {
+  handleFlush(flush: Flush): void {
     this.signalingClients.forEach((signalingClient) => {
       signalingClient.sendFlush(flush)
     })
   }
-
-}
-
-abstract class SignalDb<SignalClass extends Signal> {
-  private isReceivedByHashHex: { [idHex: string]: boolean} = {};
-
-  markIsReceived(signal: SignalClass) {
-    const hashHex = signal.getHash().uu.toHex()
-    this.isReceivedByHashHex[hashHex] = true
-  }
-
-  getIsReceived(signal: SignalClass): boolean {
-    const hashHex = signal.getHash().uu.toHex()
-    return this.isReceivedByHashHex[hashHex] === true
-  }
-}
-
-class OffersDb extends SignalDb<Offer> {
-
-  private urlsByOfferIdHex: { [offerIdHex: string]: string} = {}
-
-  getUrlByOfferId(offerId: Bytes32): string | null {
-    const url = this.urlsByOfferIdHex[offerId.uu.toHex()]
-    if (url) {
-      return url
-    } else {
-      return null
-    }
-  }
-
-  setUrlByOfferId(url: string, offerId: Bytes32): void {
-    this.urlsByOfferIdHex[offerId.uu.toHex()] = url
-  }
-
-}
-
-class AnswersDb extends SignalDb<Answer> {
-
-}
-
-class FlushesDb extends SignalDb<Flush> {
 
 }

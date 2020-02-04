@@ -1,15 +1,14 @@
 import { server as WsServer, connection as WsConnection } from 'websocket'
+import enableHttpServerDestroy from 'server-destroy'
 import * as http from 'http'
 import { Menteeship } from './Menteeship'
-
-const enableHttpServerDestroy = require('server-destroy')
 
 export class SignalingServer {
 
   menteeships: Menteeship[] = [];
-  menteeshipsByOfferIdHex: {[id: string]: Menteeship} = {};
-  httpServer: any;
-  wsServer: any;
+  menteeshipsByOfferIdHex: { [id: string]: Menteeship; } = {};
+  httpServer: http.Server;
+  wsServer: WsServer;
 
   constructor(public port: number) {
     this.bootstrap()
@@ -25,7 +24,7 @@ export class SignalingServer {
 
     this.wsServer = new WsServer({
       httpServer: this.httpServer,
-      autoAcceptConnections: true
+      autoAcceptConnections: true,
     })
 
     this.wsServer.on('connect', (wsConnection: WsConnection) => {
@@ -33,13 +32,10 @@ export class SignalingServer {
       this.menteeships.push(menteeship)
 
       menteeship.offerSnowdrop.addHandle((offer) => {
-
         const offerIdHex = offer.id.uu.toHex()
-
         this.menteeshipsByOfferIdHex[offerIdHex] = menteeship
-
         this.menteeships.sort(() => {
-          return Math.random() - .5
+          return Math.random() - 0.5
         }).forEach((_menteeship) => {
           if (menteeship === _menteeship) {
             return
@@ -54,7 +50,7 @@ export class SignalingServer {
 
       menteeship.flushOfferSnowdrop.addHandle((flushOffer) => {
         this.menteeships.sort(() => {
-          return Math.random() - .5
+          return Math.random() - 0.5
         }).forEach((_menteeship) => {
           _menteeship.sendFlush(flushOffer)
         })
@@ -64,6 +60,6 @@ export class SignalingServer {
 
   destroy(): void {
     this.wsServer.shutDown()
-    this.httpServer.destroy()
+    this.httpServer.close()
   }
 }

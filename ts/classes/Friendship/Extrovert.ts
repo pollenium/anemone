@@ -1,16 +1,15 @@
-import { Friendship, FRIENDSHIP_STATUS, DESTROY_REASON } from '../Friendship'
+import { Friendship, FRIENDSHIP_STATUS, DESTROY_REASON, FriendshipStruct } from '../Friendship'
 import { Answer } from '../Signal/Answer'
 import SimplePeer from 'simple-peer'
 import { genSimplePeerConfig } from '../../utils/genSimplePeerConfig'
 import { Bytes32 } from 'pollenium-buttercup'
 import { Uu } from 'pollenium-uvaursi'
-import { IFriendshipPartyOptions } from '../../interfaces/Options'
 
 export class Extrovert extends Friendship {
 
-  constructor(options: IFriendshipPartyOptions) {
+  constructor(struct: Omit<FriendshipStruct, 'initiator'> ) {
     super({
-      ...options,
+      ...struct,
       initiator: true
     })
   }

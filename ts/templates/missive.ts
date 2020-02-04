@@ -1,12 +1,7 @@
-// import Split from 'hendricks/lib/Split'
-// import Dictionary from 'hendricks/lib/Dictionary'
-// import Fixed from 'hendricks/lib/Fixed'
-// import Dynamic from 'hendricks/lib/Dynamic'
-
-const Split = require('hendricks/lib/Split')
-const Dictionary = require('hendricks/lib/Dictionary')
-const Fixed = require('hendricks/lib/Fixed')
-const Dynamic = require('hendricks/lib/Dynamic')
+import Split from 'hendricks/lib/Split'
+import Dictionary from 'hendricks/lib/Dictionary'
+import Fixed from 'hendricks/lib/Fixed'
+import Dynamic from 'hendricks/lib/Dynamic'
 
 const fixed1 = new Fixed(1)
 const fixed5 = new Fixed(5)
@@ -24,12 +19,12 @@ export const missiveTemplate = new Split(['V0'], [
     'difficulty',
     'applicationId',
     'applicationData',
-    'nonce'
+    'nonce',
   ], [
     fixed5,
     fixed1,
     fixed32,
     dynamic2,
-    fixed32
-  ])
+    fixed32,
+  ]),
 ])

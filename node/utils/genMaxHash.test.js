@@ -1,18 +1,18 @@
 "use strict";
-exports.__esModule = true;
-var pollenium_uvaursi_1 = require("pollenium-uvaursi");
-var genMaxHash_1 = require("./genMaxHash");
+Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_buttercup_1 = require("pollenium-buttercup");
-var noncelessPrehash = pollenium_uvaursi_1.Uu.genRandom(64);
+var genMaxHash_1 = require("./genMaxHash");
 var _loop_1 = function (difficulty) {
     test("genMaxHash: difficulty: " + difficulty, function () {
-        expect(genMaxHash_1.genMaxHash({
+        var maxHash = genMaxHash_1.genMaxHash({
             difficulty: difficulty,
             applicationDataLength: 69,
-            cover: 32
-        })).toBeInstanceOf(pollenium_buttercup_1.Uint256);
+            cover: 32,
+        });
+        expect(maxHash).toBeInstanceOf(pollenium_buttercup_1.Uint256);
     });
 };
-for (var difficulty = 0; difficulty <= 8; difficulty++) {
+for (var difficulty = 0; difficulty <= 8; difficulty += 1) {
     _loop_1(difficulty);
 }
+//# sourceMappingURL=genMaxHash.test.js.map

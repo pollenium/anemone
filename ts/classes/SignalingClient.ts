@@ -1,11 +1,9 @@
-import { Client } from './Client'
-import { Uu, Uish } from 'pollenium-uvaursi'
+import { Uu } from 'pollenium-uvaursi'
+import { Snowdrop } from 'pollenium-snowdrop'
 import { Offer } from './Signal/Offer'
 import { Flush } from './Signal/Flush'
 import { Answer } from './Signal/Answer'
 import { SIGNALING_MESSAGE_KEY, signalingMessageTemplate } from '../templates/signalingMessage'
-import { Snowdrop } from 'pollenium-snowdrop'
-import { Primrose } from 'pollenium-primrose'
 import { Wisteria } from './Wisteria'
 
 export class SignalingClient {
@@ -16,24 +14,23 @@ export class SignalingClient {
   readonly answerSnowdrop: Snowdrop<Answer> = new Snowdrop<Answer>();
   readonly flushOfferSnowdrop: Snowdrop<Flush> = new Snowdrop<Flush>();
 
-  constructor(url: string) {
-    this.wisteria = new Wisteria(url)
-
+  constructor(struct: { url: string; WebSocket: typeof WebSocket; }) {
+    this.wisteria = new Wisteria(struct)
     this.wisteria.dataSnowdrop.addHandle((data) => {
       const signalingMessageHenpojo = signalingMessageTemplate.decode(data.u)
-      switch(signalingMessageHenpojo.key) {
+      switch (signalingMessageHenpojo.key) {
         case SIGNALING_MESSAGE_KEY.OFFER: {
           const offer = Offer.fromHenpojo(signalingMessageHenpojo.value)
           this.offerSnowdrop.emit(offer)
-          break;
+          break
         }
         case SIGNALING_MESSAGE_KEY.ANSWER: {
           this.answerSnowdrop.emit(Answer.fromHenpojo(signalingMessageHenpojo.value))
-          break;
+          break
         }
         case SIGNALING_MESSAGE_KEY.FLUSH: {
           this.flushOfferSnowdrop.emit(Flush.fromHenpojo(signalingMessageHenpojo.value))
-          break;
+          break
         }
         default:
           throw new Error('Unhandled key')

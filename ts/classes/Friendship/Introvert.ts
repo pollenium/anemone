@@ -1,17 +1,15 @@
-import { Friendship, FRIENDSHIP_STATUS, DESTROY_REASON } from '../Friendship'
+import { Friendship, FRIENDSHIP_STATUS, DESTROY_REASON, FriendshipStruct } from '../Friendship'
 import { Offer } from '../Signal/Offer'
 import SimplePeer from 'simple-peer'
 import { genSimplePeerConfig } from '../../utils/genSimplePeerConfig'
 import Wrtc from 'wrtc'
 import delay from 'delay'
-import { IFriendshipPartyOptions } from '../../interfaces/Options'
-
 
 export class Introvert extends Friendship {
 
-  constructor(offer: Offer, options: IFriendshipPartyOptions) {
+  constructor(offer: Offer, struct: Omit<FriendshipStruct, 'initiator'>) {
     super({
-      ...options,
+      ...struct,
       initiator: false
     })
     this.setPeerClientId(offer.clientId)

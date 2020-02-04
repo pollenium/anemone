@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_buttercup_1 = require("pollenium-buttercup");
 var two256 = pollenium_buttercup_1.Uint256.fromNumber(2);
 var twofiftyfive256 = pollenium_buttercup_1.Uint256.fromNumber(255);
@@ -13,3 +13,4 @@ function genMaxHash(struct) {
     return maxHash;
 }
 exports.genMaxHash = genMaxHash;
+//# sourceMappingURL=genMaxHash.js.map

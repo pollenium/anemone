@@ -1,9 +1,10 @@
-import { Friendship, FRIENDSHIP_STATUS, DESTROY_REASON } from './Friendship'
+import { Friendship, FriendshipStruct, FRIENDSHIP_STATUS, DESTROY_REASON } from './Friendship'
 import { Bytes32 } from 'pollenium-buttercup'
 import { Snowdrop } from 'pollenium-snowdrop'
 import { $enum } from 'ts-enum-util'
 import { Missive } from './Missive'
-import { IFriendshipPartyOptions } from '../interfaces/Options'
+
+export interface FriendshipsGroupStruct extends Omit<FriendshipStruct, 'initiator'> {}
 
 export class FriendshipsGroup<FriendshipClass extends Friendship> {
 
@@ -13,7 +14,7 @@ export class FriendshipsGroup<FriendshipClass extends Friendship> {
 
   private friendships: Array<FriendshipClass> = [];
 
-  constructor(protected options: IFriendshipPartyOptions) {}
+  constructor(protected struct: FriendshipsGroupStruct) {}
 
   protected addFriendship(friendship: FriendshipClass) {
     friendship.statusSnowdrop.addHandle((status) => {

@@ -7,9 +7,9 @@ import { genTime } from '../utils/genTime'
 import { TimeoutError } from '../utils/genNonce'
 import { missiveTemplate, MISSIVE_KEY } from '../templates/missive'
 import {
-  IRequest,
-  IResolution,
-  RESOLUTION_KEY
+  HashcashWorkerRequest,
+  HashcashWorkerResolution,
+  HASHCASH_WORKER_RESOLUTION_KEY
 } from '../interfaces/HashcashWorker'
 import { Primrose } from 'pollenium-primrose'
 
@@ -57,19 +57,19 @@ export class MissiveGenerator {
 
     const onMessage = async (event: any): Promise<void> => {
       this.hashcashWorker.terminate()
-      const hashcashResolution: IResolution = event.data
+      const hashcashResolution: HashcashWorkerResolution = event.data
       switch(hashcashResolution.key) {
-        case RESOLUTION_KEY.SUCCESS:
+        case HASHCASH_WORKER_RESOLUTION_KEY.SUCCESS:
           noncePrimrose.resolve(new Bytes32(Uu.fromHexish(hashcashResolution.value)))
           break;
-        case RESOLUTION_KEY.TIMEOUT_ERROR:
+        case HASHCASH_WORKER_RESOLUTION_KEY.TIMEOUT_ERROR:
           noncePrimrose.reject(new TimeoutError)
           break;
-        case RESOLUTION_KEY.GENERIC_ERROR:
+        case HASHCASH_WORKER_RESOLUTION_KEY.GENERIC_ERROR:
           noncePrimrose.reject(new Error('Generic Errror '))
           break;
         default:
-          noncePrimrose.reject(Error('Unhandled RESOLUTION_KEY'))
+          noncePrimrose.reject(Error('Unhandled HASHCASH_WORKER_RESOLUTION_KEY'))
       }
     }
 
@@ -80,7 +80,7 @@ export class MissiveGenerator {
 
     const timeoutAt = genTime() + this.ttl
     const noncelessPrehash = this.getNoncelessPrehash()
-    const request: IRequest = {
+    const request: HashcashWorkerRequest = {
       noncelessPrehashHex: this.getNoncelessPrehash().toHex(),
       difficulty: this.difficulty.toNumber(),
       cover: MISSIVE_COVER.V0,

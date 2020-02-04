@@ -1,38 +1,45 @@
-import { genNonce, TimeoutError } from './utils/genNonce'
-import { IRequest, IResolution, RESOLUTION_KEY } from './interfaces/HashcashWorker'
+/* globals postMessage */
+
 import { Uu } from 'pollenium-uvaursi'
+import { genNonce, TimeoutError } from './utils/genNonce'
+import {
+  HashcashWorkerRequest,
+  HashcashWorkerResolution,
+  HASHCASH_WORKER_RESOLUTION_KEY,
+} from './interfaces/HashcashWorker'
+
 
 // eslint-disable-next-line no-undef
 onmessage = (event): void => {
-  const request: IRequest = event.data
+  const request: HashcashWorkerRequest = event.data
 
-  let resolution: IResolution
+  let resolution: HashcashWorkerResolution
 
   try {
     const nonce = genNonce({
       noncelessPrehash: Uu.fromHexish(request.noncelessPrehashHex),
-      ...request
+      ...request,
     })
     resolution = {
-      key: RESOLUTION_KEY.SUCCESS,
-      value: nonce.uu.toHex()
+      key: HASHCASH_WORKER_RESOLUTION_KEY.SUCCESS,
+      value: nonce.uu.toHex(),
     }
     postMessage(resolution, [])
   } catch (error) {
     if (error instanceof TimeoutError) {
       resolution = {
-        key: RESOLUTION_KEY.TIMEOUT_ERROR,
-        value: 'TIMEOUT'
+        key: HASHCASH_WORKER_RESOLUTION_KEY.TIMEOUT_ERROR,
+        value: 'TIMEOUT',
       }
     } else if (error instanceof Error) {
       resolution = {
-        key: RESOLUTION_KEY.GENERIC_ERROR,
-        value: error.message
+        key: HASHCASH_WORKER_RESOLUTION_KEY.GENERIC_ERROR,
+        value: error.message,
       }
     } else {
       resolution = {
-        key: RESOLUTION_KEY.GENERIC_ERROR,
-        value: 'Unknown Error'
+        key: HASHCASH_WORKER_RESOLUTION_KEY.GENERIC_ERROR,
+        value: 'Unknown Error',
       }
     }
     postMessage(resolution, [])

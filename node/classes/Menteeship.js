@@ -35,14 +35,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var Offer_1 = require("./Signal/Offer");
 var Answer_1 = require("./Signal/Answer");
 var Flush_1 = require("./Signal/Flush");
 var signalingMessage_1 = require("../templates/signalingMessage");
 var pollenium_snowdrop_1 = require("pollenium-snowdrop");
-var Menteeship = /** @class */ (function () {
+var Menteeship = (function () {
     function Menteeship(signalingServer, wsConnection) {
         this.signalingServer = signalingServer;
         this.wsConnection = wsConnection;
@@ -75,7 +75,7 @@ var Menteeship = /** @class */ (function () {
                             throw new Error('Unhandled SIGNALING_MESSAGE_KEY');
                     }
                 });
-                return [2 /*return*/];
+                return [2];
             });
         });
     };
@@ -87,10 +87,10 @@ var Menteeship = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.send(offer.getEncoding())];
+                    case 0: return [4, this.send(offer.getEncoding())];
                     case 1:
                         _a.sent();
-                        return [2 /*return*/];
+                        return [2];
                 }
             });
         });
@@ -99,10 +99,10 @@ var Menteeship = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.send(answer.getEncoding())];
+                    case 0: return [4, this.send(answer.getEncoding())];
                     case 1:
                         _a.sent();
-                        return [2 /*return*/];
+                        return [2];
                 }
             });
         });
@@ -111,10 +111,10 @@ var Menteeship = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.send(flushOffer.getEncoding())];
+                    case 0: return [4, this.send(flushOffer.getEncoding())];
                     case 1:
                         _a.sent();
-                        return [2 /*return*/];
+                        return [2];
                 }
             });
         });
@@ -122,3 +122,4 @@ var Menteeship = /** @class */ (function () {
     return Menteeship;
 }());
 exports.Menteeship = Menteeship;
+//# sourceMappingURL=Menteeship.js.map

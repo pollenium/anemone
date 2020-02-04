@@ -38,7 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var MissiveGenerator_1 = require("./MissiveGenerator");
 var tiny_worker_1 = __importDefault(require("tiny-worker"));
@@ -57,13 +57,13 @@ var _loop_1 = function (i) {
                         applicationData: applicationData,
                         difficulty: difficulty,
                         ttl: 60,
-                        hashcashWorker: new tiny_worker_1["default"](__dirname + "/../../node/hashcash-worker.js", [], { esm: true })
+                        hashcashWorker: new tiny_worker_1.default(__dirname + "/../../node/hashcash-worker.js", [], { esm: true })
                     });
-                    return [4 /*yield*/, missiveGenerator.fetchMissive()];
+                    return [4, missiveGenerator.fetchMissive()];
                 case 1:
                     missive = _a.sent();
                     expect(missive.getIsValid()).toBe(true);
-                    return [2 /*return*/];
+                    return [2];
             }
         });
     }); }, 60000);
@@ -71,3 +71,4 @@ var _loop_1 = function (i) {
 for (var i = 0; i <= 13; i++) {
     _loop_1(i);
 }
+//# sourceMappingURL=MissiveGenerator.test.js.map

@@ -23,12 +23,12 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var Friendship_1 = require("../Friendship");
-var Extrovert = /** @class */ (function (_super) {
+var Extrovert = (function (_super) {
     __extends(Extrovert, _super);
-    function Extrovert(options) {
-        return _super.call(this, __assign(__assign({}, options), { initiator: true })) || this;
+    function Extrovert(struct) {
+        return _super.call(this, __assign(__assign({}, struct), { initiator: true })) || this;
     }
     Extrovert.prototype.handleAnswer = function (answer) {
         if (this.getStatus() !== Friendship_1.FRIENDSHIP_STATUS.DEFAULT) {
@@ -54,3 +54,4 @@ var Extrovert = /** @class */ (function (_super) {
     return Extrovert;
 }(Friendship_1.Friendship));
 exports.Extrovert = Extrovert;
+//# sourceMappingURL=Extrovert.js.map

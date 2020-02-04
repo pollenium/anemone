@@ -1,38 +1,30 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-exports.__esModule = true;
-var SignalingClient_1 = require("./SignalingClient");
+Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_snowdrop_1 = require("pollenium-snowdrop");
-var SignalingClientsManager = /** @class */ (function () {
-    function SignalingClientsManager(options) {
+var SignalingClient_1 = require("./SignalingClient");
+var SignalsDb_1 = require("./SignalsDb");
+var SignalingClientsManager = (function () {
+    function SignalingClientsManager(struct) {
         var _this = this;
+        this.struct = struct;
         this.signalingClients = [];
         this.signalingClientsByUrl = {};
         this.offerSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.answerSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.flushSnowdrop = new pollenium_snowdrop_1.Snowdrop();
-        this.offersDb = new OffersDb;
-        this.answersDb = new AnswersDb;
-        this.flushesDb = new FlushesDb;
-        options.signalingServerUrls.forEach(function (url) {
+        this.offersDb = new SignalsDb_1.OffersDb();
+        this.answersDb = new SignalsDb_1.AnswersDb();
+        this.flushesDb = new SignalsDb_1.FlushesDb();
+        struct.signalingServerUrls.forEach(function (url) {
             _this.create(url);
         });
     }
     SignalingClientsManager.prototype.create = function (url) {
         var _this = this;
-        var signalingClient = new SignalingClient_1.SignalingClient(url);
+        var signalingClient = new SignalingClient_1.SignalingClient({
+            url: url,
+            WebSocket: this.struct.WebSocket,
+        });
         this.signalingClients.push(signalingClient);
         this.signalingClientsByUrl[url] = signalingClient;
         signalingClient.offerSnowdrop.addHandle(function (offer) {
@@ -75,52 +67,4 @@ var SignalingClientsManager = /** @class */ (function () {
     return SignalingClientsManager;
 }());
 exports.SignalingClientsManager = SignalingClientsManager;
-var SignalDb = /** @class */ (function () {
-    function SignalDb() {
-        this.isReceivedByHashHex = {};
-    }
-    SignalDb.prototype.markIsReceived = function (signal) {
-        var hashHex = signal.getHash().uu.toHex();
-        this.isReceivedByHashHex[hashHex] = true;
-    };
-    SignalDb.prototype.getIsReceived = function (signal) {
-        var hashHex = signal.getHash().uu.toHex();
-        return this.isReceivedByHashHex[hashHex] === true;
-    };
-    return SignalDb;
-}());
-var OffersDb = /** @class */ (function (_super) {
-    __extends(OffersDb, _super);
-    function OffersDb() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.urlsByOfferIdHex = {};
-        return _this;
-    }
-    OffersDb.prototype.getUrlByOfferId = function (offerId) {
-        var url = this.urlsByOfferIdHex[offerId.uu.toHex()];
-        if (url) {
-            return url;
-        }
-        else {
-            return null;
-        }
-    };
-    OffersDb.prototype.setUrlByOfferId = function (url, offerId) {
-        this.urlsByOfferIdHex[offerId.uu.toHex()] = url;
-    };
-    return OffersDb;
-}(SignalDb));
-var AnswersDb = /** @class */ (function (_super) {
-    __extends(AnswersDb, _super);
-    function AnswersDb() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    return AnswersDb;
-}(SignalDb));
-var FlushesDb = /** @class */ (function (_super) {
-    __extends(FlushesDb, _super);
-    function FlushesDb() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    return FlushesDb;
-}(SignalDb));
+//# sourceMappingURL=SignalingClientsManager.js.map

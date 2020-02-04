@@ -12,12 +12,12 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var pollenium_buttercup_1 = require("pollenium-buttercup");
 var signalingMessage_1 = require("../../templates/signalingMessage");
 var Signal_1 = require("../Signal");
-var Offer = /** @class */ (function (_super) {
+var Offer = (function (_super) {
     __extends(Offer, _super);
     function Offer(struct) {
         var _this = _super.call(this) || this;
@@ -32,7 +32,7 @@ var Offer = /** @class */ (function (_super) {
             value: {
                 id: this.id.uu.unwrap(),
                 clientId: this.clientId.uu.unwrap(),
-                sdpb: this.sdpb.unwrap()
+                sdpb: this.sdpb.unwrap(),
             }
         }));
     };
@@ -46,3 +46,4 @@ var Offer = /** @class */ (function (_super) {
     return Offer;
 }(Signal_1.Signal));
 exports.Offer = Offer;
+//# sourceMappingURL=Offer.js.map

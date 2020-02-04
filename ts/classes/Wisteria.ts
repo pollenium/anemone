@@ -3,51 +3,48 @@ import { Uu, Uish } from 'pollenium-uvaursi'
 import { Primrose } from 'pollenium-primrose'
 import delay from 'delay'
 
-const Websocket = require('isomorphic-ws')
+export interface WisteriaStruct {
+  WebSocket: typeof WebSocket;
+  url: string;
+}
 
 export class Wisteria {
 
   private openPrimrose: Primrose<void>;
   private closePrimrose: Primrose<void> = new Primrose<void>();
-  private websocket: WebSocket
+  private webSocket: WebSocket
 
   readonly dataSnowdrop: Snowdrop<Uu> = new Snowdrop<Uu>();
 
   private isOpen: boolean = false;
   private dataQueue: Array<Uish> = [];
 
-  constructor(private url) {
+  constructor(private struct: WisteriaStruct) {
     this.connect()
   }
 
-  private async connect() {
-
-    const websocket = new Websocket(this.url)
-    websocket.binaryType = 'arraybuffer'
-
-    websocket.onopen = (): void => {
+  private async connect(): Promise<void> {
+    const webSocket = new this.struct.WebSocket(this.struct.url)
+    webSocket.binaryType = 'arraybuffer'
+    webSocket.onopen = (): void => {
       this.isOpen = true
       while (this.dataQueue.length > 0) {
         const data = this.dataQueue.shift()
         this.send(data)
       }
     }
-
-    websocket.onclose = async (): Promise<void> => {
+    webSocket.onclose = async (): Promise<void> => {
       this.isOpen = false
-
       await delay(5000)
       this.connect()
     }
-
-    websocket.onmessage = (message): void => {
+    webSocket.onmessage = (message): void => {
       this.dataSnowdrop.emit(Uu.wrap(message.data))
     }
-
-    this.websocket = websocket
+    this.webSocket = webSocket
   }
 
-  handleData(data: Uish):void {
+  handleData(data: Uish): void {
     if (this.isOpen) {
       this.send(data)
     } else {
@@ -55,8 +52,8 @@ export class Wisteria {
     }
   }
 
-  private send(data: Uish):void {
-    this.websocket.send(Uu.wrap(data).unwrap())
+  private send(data: Uish): void {
+    this.webSocket.send(Uu.wrap(data).unwrap())
   }
 
 

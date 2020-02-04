@@ -19,13 +19,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-exports.__esModule = true;
-var genTime_1 = require("./genTime");
-var genMaxHash_1 = require("./genMaxHash");
+Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var pollenium_buttercup_1 = require("pollenium-buttercup");
 var shasta = __importStar(require("pollenium-shasta"));
-var TimeoutError = /** @class */ (function (_super) {
+var genTime_1 = require("./genTime");
+var genMaxHash_1 = require("./genMaxHash");
+var TimeoutError = (function (_super) {
     __extends(TimeoutError, _super);
     function TimeoutError() {
         return _super.call(this, 'genNonce Timeout') || this;
@@ -35,7 +35,6 @@ var TimeoutError = /** @class */ (function (_super) {
 exports.TimeoutError = TimeoutError;
 function genNonce(struct) {
     var maxHash = genMaxHash_1.genMaxHash(struct);
-    // eslint-disable-next-line no-constant-condition
     while (true) {
         if (genTime_1.genTime() > struct.timeoutAt) {
             throw new TimeoutError();
@@ -49,3 +48,4 @@ function genNonce(struct) {
     }
 }
 exports.genNonce = genNonce;
+//# sourceMappingURL=genNonce.js.map

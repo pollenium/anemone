@@ -1,11 +1,11 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var Friendship_1 = require("./Friendship");
 var pollenium_snowdrop_1 = require("pollenium-snowdrop");
 var ts_enum_util_1 = require("ts-enum-util");
-var FriendshipsGroup = /** @class */ (function () {
-    function FriendshipsGroup(options) {
-        this.options = options;
+var FriendshipsGroup = (function () {
+    function FriendshipsGroup(struct) {
+        this.struct = struct;
         this.summarySnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.destroyedSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.banSnowdrop = new pollenium_snowdrop_1.Snowdrop();
@@ -110,7 +110,7 @@ var FriendshipsGroup = /** @class */ (function () {
     return FriendshipsGroup;
 }());
 exports.FriendshipsGroup = FriendshipsGroup;
-var FriendshipsGroupSummary = /** @class */ (function () {
+var FriendshipsGroupSummary = (function () {
     function FriendshipsGroupSummary(friendships) {
         var _a;
         this.friendships = friendships;
@@ -147,3 +147,4 @@ var FriendshipsGroupSummary = /** @class */ (function () {
     return FriendshipsGroupSummary;
 }());
 exports.FriendshipsGroupSummary = FriendshipsGroupSummary;
+//# sourceMappingURL=FriendshipsGroup.js.map

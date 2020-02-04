@@ -2,7 +2,7 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var Missive_1 = require("./Missive");
 var genTime_1 = require("../utils/genTime");
@@ -37,10 +37,10 @@ var DESTROY_REASON;
     DESTROY_REASON["SDP_TIMEOUT"] = "SDP_TIMEOUT";
     DESTROY_REASON["CONNECTION_TIMEOUT"] = "CONNECTION_TIMEOUT";
 })(DESTROY_REASON = exports.DESTROY_REASON || (exports.DESTROY_REASON = {}));
-var Friendship = /** @class */ (function () {
-    function Friendship(options) {
+var Friendship = (function () {
+    function Friendship(struct) {
         var _this = this;
-        this.options = options;
+        this.struct = struct;
         this.status = FRIENDSHIP_STATUS.DEFAULT;
         this.peerClientId = null;
         this.isDestroyed = false;
@@ -52,10 +52,10 @@ var Friendship = /** @class */ (function () {
         this.banSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.banReason = null;
         this.destroyReason = null;
-        this.simplePeer = new simple_peer_1["default"]({
-            initiator: options.initiator,
+        this.simplePeer = new simple_peer_1.default({
+            initiator: struct.initiator,
             trickle: false,
-            wrtc: options.wrtc,
+            wrtc: struct.wrtc,
             config: genSimplePeerConfig_1.genSimplePeerConfig()
         });
         this.simplePeer.on('iceStateChange', function (iceConnectionState) {
@@ -97,7 +97,7 @@ var Friendship = /** @class */ (function () {
             if (missive.timestamp.toNumber() > time) {
                 _this.banAndDestroy(BAN_REASON.MISSIVE_TIMETRAVEL);
             }
-            if (missive.timestamp.toNumber() < time - options.missiveLatencyTolerance) {
+            if (missive.timestamp.toNumber() < time - struct.missiveLatencyTolerance) {
                 _this.banAndDestroy(BAN_REASON.MISSIVE_OLD);
             }
             _this.missiveSnowdrop.emit(missive);
@@ -106,7 +106,7 @@ var Friendship = /** @class */ (function () {
         this.fetchSdpb().then(function () {
             isSdpb = true;
         });
-        delay_1["default"](options.sdpTimeout * 1000).then(function () {
+        delay_1.default(struct.sdpTimeout * 1000).then(function () {
             if (_this.isDestroyed) {
                 return;
             }
@@ -155,7 +155,7 @@ var Friendship = /** @class */ (function () {
     };
     Friendship.prototype.startConnectOrDestroyTimeout = function () {
         var _this = this;
-        delay_1["default"](this.options.connectionTimeout * 1000).then(function () {
+        delay_1.default(this.struct.connectionTimeout * 1000).then(function () {
             if (_this.isDestroyed) {
                 return;
             }
@@ -200,3 +200,4 @@ var Friendship = /** @class */ (function () {
     return Friendship;
 }());
 exports.Friendship = Friendship;
+//# sourceMappingURL=Friendship.js.map

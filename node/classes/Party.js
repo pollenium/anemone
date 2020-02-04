@@ -20,7 +20,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var IntrovertsGroup_1 = require("./FriendshipsGroup/IntrovertsGroup");
 var ExtrovertsGroup_1 = require("./FriendshipsGroup/ExtrovertsGroup");
 var pollenium_snowdrop_1 = require("pollenium-snowdrop");
@@ -30,42 +30,11 @@ var FriendshipsGroup_1 = require("./FriendshipsGroup");
 var Friendship_1 = require("./Friendship");
 var ts_enum_util_1 = require("ts-enum-util");
 var genTime_1 = require("../utils/genTime");
-var OfferInfo = /** @class */ (function () {
-    function OfferInfo(struct) {
-        this.attemptsCount = 0;
-        this.firstReceivedAt = genTime_1.genTime();
-        this.lastReceivedAt = genTime_1.genTime();
-        this.offer = struct.offer;
-        this.clientId = struct.clientId;
-    }
-    OfferInfo.prototype.getAttemptsCount = function () {
-        return this.attemptsCount;
-    };
-    OfferInfo.prototype.getFirstReceivedAgo = function () {
-        return genTime_1.genTime() - this.firstReceivedAt;
-    };
-    OfferInfo.prototype.getLastReceivedAgo = function () {
-        return genTime_1.genTime() - this.lastReceivedAt;
-    };
-    OfferInfo.prototype.incrementAttemptsCount = function () {
-        this.attemptsCount += 1;
-    };
-    OfferInfo.prototype.updateLastReceivedAt = function () {
-        this.lastReceivedAt = genTime_1.genTime();
-    };
-    OfferInfo.prototype.getDistance = function () {
-        if (this.distance) {
-            return this.distance;
-        }
-        var xor = this.offer.clientId.uu.genXor(this.clientId.uu);
-        return new pollenium_buttercup_1.Uint256(xor);
-    };
-    return OfferInfo;
-}());
-var Party = /** @class */ (function () {
-    function Party(options) {
+var OfferInfo_1 = require("./OfferInfo");
+var Party = (function () {
+    function Party(struct) {
         var _this = this;
-        this.options = options;
+        this.struct = struct;
         this.offerInfos = [];
         this.isClientIdBanned = {};
         this.introvertsGroupSummary = new FriendshipsGroup_1.FriendshipsGroupSummary([]);
@@ -75,8 +44,8 @@ var Party = /** @class */ (function () {
         this.partialAnswerSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.partialOfferSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.partialFlushSnowdrop = new pollenium_snowdrop_1.Snowdrop();
-        this.introvertsGroup = new IntrovertsGroup_1.IntrovertsGroup(__assign({}, options));
-        this.extrovertsGroup = new ExtrovertsGroup_1.ExtrovertsGroup(__assign({}, options));
+        this.introvertsGroup = new IntrovertsGroup_1.IntrovertsGroup(__assign({}, struct));
+        this.extrovertsGroup = new ExtrovertsGroup_1.ExtrovertsGroup(__assign({}, struct));
         this.extrovertsGroup.partialOfferSnowdrop.addHandle(function (partialOffer) {
             _this.partialOfferSnowdrop.emit(partialOffer);
         });
@@ -106,9 +75,9 @@ var Party = /** @class */ (function () {
         this.extrovertsGroup.banSnowdrop.addHandle(function (clientId) {
             _this.banClientId(clientId);
         });
-        delay_1["default"](options.bootstrapOffersTimeout * 1000).then(function () {
+        delay_1.default(struct.bootstrapOffersTimeout * 1000).then(function () {
             _this.isBootstrapOffersComplete = true;
-            for (var i = _this.getFriendshipsCount(); i < options.maxFriendshipsCount; i++) {
+            for (var i = _this.getFriendshipsCount(); i < struct.maxFriendshipsCount; i++) {
                 _this.maybeCreateFriendship();
             }
         });
@@ -121,7 +90,7 @@ var Party = /** @class */ (function () {
         var now = genTime_1.genTime();
         this.offerInfos = this.offerInfos.filter(function (offerInfo) {
             var lastReceivedAgo = offerInfo.getLastReceivedAgo();
-            if (lastReceivedAgo <= _this.options.maxOfferLastReceivedAgo) {
+            if (lastReceivedAgo <= _this.struct.maxOfferLastReceivedAgo) {
                 return true;
             }
             else {
@@ -133,7 +102,7 @@ var Party = /** @class */ (function () {
         var _this = this;
         var peerClientIds = this.getPeerClientIds();
         var connectableOfferInfos = this.offerInfos.filter(function (offerInfo) {
-            if (offerInfo.getAttemptsCount() >= _this.options.maxOfferAttemptsCount) {
+            if (offerInfo.getAttemptsCount() >= _this.struct.maxOfferAttemptsCount) {
                 return false;
             }
             for (var i = 0; i < peerClientIds.length; i++) {
@@ -174,7 +143,7 @@ var Party = /** @class */ (function () {
         }
     };
     Party.prototype.maybeCreateFriendship = function () {
-        if (this.getFriendshipsCount() >= this.options.maxFriendshipsCount) {
+        if (this.getFriendshipsCount() >= this.struct.maxFriendshipsCount) {
             this.maybeDestroyFriendship();
             return;
         }
@@ -214,7 +183,7 @@ var Party = /** @class */ (function () {
         var peerClientIdAndDistances = peerClientIds.map(function (peerClientId) {
             return {
                 peerClientId: peerClientId,
-                distance: new pollenium_buttercup_1.Uint256(peerClientId.uu.genXor(_this.options.clientId.uu))
+                distance: new pollenium_buttercup_1.Uint256(peerClientId.uu.genXor(_this.struct.clientId.uu))
             };
         }).sort(function (peerClientIdAndDistanceA, peerClientIdAndDistanceB) {
             var distanceA = peerClientIdAndDistanceA.distance;
@@ -261,7 +230,7 @@ var Party = /** @class */ (function () {
             return offerInfo.offer.id.uu.getIsEqual(offer.id.uu);
         });
         if (offerInfo === undefined) {
-            this.offerInfos.push(new OfferInfo({ offer: offer, clientId: this.options.clientId }));
+            this.offerInfos.push(new OfferInfo_1.OfferInfo({ offer: offer, clientId: this.struct.clientId }));
         }
         else {
             offerInfo.updateLastReceivedAt();
@@ -298,7 +267,7 @@ var Party = /** @class */ (function () {
     return Party;
 }());
 exports.Party = Party;
-var PartySummary = /** @class */ (function () {
+var PartySummary = (function () {
     function PartySummary(struct) {
         this.struct = struct;
         this.createdAt = genTime_1.genTime();
@@ -349,3 +318,4 @@ var PartySummary = /** @class */ (function () {
     return PartySummary;
 }());
 exports.PartySummary = PartySummary;
+//# sourceMappingURL=Party.js.map

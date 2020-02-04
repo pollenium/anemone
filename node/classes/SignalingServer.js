@@ -1,4 +1,7 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -6,12 +9,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var websocket_1 = require("websocket");
+var server_destroy_1 = __importDefault(require("server-destroy"));
 var http = __importStar(require("http"));
 var Menteeship_1 = require("./Menteeship");
-var enableHttpServerDestroy = require('server-destroy');
-var SignalingServer = /** @class */ (function () {
+var SignalingServer = (function () {
     function SignalingServer(port) {
         this.port = port;
         this.menteeships = [];
@@ -24,11 +27,11 @@ var SignalingServer = /** @class */ (function () {
             response.writeHead(404);
             response.end();
         });
-        enableHttpServerDestroy(this.httpServer);
+        server_destroy_1.default(this.httpServer);
         this.httpServer.listen(this.port, function () { });
         this.wsServer = new websocket_1.server({
             httpServer: this.httpServer,
-            autoAcceptConnections: true
+            autoAcceptConnections: true,
         });
         this.wsServer.on('connect', function (wsConnection) {
             var menteeship = new Menteeship_1.Menteeship(_this, wsConnection);
@@ -37,7 +40,7 @@ var SignalingServer = /** @class */ (function () {
                 var offerIdHex = offer.id.uu.toHex();
                 _this.menteeshipsByOfferIdHex[offerIdHex] = menteeship;
                 _this.menteeships.sort(function () {
-                    return Math.random() - .5;
+                    return Math.random() - 0.5;
                 }).forEach(function (_menteeship) {
                     if (menteeship === _menteeship) {
                         return;
@@ -50,7 +53,7 @@ var SignalingServer = /** @class */ (function () {
             });
             menteeship.flushOfferSnowdrop.addHandle(function (flushOffer) {
                 _this.menteeships.sort(function () {
-                    return Math.random() - .5;
+                    return Math.random() - 0.5;
                 }).forEach(function (_menteeship) {
                     _menteeship.sendFlush(flushOffer);
                 });
@@ -59,8 +62,9 @@ var SignalingServer = /** @class */ (function () {
     };
     SignalingServer.prototype.destroy = function () {
         this.wsServer.shutDown();
-        this.httpServer.destroy();
+        this.httpServer.close();
     };
     return SignalingServer;
 }());
 exports.SignalingServer = SignalingServer;
+//# sourceMappingURL=SignalingServer.js.map

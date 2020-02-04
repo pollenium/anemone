@@ -35,20 +35,20 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
+var pollenium_snowdrop_1 = require("pollenium-snowdrop");
 var Offer_1 = require("./Signal/Offer");
 var Flush_1 = require("./Signal/Flush");
 var Answer_1 = require("./Signal/Answer");
 var signalingMessage_1 = require("../templates/signalingMessage");
-var pollenium_snowdrop_1 = require("pollenium-snowdrop");
 var Wisteria_1 = require("./Wisteria");
-var SignalingClient = /** @class */ (function () {
-    function SignalingClient(url) {
+var SignalingClient = (function () {
+    function SignalingClient(struct) {
         var _this = this;
         this.offerSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.answerSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.flushOfferSnowdrop = new pollenium_snowdrop_1.Snowdrop();
-        this.wisteria = new Wisteria_1.Wisteria(url);
+        this.wisteria = new Wisteria_1.Wisteria(struct);
         this.wisteria.dataSnowdrop.addHandle(function (data) {
             var signalingMessageHenpojo = signalingMessage_1.signalingMessageTemplate.decode(data.u);
             switch (signalingMessageHenpojo.key) {
@@ -74,7 +74,7 @@ var SignalingClient = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 this.wisteria.handleData(data);
-                return [2 /*return*/];
+                return [2];
             });
         });
     };
@@ -82,10 +82,10 @@ var SignalingClient = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.send(offer.getEncoding())];
+                    case 0: return [4, this.send(offer.getEncoding())];
                     case 1:
                         _a.sent();
-                        return [2 /*return*/];
+                        return [2];
                 }
             });
         });
@@ -94,10 +94,10 @@ var SignalingClient = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.send(answer.getEncoding())];
+                    case 0: return [4, this.send(answer.getEncoding())];
                     case 1:
                         _a.sent();
-                        return [2 /*return*/];
+                        return [2];
                 }
             });
         });
@@ -106,10 +106,10 @@ var SignalingClient = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.send(flushOffer.getEncoding())];
+                    case 0: return [4, this.send(flushOffer.getEncoding())];
                     case 1:
                         _a.sent();
-                        return [2 /*return*/];
+                        return [2];
                 }
             });
         });
@@ -117,3 +117,4 @@ var SignalingClient = /** @class */ (function () {
     return SignalingClient;
 }());
 exports.SignalingClient = SignalingClient;
+//# sourceMappingURL=SignalingClient.js.map

@@ -1,8 +1,8 @@
 import { Friendship, FRIENDSHIP_STATUS } from './Friendship'
 import { Extrovert } from './Friendship/Extrovert'
 import { Introvert } from './Friendship/Introvert'
-import { SignalingClientsManager } from './SignalingClientsManager'
-import { Party, PartySummary } from './Party'
+import { SignalingClientsManager, SignalingClientsManagerStruct } from './SignalingClientsManager'
+import { Party, PartySummary, PartyStruct } from './Party'
 import { Uu } from 'pollenium-uvaursi'
 import { Bytes32 } from 'pollenium-buttercup'
 import { MissivesDb } from './MissivesDb'
@@ -12,7 +12,8 @@ import { Offer } from './Signal/Offer'
 import { Answer } from './Signal/Answer'
 import { Flush } from './Signal/Flush'
 import { Primrose } from 'pollenium-primrose'
-import { IClientOptions } from '../interfaces/Options'
+
+export interface ClientStruct extends Omit<PartyStruct, 'clientId'>, SignalingClientsManagerStruct {}
 
 export class Client {
 
@@ -30,10 +31,10 @@ export class Client {
 
   private maxFriendshipsConnectedPrimrose: Primrose<void> = new Primrose<void>();
 
-  constructor(private options: IClientOptions) {
+  constructor(private struct: ClientStruct) {
 
-    this.party = new Party({ clientId: this.id, ...options })
-    this.signalingClientsManager = new SignalingClientsManager({ ...options })
+    this.party = new Party({ clientId: this.id, ...struct })
+    this.signalingClientsManager = new SignalingClientsManager({ ...struct })
 
     this.signalingClientsManager.offerSnowdrop.addHandle((offer) => {
       if (offer.clientId.uu.getIsEqual(this.id.uu)) {

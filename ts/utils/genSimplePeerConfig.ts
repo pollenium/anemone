@@ -4,18 +4,18 @@ export const stunServers = [
   'stun2.l.google.com:19302',
   'stun3.l.google.com:19302',
   'stun4.l.google.com:19302',
-  'global.stun.twilio.com:3478?transport=udp'
+  'global.stun.twilio.com:3478?transport=udp',
 ]
 
 
-export function genSimplePeerConfig() {
+export function genSimplePeerConfig(): { iceServers: Array<{ urls: string; }>; } {
   return {
     iceServers: stunServers.sort(() => {
-      return Math.random() - .5
+      return Math.random() - 0.5
     }).slice(0, 2).map((stunServer) => {
       return {
-        urls: `stun:${stunServer}`
+        urls: `stun:${stunServer}`,
       }
-    })
+    }),
   }
 }

@@ -23,10 +23,9 @@ module.exports = (grunt) => {
         'test/**/*',
         '!test/e2e/browser/index.js'
       ],
-      tasks: ['build', 'test'],
+      tasks: ['build'],
       options: {
-        spawn: false,
-        interrupt: true
+        spawn: false
       }
     },
     clean: ['node', 'browser'],
@@ -79,17 +78,17 @@ module.exports = (grunt) => {
     'grunt-force-task'
   )
 
-  grunt.registerTask('default', ['build', 'watch'])
+  grunt.registerTask('default', ['watch'])
 
   grunt.registerTask('build', [
-    'test-cleanup',
-    'clean',
-    'mkdir',
-    'eslint',
+    // 'test-cleanup',
+    // 'clean',
+    // 'mkdir',
     'ts',
-    'run:browserify',
-    'run:browserify-hashcash-worker',
-    'run:browserify-test',
+    'eslint',
+    // 'run:browserify',
+    // 'run:browserify-hashcash-worker',
+    // 'run:browserify-test',
   ])
 
   grunt.registerTask('test', [

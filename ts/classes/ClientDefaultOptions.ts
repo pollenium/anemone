@@ -1,4 +1,4 @@
-export class ClientDefaultOptions {
+export class ClientDefaultStruct {
   signalingServerUrls = [];
   signalTimeout = 5;
   friendshipsMax = 6;

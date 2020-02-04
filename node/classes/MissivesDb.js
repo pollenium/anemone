@@ -1,6 +1,6 @@
 "use strict";
-exports.__esModule = true;
-var MissivesDb = /** @class */ (function () {
+Object.defineProperty(exports, "__esModule", { value: true });
+var MissivesDb = (function () {
     function MissivesDb() {
         this.isReceivedByIdHex = {};
     }
@@ -15,3 +15,4 @@ var MissivesDb = /** @class */ (function () {
     return MissivesDb;
 }());
 exports.MissivesDb = MissivesDb;
+//# sourceMappingURL=MissivesDb.js.map

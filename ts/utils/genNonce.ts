@@ -1,8 +1,8 @@
-import { genTime } from './genTime'
-import { genMaxHash } from './genMaxHash'
 import { Uish, Uu } from 'pollenium-uvaursi'
 import { Uintable, Uint256 } from 'pollenium-buttercup'
 import * as shasta from 'pollenium-shasta'
+import { genTime } from './genTime'
+import { genMaxHash } from './genMaxHash'
 
 export class TimeoutError extends Error {
   constructor() {
@@ -11,16 +11,16 @@ export class TimeoutError extends Error {
 }
 
 export function genNonce(struct: {
-  noncelessPrehash: Uish,
-  difficulty: Uintable,
-  cover: Uintable,
-  applicationDataLength: Uintable
-  timeoutAt: number
+  noncelessPrehash: Uish;
+  difficulty: Uintable;
+  cover: Uintable;
+  applicationDataLength: Uintable;
+  timeoutAt: number;
 }): Uint256 {
   const maxHash = genMaxHash(struct)
 
   // eslint-disable-next-line no-constant-condition
-  while(true) {
+  while (true) {
     if (genTime() > struct.timeoutAt) {
       throw new TimeoutError()
     }

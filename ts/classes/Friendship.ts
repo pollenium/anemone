@@ -8,7 +8,6 @@ import SimplePeer, { SignalData as SimplePeerSignalData } from 'simple-peer'
 import { Snowdrop } from 'pollenium-snowdrop'
 import { Primrose } from 'pollenium-primrose'
 import delay from 'delay'
-import { IFriendshipOptions } from '../interfaces/Options'
 
 export enum FRIENDSHIP_STATUS {
   DEFAULT = 0,
@@ -36,6 +35,15 @@ export enum DESTROY_REASON {
   CONNECTION_TIMEOUT = 'CONNECTION_TIMEOUT',
 }
 
+export interface FriendshipStruct {
+  initiator: boolean;
+  wrtc: any;
+  missiveLatencyTolerance: number;
+  sdpTimeout: number;
+  connectionTimeout: number;
+}
+
+
 export abstract class Friendship {
 
   private status: FRIENDSHIP_STATUS = FRIENDSHIP_STATUS.DEFAULT;
@@ -55,12 +63,12 @@ export abstract class Friendship {
   private banReason: BAN_REASON | null = null
   private destroyReason: DESTROY_REASON | null = null
 
-  constructor(private options: IFriendshipOptions) {
+  constructor(private struct: FriendshipStruct) {
 
     this.simplePeer = new SimplePeer({
-      initiator: options.initiator,
+      initiator: struct.initiator,
       trickle: false,
-      wrtc: options.wrtc,
+      wrtc: struct.wrtc,
       config: genSimplePeerConfig()
     })
 
@@ -102,7 +110,7 @@ export abstract class Friendship {
       if (missive.timestamp.toNumber() > time) {
         this.banAndDestroy(BAN_REASON.MISSIVE_TIMETRAVEL)
       }
-      if (missive.timestamp.toNumber() < time - options.missiveLatencyTolerance) {
+      if (missive.timestamp.toNumber() < time - struct.missiveLatencyTolerance) {
         this.banAndDestroy(BAN_REASON.MISSIVE_OLD)
       }
       this.missiveSnowdrop.emit(missive)
@@ -114,7 +122,7 @@ export abstract class Friendship {
       isSdpb = true
     })
 
-    delay(options.sdpTimeout * 1000).then(() => {
+    delay(struct.sdpTimeout * 1000).then(() => {
       if (this.isDestroyed) {
         return
       }
@@ -171,7 +179,7 @@ export abstract class Friendship {
   }
 
   protected startConnectOrDestroyTimeout(): void {
-    delay(this.options.connectionTimeout * 1000).then(() => {
+    delay(this.struct.connectionTimeout * 1000).then(() => {
       if (this.isDestroyed) {
         return
       }

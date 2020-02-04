@@ -48,11 +48,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var FriendshipsGroup_1 = require("../FriendshipsGroup");
 var Introvert_1 = require("../Friendship/Introvert");
 var pollenium_snowdrop_1 = require("pollenium-snowdrop");
-var IntrovertsGroup = /** @class */ (function (_super) {
+var IntrovertsGroup = (function (_super) {
     __extends(IntrovertsGroup, _super);
     function IntrovertsGroup() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -65,16 +65,16 @@ var IntrovertsGroup = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        introvert = new Introvert_1.Introvert(offer, this.options);
+                        introvert = new Introvert_1.Introvert(offer, this.struct);
                         this.addFriendship(introvert);
-                        return [4 /*yield*/, introvert.fetchSdpb()];
+                        return [4, introvert.fetchSdpb()];
                     case 1:
                         sdpb = _a.sent();
                         this.partialAnswerSnowdrop.emit({
                             offerId: offer.id,
                             sdpb: sdpb
                         });
-                        return [2 /*return*/];
+                        return [2];
                 }
             });
         });
@@ -82,3 +82,4 @@ var IntrovertsGroup = /** @class */ (function (_super) {
     return IntrovertsGroup;
 }(FriendshipsGroup_1.FriendshipsGroup));
 exports.IntrovertsGroup = IntrovertsGroup;
+//# sourceMappingURL=IntrovertsGroup.js.map

@@ -10,7 +10,7 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var SignalingClientsManager_1 = require("./SignalingClientsManager");
 var Party_1 = require("./Party");
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
@@ -21,10 +21,10 @@ var Offer_1 = require("./Signal/Offer");
 var Answer_1 = require("./Signal/Answer");
 var Flush_1 = require("./Signal/Flush");
 var pollenium_primrose_1 = require("pollenium-primrose");
-var Client = /** @class */ (function () {
-    function Client(options) {
+var Client = (function () {
+    function Client(struct) {
         var _this = this;
-        this.options = options;
+        this.struct = struct;
         this.id = new pollenium_buttercup_1.Bytes32(pollenium_uvaursi_1.Uu.genRandom(32));
         this.friendshipStatusSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.extrovertSnowdrop = new pollenium_snowdrop_1.Snowdrop();
@@ -33,8 +33,8 @@ var Client = /** @class */ (function () {
         this.summarySnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.missivesDb = new MissivesDb_1.MissivesDb;
         this.maxFriendshipsConnectedPrimrose = new pollenium_primrose_1.Primrose();
-        this.party = new Party_1.Party(__assign({ clientId: this.id }, options));
-        this.signalingClientsManager = new SignalingClientsManager_1.SignalingClientsManager(__assign({}, options));
+        this.party = new Party_1.Party(__assign({ clientId: this.id }, struct));
+        this.signalingClientsManager = new SignalingClientsManager_1.SignalingClientsManager(__assign({}, struct));
         this.signalingClientsManager.offerSnowdrop.addHandle(function (offer) {
             if (offer.clientId.uu.getIsEqual(_this.id.uu)) {
                 return;
@@ -75,7 +75,7 @@ var Client = /** @class */ (function () {
     return Client;
 }());
 exports.Client = Client;
-var ClientSummary = /** @class */ (function () {
+var ClientSummary = (function () {
     function ClientSummary(struct) {
         this.id = struct.id;
         this.partySummary = struct.partySummary;
@@ -89,3 +89,4 @@ var ClientSummary = /** @class */ (function () {
     return ClientSummary;
 }());
 exports.ClientSummary = ClientSummary;
+//# sourceMappingURL=Client.js.map

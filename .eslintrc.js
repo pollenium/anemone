@@ -1,10 +1,10 @@
 module.exports =  {
   parser:  '@typescript-eslint/parser',  // Specifies the ESLint parser
-  plugins: ["@typescript-eslint", "import"],
+  plugins: ["@typescript-eslint"],
   extends:  [
     'airbnb',
     'plugin:@typescript-eslint/recommended',  // Uses the recommended rules from the @typescript-eslint/eslint-plugin
-    // 'prettier',
+    'prettier',
     // 'prettier/@typescript-eslint',  // Uses eslint-config-prettier to disable ESLint rules from @typescript-eslint/eslint-plugin that would conflict with prettier
     // 'plugin:prettier/recommended',  // Enables eslint-plugin-prettier and displays prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
   ],
@@ -14,21 +14,39 @@ module.exports =  {
     // project: "./tsconfig.json"
   },
   rules: {
-    '@typescript-eslint/no-var-requires': 0, // to be compatible with JS/Node config files
-    '@typescript-eslint/no-explicit-any': 0,
-    '@typescript-eslint/explicit-member-accessibility': 0,
-    '@typescript-eslint/no-unused-vars': [2, { 'varsIgnorePattern': '^_' , 'argsIgnorePattern': '^_'}],
-    'no-unused-vars': [2, { "argsIgnorePattern": "^_" }],
-    'no-console': 2,
-    'no-underscore-dangle': 0,
-    'import/prefer-default-export': 0,
-    "class-methods-use-this": 0,
-    "no-alert": 0,
-    "no-plusplus": 0,
-    "no-console": 0,
-    "import/order": 0,
-    "no-useless-constructor": 0,
-    "no-await-in-loop": 0
+    // '@typescript-eslint/no-var-requires': 0, // to be compatible with JS/Node config files
+    // '@typescript-eslint/no-explicit-any': 0,
+    // '@typescript-eslint/explicit-member-accessibility': 0,
+    // '@typescript-eslint/no-unused-vars': [2, { 'varsIgnorePattern': '^_' , 'argsIgnorePattern': '^_'}],
+    // 'no-unused-vars': [2, { "argsIgnorePattern": "^_" }],
+    // 'no-console': 2,
+    // 'no-underscore-dangle': 0,
+    // 'import/prefer-default-export': 0,
+    // "class-methods-use-this": 0,
+    // "no-alert": 0,
+    // "no-plusplus": 0,
+    // "no-console": 0,
+    // "import/order": 0,
+    // "no-useless-constructor": 0,
+    // "no-await-in-loop": 0,
+    "semi": [2, "never"],
+    "arrow-body-style": [2, "always"],
+    "no-await-in-loop": 0,
+    "no-plusplus": [2, { allowForLoopAfterthoughts: true }],
+    "lines-between-class-members": 0,
+    "padded-blocks": [2, { "blocks": "never", "switches": "never" }],
+    "object-curly-spacing": [2, "always"],
+    "import/no-extraneous-dependencies": [2, { devDependencies: ["**/*.test.ts"] }],
+    "import/prefer-default-export": 0,
+    "@typescript-eslint/no-inferrable-types": [2, { ignoreParameters: true, ignoreProperties: true }],
+    "@typescript-eslint/no-unused-vars": 2,
+    "@typescript-eslint/member-delimiter-style": [
+      2,
+      {
+        multiline: { delimiter: "semi", requireLast: true },
+        singleline: { delimiter: "semi", requireLast: true },
+      }
+    ]
   },
   // "env": {
   //   "browser": true,

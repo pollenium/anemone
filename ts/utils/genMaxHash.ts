@@ -4,9 +4,9 @@ const two256 = Uint256.fromNumber(2)
 const twofiftyfive256 = Uint256.fromNumber(255)
 
 export function genMaxHash(struct: {
-  difficulty: Uintable,
-  cover: Uintable,
-  applicationDataLength: Uintable
+  difficulty: Uintable;
+  cover: Uintable;
+  applicationDataLength: Uintable;
 }): Uint256 {
   const difficulty = Uint8.fromUintable(struct.difficulty)
   const cover = Uint256.fromUintable(struct.cover)

@@ -3,6 +3,10 @@ import { Bytes32 } from 'pollenium-buttercup'
 import { SIGNALING_MESSAGE_KEY, signalingMessageTemplate } from '../../templates/signalingMessage'
 import { Signal } from '../Signal'
 
+export interface PartialFlush {
+  offerId: Uish;
+}
+
 export class Flush extends Signal {
 
   readonly offerId: Bytes32

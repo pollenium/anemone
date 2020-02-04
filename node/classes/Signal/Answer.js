@@ -12,12 +12,12 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var signalingMessage_1 = require("../../templates/signalingMessage");
 var Signal_1 = require("../Signal");
 var pollenium_buttercup_1 = require("pollenium-buttercup");
-var Answer = /** @class */ (function (_super) {
+var Answer = (function (_super) {
     __extends(Answer, _super);
     function Answer(struct) {
         var _this = _super.call(this) || this;
@@ -46,3 +46,4 @@ var Answer = /** @class */ (function (_super) {
     return Answer;
 }(Signal_1.Signal));
 exports.Answer = Answer;
+//# sourceMappingURL=Answer.js.map

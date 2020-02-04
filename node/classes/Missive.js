@@ -6,7 +6,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_buttercup_1 = require("pollenium-buttercup");
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var missive_1 = require("../templates/missive");
@@ -16,7 +16,7 @@ var MISSIVE_COVER;
 (function (MISSIVE_COVER) {
     MISSIVE_COVER[MISSIVE_COVER["V0"] = 69] = "V0";
 })(MISSIVE_COVER = exports.MISSIVE_COVER || (exports.MISSIVE_COVER = {}));
-var Missive = /** @class */ (function () {
+var Missive = (function () {
     function Missive(struct) {
         this.cover = MISSIVE_COVER.V0;
         this.version = struct.version;
@@ -47,22 +47,6 @@ var Missive = /** @class */ (function () {
     Missive.prototype.getEra = function () {
         return utils_1.genEra(this.timestamp.toNumber());
     };
-    // getIsReceived(): boolean {
-    //   const era = this.getEra()
-    //   const idHex = this.getId().uu.toHex()
-    //   if (this.client.missiveIsReceivedByIdHexByEra[era] === undefined) {
-    //     return false
-    //   }
-    //   return this.client.missiveIsReceivedByIdHexByEra[era][idHex] === true
-    // }
-    // markIsReceived(): void {
-    //   const era = this.getEra()
-    //   const idHex = this.getId().uu.toHex()
-    //   if (this.client.missiveIsReceivedByIdHexByEra[era] === undefined) {
-    //     this.client.missiveIsReceivedByIdHexByEra[era] = {}
-    //   }
-    //   this.client.missiveIsReceivedByIdHexByEra[era][idHex] = true
-    // }
     Missive.prototype.getMaxHash = function () {
         return utils_1.genMaxHash({
             difficulty: this.difficulty,
@@ -102,3 +86,4 @@ var Missive = /** @class */ (function () {
     return Missive;
 }());
 exports.Missive = Missive;
+//# sourceMappingURL=Missive.js.map

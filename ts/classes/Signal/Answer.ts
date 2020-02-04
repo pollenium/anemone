@@ -3,6 +3,11 @@ import { SIGNALING_MESSAGE_KEY, signalingMessageTemplate } from '../../templates
 import { Signal } from '../Signal'
 import { Bytes32 } from 'pollenium-buttercup'
 
+export interface PartialAnswer {
+  offerId: Uish;
+  sdpb: Uish;
+}
+
 export class Answer extends Signal {
 
   readonly clientId: Bytes32;

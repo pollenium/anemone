@@ -38,15 +38,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_snowdrop_1 = require("pollenium-snowdrop");
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var pollenium_primrose_1 = require("pollenium-primrose");
 var delay_1 = __importDefault(require("delay"));
-var Websocket = require('isomorphic-ws');
-var Wisteria = /** @class */ (function () {
-    function Wisteria(url) {
-        this.url = url;
+var Wisteria = (function () {
+    function Wisteria(struct) {
+        this.struct = struct;
         this.closePrimrose = new pollenium_primrose_1.Primrose();
         this.dataSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.isOpen = false;
@@ -55,36 +54,36 @@ var Wisteria = /** @class */ (function () {
     }
     Wisteria.prototype.connect = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var websocket;
+            var webSocket;
             var _this = this;
             return __generator(this, function (_a) {
-                websocket = new Websocket(this.url);
-                websocket.binaryType = 'arraybuffer';
-                websocket.onopen = function () {
+                webSocket = new this.struct.WebSocket(this.struct.url);
+                webSocket.binaryType = 'arraybuffer';
+                webSocket.onopen = function () {
                     _this.isOpen = true;
                     while (_this.dataQueue.length > 0) {
                         var data = _this.dataQueue.shift();
                         _this.send(data);
                     }
                 };
-                websocket.onclose = function () { return __awaiter(_this, void 0, void 0, function () {
+                webSocket.onclose = function () { return __awaiter(_this, void 0, void 0, function () {
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
                                 this.isOpen = false;
-                                return [4 /*yield*/, delay_1["default"](5000)];
+                                return [4, delay_1.default(5000)];
                             case 1:
                                 _a.sent();
                                 this.connect();
-                                return [2 /*return*/];
+                                return [2];
                         }
                     });
                 }); };
-                websocket.onmessage = function (message) {
+                webSocket.onmessage = function (message) {
                     _this.dataSnowdrop.emit(pollenium_uvaursi_1.Uu.wrap(message.data));
                 };
-                this.websocket = websocket;
-                return [2 /*return*/];
+                this.webSocket = webSocket;
+                return [2];
             });
         });
     };
@@ -97,8 +96,9 @@ var Wisteria = /** @class */ (function () {
         }
     };
     Wisteria.prototype.send = function (data) {
-        this.websocket.send(pollenium_uvaursi_1.Uu.wrap(data).unwrap());
+        this.webSocket.send(pollenium_uvaursi_1.Uu.wrap(data).unwrap());
     };
     return Wisteria;
 }());
 exports.Wisteria = Wisteria;
+//# sourceMappingURL=Wisteria.js.map

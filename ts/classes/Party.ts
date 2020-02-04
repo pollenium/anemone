@@ -1,62 +1,26 @@
 import { IntrovertsGroup } from './FriendshipsGroup/IntrovertsGroup'
-import { ExtrovertsGroup } from './FriendshipsGroup/ExtrovertsGroup'
+import { ExtrovertsGroup, ExtrovertsGroupStruct } from './FriendshipsGroup/ExtrovertsGroup'
 import { Snowdrop } from 'pollenium-snowdrop'
-import { Offer } from './Signal/Offer'
-import { Answer } from './Signal/Answer'
-import { Flush } from './Signal/Flush'
+import { Offer, PartialOffer } from './Signal/Offer'
+import { Answer, PartialAnswer } from './Signal/Answer'
+import { Flush, PartialFlush } from './Signal/Flush'
 import { Uu } from 'pollenium-uvaursi'
-import { IPartialAnswer, IPartialOffer, IPartialFlush } from '../interfaces/Signal'
 import delay from 'delay'
 import { Bytes32, Uint256 } from 'pollenium-buttercup'
 import { Primrose } from 'pollenium-primrose'
-import { FriendshipsGroupSummary } from './FriendshipsGroup'
+import { FriendshipsGroupStruct, FriendshipsGroupSummary } from './FriendshipsGroup'
 import { FRIENDSHIP_STATUS, DESTROY_REASON } from './Friendship'
 import { $enum } from 'ts-enum-util'
 import { genTime } from '../utils/genTime'
 import { Missive } from './Missive'
-import { IPartyOptions } from '../interfaces/Options'
+import { OfferInfo } from './OfferInfo'
 
-class OfferInfo {
-
-  readonly offer: Offer;
-  readonly clientId: Bytes32;
-  private attemptsCount: number = 0
-  private firstReceivedAt: number = genTime()
-  private lastReceivedAt: number = genTime()
-  private distance: Uint256
-
-  constructor(struct: { offer: Offer, clientId: Bytes32 }) {
-    this.offer = struct.offer
-    this.clientId = struct.clientId
-  }
-
-  getAttemptsCount(): number {
-    return this.attemptsCount
-  }
-
-  getFirstReceivedAgo(): number {
-    return genTime() - this.firstReceivedAt
-  }
-
-  getLastReceivedAgo(): number {
-    return genTime() - this.lastReceivedAt
-  }
-
-  incrementAttemptsCount(): void {
-    this.attemptsCount += 1
-  }
-
-  updateLastReceivedAt(): void {
-    this.lastReceivedAt = genTime()
-  }
-
-  getDistance(): Uint256 {
-    if (this.distance) {
-      return this.distance
-    }
-    const xor = this.offer.clientId.uu.genXor(this.clientId.uu)
-    return new Uint256(xor)
-  }
+export interface PartyStruct extends FriendshipsGroupStruct, ExtrovertsGroupStruct {
+  clientId: Bytes32;
+  bootstrapOffersTimeout: number;
+  maxFriendshipsCount: number;
+  maxOfferAttemptsCount: number;
+  maxOfferLastReceivedAgo: number;
 }
 
 export class Party {
@@ -73,14 +37,14 @@ export class Party {
   private isBootstrapOffersComplete: boolean = false
 
   readonly summarySnowdrop: Snowdrop<PartySummary> = new Snowdrop<PartySummary>();
-  readonly partialAnswerSnowdrop: Snowdrop<IPartialAnswer> = new Snowdrop<IPartialAnswer>();
-  readonly partialOfferSnowdrop: Snowdrop<IPartialAnswer> = new Snowdrop<IPartialAnswer>();
-  readonly partialFlushSnowdrop: Snowdrop<IPartialFlush> = new Snowdrop<IPartialFlush>();
+  readonly partialAnswerSnowdrop: Snowdrop<PartialAnswer> = new Snowdrop<PartialAnswer>();
+  readonly partialOfferSnowdrop: Snowdrop<PartialAnswer> = new Snowdrop<PartialAnswer>();
+  readonly partialFlushSnowdrop: Snowdrop<PartialFlush> = new Snowdrop<PartialFlush>();
 
-  constructor(private options: IPartyOptions) {
+  constructor(private struct: PartyStruct) {
 
-    this.introvertsGroup = new IntrovertsGroup({ ...options })
-    this.extrovertsGroup = new ExtrovertsGroup({ ...options })
+    this.introvertsGroup = new IntrovertsGroup({ ...struct })
+    this.extrovertsGroup = new ExtrovertsGroup({ ...struct })
 
 
     this.extrovertsGroup.partialOfferSnowdrop.addHandle((partialOffer) => {
@@ -117,9 +81,9 @@ export class Party {
     })
 
 
-    delay(options.bootstrapOffersTimeout * 1000).then(() => {
+    delay(struct.bootstrapOffersTimeout * 1000).then(() => {
       this.isBootstrapOffersComplete = true
-      for (let i = this.getFriendshipsCount(); i < options.maxFriendshipsCount; i++) {
+      for (let i = this.getFriendshipsCount(); i < struct.maxFriendshipsCount; i++) {
         this.maybeCreateFriendship()
       }
     })
@@ -133,7 +97,7 @@ export class Party {
     const now = genTime()
     this.offerInfos = this.offerInfos.filter((offerInfo) => {
       const lastReceivedAgo = offerInfo.getLastReceivedAgo()
-      if (lastReceivedAgo <= this.options.maxOfferLastReceivedAgo) {
+      if (lastReceivedAgo <= this.struct.maxOfferLastReceivedAgo) {
         return true
       } else {
         return false
@@ -145,7 +109,7 @@ export class Party {
     const peerClientIds = this.getPeerClientIds()
 
     const connectableOfferInfos = this.offerInfos.filter((offerInfo): boolean => {
-      if (offerInfo.getAttemptsCount() >= this.options.maxOfferAttemptsCount) {
+      if (offerInfo.getAttemptsCount() >= this.struct.maxOfferAttemptsCount) {
         return false
       }
       for (let i = 0; i < peerClientIds.length; i ++) {
@@ -195,7 +159,7 @@ export class Party {
   }
 
   private maybeCreateFriendship(): void {
-    if (this.getFriendshipsCount() >= this.options.maxFriendshipsCount) {
+    if (this.getFriendshipsCount() >= this.struct.maxFriendshipsCount) {
       this.maybeDestroyFriendship()
       return
     }
@@ -238,7 +202,7 @@ export class Party {
       peerClientIds.map((peerClientId) => {
         return {
           peerClientId,
-          distance: new Uint256(peerClientId.uu.genXor(this.options.clientId.uu))
+          distance: new Uint256(peerClientId.uu.genXor(this.struct.clientId.uu))
         }
       }).sort((peerClientIdAndDistanceA, peerClientIdAndDistanceB) => {
         const distanceA = peerClientIdAndDistanceA.distance
@@ -290,7 +254,7 @@ export class Party {
       return offerInfo.offer.id.uu.getIsEqual(offer.id.uu)
     })
     if (offerInfo === undefined) {
-      this.offerInfos.push(new OfferInfo({ offer, clientId: this.options.clientId }))
+      this.offerInfos.push(new OfferInfo({ offer, clientId: this.struct.clientId }))
     } else {
       offerInfo.updateLastReceivedAt()
     }

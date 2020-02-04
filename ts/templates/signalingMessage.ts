@@ -1,12 +1,7 @@
-// import Split from 'hendricks/lib/Split'
-// import Dictionary from 'hendricks/lib/Dictionary'
-// import Fixed from 'hendricks/lib/Fixed'
-// import Dynamic from 'hendricks/lib/Dynamic'
-
-const Split = require('hendricks/lib/Split')
-const Dictionary = require('hendricks/lib/Dictionary')
-const Fixed = require('hendricks/lib/Fixed')
-const Dynamic = require('hendricks/lib/Dynamic')
+import Split from 'hendricks/lib/Split'
+import Dictionary from 'hendricks/lib/Dictionary'
+import Fixed from 'hendricks/lib/Fixed'
+import Dynamic from 'hendricks/lib/Dynamic'
 
 const fixed32 = new Fixed(32)
 const dynamic2 = new Dynamic(2)
@@ -20,12 +15,12 @@ export enum SIGNALING_MESSAGE_KEY {
 export const signalingMessageTemplate = new Split([
   SIGNALING_MESSAGE_KEY.OFFER,
   SIGNALING_MESSAGE_KEY.ANSWER,
-  SIGNALING_MESSAGE_KEY.FLUSH
+  SIGNALING_MESSAGE_KEY.FLUSH,
 ], [
   new Dictionary([
     'id',
     'clientId',
-    'sdpb'
+    'sdpb',
   ], [
     fixed32,
     fixed32,
@@ -34,15 +29,15 @@ export const signalingMessageTemplate = new Split([
   new Dictionary([
     'clientId',
     'offerId',
-    'sdpb'
+    'sdpb',
   ], [
     fixed32,
     fixed32,
-    dynamic2
+    dynamic2,
   ]),
   new Dictionary([
-    'offerId'
+    'offerId',
   ], [
     fixed32,
-  ])
+  ]),
 ])

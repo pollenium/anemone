@@ -23,12 +23,12 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var Friendship_1 = require("../Friendship");
-var Introvert = /** @class */ (function (_super) {
+var Introvert = (function (_super) {
     __extends(Introvert, _super);
-    function Introvert(offer, options) {
-        var _this = _super.call(this, __assign(__assign({}, options), { initiator: false })) || this;
+    function Introvert(offer, struct) {
+        var _this = _super.call(this, __assign(__assign({}, struct), { initiator: false })) || this;
         _this.setPeerClientId(offer.clientId);
         _this.setStatus(Friendship_1.FRIENDSHIP_STATUS.CONNECTING);
         _this.sendSignal({
@@ -41,3 +41,4 @@ var Introvert = /** @class */ (function (_super) {
     return Introvert;
 }(Friendship_1.Friendship));
 exports.Introvert = Introvert;
+//# sourceMappingURL=Introvert.js.map

@@ -1,17 +1,15 @@
-import { Uu } from 'pollenium-uvaursi'
-import { genMaxHash } from './genMaxHash'
+/* globals test, expect */
+
 import { Uint256 } from 'pollenium-buttercup'
+import { genMaxHash } from './genMaxHash'
 
-const noncelessPrehash = Uu.genRandom(64)
-
-for (let difficulty = 0; difficulty <= 8; difficulty++) {
+for (let difficulty = 0; difficulty <= 8; difficulty += 1) {
   test(`genMaxHash: difficulty: ${difficulty}`, () => {
-    expect(
-      genMaxHash({
-        difficulty,
-        applicationDataLength: 69,
-        cover: 32,
-      })
-    ).toBeInstanceOf(Uint256)
+    const maxHash = genMaxHash({
+      difficulty,
+      applicationDataLength: 69,
+      cover: 32,
+    })
+    expect(maxHash).toBeInstanceOf(Uint256)
   })
 }

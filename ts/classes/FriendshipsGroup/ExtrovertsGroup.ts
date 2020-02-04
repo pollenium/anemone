@@ -1,25 +1,29 @@
-import { FriendshipsGroup } from '../FriendshipsGroup'
+import { FriendshipsGroup, FriendshipsGroupStruct } from '../FriendshipsGroup'
 import { Extrovert } from '../Friendship/Extrovert'
-import { IPartialOffer, IPartialFlush } from '../../interfaces/Signal'
 import { Snowdrop } from 'pollenium-snowdrop'
+import { PartialOffer } from '../Signal/Offer'
 import { Answer } from '../Signal/Answer'
+import { PartialFlush } from '../Signal/Flush'
 import { Bytes32 } from 'pollenium-buttercup'
 import { Uu } from 'pollenium-uvaursi'
-import { IExtrovertsGroupOptions } from '../../interfaces/Options'
+
+export interface ExtrovertsGroupStruct extends FriendshipsGroupStruct {
+  offerReuploadInterval: number;
+}
 
 export class ExtrovertsGroup extends FriendshipsGroup<Extrovert> {
 
-  constructor(private extrovertGroupOptions: IExtrovertsGroupOptions) {
-    super({ ...extrovertGroupOptions })
+  constructor(private extrovertGroupStruct: ExtrovertsGroupStruct) {
+    super({ ...extrovertGroupStruct })
   }
 
   private extrovertsByOfferIdHex: { [offerIdHex: string]: Extrovert } = {}
 
-  readonly partialOfferSnowdrop = new Snowdrop<IPartialOffer>();
-  readonly partialFlushSnowdrop = new Snowdrop<IPartialFlush>();
+  readonly partialOfferSnowdrop = new Snowdrop<PartialOffer>();
+  readonly partialFlushSnowdrop = new Snowdrop<PartialFlush>();
 
   create(): void {
-    const extrovert = new Extrovert(this.options)
+    const extrovert = new Extrovert(this.struct)
     const offerId = Uu.genRandom(32)
     this.addFriendship(extrovert)
     extrovert.destroyedSnowdrop.addHandle(() => {
@@ -41,7 +45,7 @@ export class ExtrovertsGroup extends FriendshipsGroup<Extrovert> {
         } else {
           clearInterval(intervalId)
         }
-      }, this.extrovertGroupOptions.offerReuploadInterval * 1000)
+      }, this.extrovertGroupStruct.offerReuploadInterval * 1000)
 
     })
 

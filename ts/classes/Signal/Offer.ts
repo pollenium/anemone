@@ -3,6 +3,11 @@ import { Bytes32 } from 'pollenium-buttercup'
 import { SIGNALING_MESSAGE_KEY, signalingMessageTemplate } from '../../templates/signalingMessage'
 import { Signal } from '../Signal'
 
+export interface PartialOffer {
+  id: Uish;
+  sdpb: Uish;
+}
+
 export class Offer extends Signal {
 
   readonly id: Bytes32;
@@ -10,9 +15,9 @@ export class Offer extends Signal {
   readonly sdpb: Uu;
 
   constructor(struct: {
-    id: Uish,
-    clientId: Uish,
-    sdpb: Uish
+    id: Uish;
+    clientId: Uish;
+    sdpb: Uish;
   }) {
     super()
     this.id = new Bytes32(struct.id)
@@ -27,7 +32,7 @@ export class Offer extends Signal {
         value: {
           id: this.id.uu.unwrap(),
           clientId: this.clientId.uu.unwrap(),
-          sdpb: this.sdpb.unwrap()
+          sdpb: this.sdpb.unwrap(),
         }
       })
     )

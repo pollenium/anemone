@@ -12,11 +12,11 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_buttercup_1 = require("pollenium-buttercup");
 var signalingMessage_1 = require("../../templates/signalingMessage");
 var Signal_1 = require("../Signal");
-var Flush = /** @class */ (function (_super) {
+var Flush = (function (_super) {
     __extends(Flush, _super);
     function Flush(struct) {
         var _this = _super.call(this) || this;
@@ -39,3 +39,4 @@ var Flush = /** @class */ (function (_super) {
     return Flush;
 }(Signal_1.Signal));
 exports.Flush = Flush;
+//# sourceMappingURL=Flush.js.map

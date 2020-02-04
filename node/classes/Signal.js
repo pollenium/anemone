@@ -6,10 +6,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var shasta = __importStar(require("pollenium-shasta"));
 var pollenium_buttercup_1 = require("pollenium-buttercup");
-var Signal = /** @class */ (function () {
+var Signal = (function () {
     function Signal() {
     }
     Signal.prototype.getHash = function () {
@@ -22,3 +22,4 @@ var Signal = /** @class */ (function () {
     return Signal;
 }());
 exports.Signal = Signal;
+//# sourceMappingURL=Signal.js.map
