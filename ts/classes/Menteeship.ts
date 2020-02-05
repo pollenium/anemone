@@ -21,8 +21,8 @@ export class Menteeship {
   readonly flushOfferSnowdrop: Snowdrop<Flush> = new Snowdrop<Flush>();
 
   constructor(
-    public signalingServer: SignalingServer,
-    public wsConnection: WsConnection,
+    private signalingServer: SignalingServer,
+    private wsConnection: WsConnection,
   ) {
     this.bootstrapPromise = this.bootstrap()
   }
@@ -68,6 +68,10 @@ export class Menteeship {
 
   async sendFlush(flushOffer: Flush): Promise<void> {
     await this.send(flushOffer.getEncoding())
+  }
+
+  destroy(): void {
+    this.wsConnection.destroy()
   }
 
 }

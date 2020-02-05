@@ -40,6 +40,7 @@ var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var mocha_1 = require("mocha");
 var chai_1 = require("chai");
 var MissiveGenerator_1 = require("../../classes/MissiveGenerator");
+var hashcashWorkerUrl_1 = require("../lib/hashcashWorkerUrl");
 mocha_1.describe('MissiveGenerator', function () {
     var _loop_1 = function (difficulty) {
         mocha_1.describe("difficulty " + difficulty, function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -53,7 +54,7 @@ mocha_1.describe('MissiveGenerator', function () {
                         applicationData: applicationData,
                         difficulty: difficulty,
                         ttl: 60,
-                        hashcashWorkerUrl: __dirname + "/../../../node/hashcash-worker.js",
+                        hashcashWorkerUrl: hashcashWorkerUrl_1.hashcashWorkerUrl,
                     });
                 });
                 mocha_1.it('should fetch missive', function () { return __awaiter(void 0, void 0, void 0, function () {

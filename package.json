@@ -6,9 +6,9 @@
   "scripts": {
     "test": "grunt test",
     "test-node": "mocha --bail --exit --timeout 0 ./test/e2e/node/index.js",
-    "browserify": "browserify ./node/index.js --standalone pollenium > browser/index.js",
-    "browserify-hashcash-worker": "browserify ./node/hashcash-worker.js > browser/hashcash-worker.js",
-    "browserify-test": "browserify test/e2e/node/index.js > test/e2e/browser/index.js",
+    "browserify": "browserify -t browserify-shim ./node/index.js --standalone pollenium > browser/index.js",
+    "browserify-hashcash-worker": "browserify -t browserify-shim ./node/hashcash-worker.js > browser/hashcash-worker.js",
+    "browserify-test": "browserify -t browserify-shim ./node/test/index.js > browser/test.js",
     "open-browser-test": "open -a /Applications/Google\\ Chrome.app/ '--args --incognito http://localhost:8080/test/browser.html",
     "tsc": "tsc",
     "build": "grunt build",
@@ -16,15 +16,11 @@
     "mocha": "ts-mocha --ansi --bail --exit",
     "start-signaling-servers": "forever --watch ./node/test/e2e/bin/start-signaling-servers.js"
   },
-  "browserify": {
-    "transform": [
-      "browserify-shim"
-    ]
-  },
   "browserify-shim": {
-    "isomorphic-ws": "WebSocket",
-    "tiny-worker": "Worker",
-    "wrtc": "undefined"
+    "ws": "global:WebSocket",
+    "tiny-worker": "global:Worker",
+    "wrtc": "global:undefined",
+    "mocha": "global:mocha"
   },
   "author": "",
   "license": "ISC",

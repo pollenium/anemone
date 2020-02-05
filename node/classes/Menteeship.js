@@ -119,6 +119,9 @@ var Menteeship = (function () {
             });
         });
     };
+    Menteeship.prototype.destroy = function () {
+        this.wsConnection.destroy();
+    };
     return Menteeship;
 }());
 exports.Menteeship = Menteeship;

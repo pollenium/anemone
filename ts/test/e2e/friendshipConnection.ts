@@ -8,12 +8,13 @@ import { Answer } from '../../classes/Signal/Answer'
 import { FRIENDSHIP_STATUS, DESTROY_REASON } from '../../classes/Friendship'
 import { MissiveGenerator } from '../../classes/MissiveGenerator'
 import { Missive } from '../../classes/Missive'
+import { hashcashWorkerUrl } from '../lib/hashcashWorkerUrl'
 
 const clientId = Uu.genRandom(32)
 const struct = {
   missiveLatencyTolerance: 30,
   sdpTimeout: 30,
-  connectionTimeout: 10,
+  connectionTimeout: 30,
 }
 
 let extrovert: Extrovert
@@ -67,7 +68,7 @@ describe('friendshipConnection', () => {
       applicationData: Uu.genRandom(32),
       ttl: 30,
       difficulty: 4,
-      hashcashWorkerUrl: `${__dirname}/../../../node/hashcash-worker.js`,
+      hashcashWorkerUrl,
     })
     missive = await missiveGenerator.fetchMissive()
   }).timeout(20 * 1000)

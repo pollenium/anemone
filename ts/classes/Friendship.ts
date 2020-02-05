@@ -29,6 +29,7 @@ export enum DESTROY_REASON {
   WRTC_CLOSE = 'WRTC_CLOSE',
   WRTC_ERROR = 'WRTC_ERROR',
   ICE_DISCONNECT = 'ICE_DISCONNECT',
+  ICE_FAILED = 'ICE_FAILED',
   TOO_FAR = 'TOO_FAR',
   NEW_OFFER = 'NEW_OFFER',
   SDP_TIMEOUT = 'SDP_TIMEOUT',
@@ -53,7 +54,7 @@ export abstract class Friendship {
 
   private isMissiveReceivedByHashHex: Record<string, boolean> = {};
 
-  readonly destroyedSnowdrop: Snowdrop<void> = new Snowdrop<void>({ maxEmitsCount: 1 });
+  readonly destroyedSnowdrop: Snowdrop<DESTROY_REASON> = new Snowdrop<DESTROY_REASON>({ maxEmitsCount: 1 });
   readonly statusSnowdrop: Snowdrop<FRIENDSHIP_STATUS> = new Snowdrop<
     FRIENDSHIP_STATUS
   >();
@@ -72,8 +73,8 @@ export abstract class Friendship {
     })
 
     this.simplePeer.on('iceStateChange', (iceConnectionState) => {
-      if (iceConnectionState === 'disconnected') {
-        this.destroy(DESTROY_REASON.ICE_DISCONNECT)
+      if (iceConnectionState === 'failed') {
+        this.destroy(DESTROY_REASON.ICE_FAILED)
       }
     })
     this.simplePeer.on('connect', () => {
@@ -173,7 +174,7 @@ export abstract class Friendship {
     }
     this.destroyReason = reason
     this.isDestroyed = true
-    this.destroyedSnowdrop.emit()
+    this.destroyedSnowdrop.emit(reason)
     this.simplePeer.removeAllListeners()
     this.simplePeer.destroy()
   }

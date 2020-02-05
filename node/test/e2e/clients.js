@@ -47,6 +47,8 @@ var Client_1 = require("../../classes/Client");
 var MissiveGenerator_1 = require("../../classes/MissiveGenerator");
 var params_1 = require("./lib/params");
 var Friendship_1 = require("../../classes/Friendship");
+var hashcashWorkerUrl_1 = require("../lib/hashcashWorkerUrl");
+var isBrowser_1 = require("../lib/isBrowser");
 var missives = [];
 var clients = [];
 var intervalId = setInterval(function () {
@@ -59,7 +61,12 @@ var intervalId = setInterval(function () {
         return clientSummary.toJsonable();
     });
     var clientSummariesJson = JSON.stringify(clientSummaryJsonables, null, 2);
-    fs_1.default.writeFileSync(__dirname + "/../../../clients.test.json", clientSummariesJson);
+    if (fs_1.default.writeFileSync) {
+        fs_1.default.writeFileSync(__dirname + "/../../../clients.test.json", clientSummariesJson);
+    }
+    else {
+        console.log(clientSummariesJson);
+    }
 }, 1000);
 mocha_1.describe('clients', function () {
     mocha_1.it('should create clients', function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -77,8 +84,8 @@ mocha_1.describe('clients', function () {
                         bootstrapOffersTimeout: i % 2 ? 0 : 5,
                         maxOfferAttemptsCount: 2,
                         missiveLatencyTolerance: 10,
-                        sdpTimeout: 10,
-                        connectionTimeout: 10,
+                        sdpTimeout: isBrowser_1.isBrowser ? 30 : 10,
+                        connectionTimeout: isBrowser_1.isBrowser ? 30 : 10,
                         maxOfferLastReceivedAgo: 10,
                         offerReuploadInterval: 5,
                     });
@@ -129,7 +136,7 @@ mocha_1.describe('clients', function () {
                         applicationData: pollenium_uvaursi_1.Uu.genRandom(32),
                         difficulty: 1,
                         ttl: 30,
-                        hashcashWorkerUrl: __dirname + "/../../../node/hashcash-worker.js",
+                        hashcashWorkerUrl: hashcashWorkerUrl_1.hashcashWorkerUrl,
                     });
                     return [4, missiveGenerator.fetchMissive()];
                 case 2:

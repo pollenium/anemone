@@ -85,22 +85,19 @@ module.exports = (grunt) => {
   grunt.registerTask('default', ['watch'])
 
   grunt.registerTask('build', [
-    // 'test-cleanup',
     'clean',
     'mkdir',
     'ts',
     'eslint',
-    // 'run:browserify',
-    // 'run:browserify-hashcash-worker',
-    // 'run:browserify-test',
+    'run:browserify',
+    'run:browserify-hashcash-worker',
+    'run:browserify-test',
   ])
 
   grunt.registerTask('test', [
-    'run:mocha'
-    // 'test-cleanup',
-    // 'servers',
-    // 'run:npm-test-node',
-    // 'test-browser',
+    'servers',
+    'run:mocha',
+    'test-browser',
   ])
 
   grunt.registerTask('test-browser', 'open browser test in chrome', async function() {
@@ -112,7 +109,7 @@ module.exports = (grunt) => {
     httpServer.listen(port)
 
     const chrome = await chromeLauncher.launch({
-      startingUrl: `http://localhost:${port}/test/e2e/browser`,
+      startingUrl: `http://localhost:${port}/test-browser.html`,
       chromeFlags: ['--args', '--incognito']
     })
 
@@ -128,7 +125,8 @@ module.exports = (grunt) => {
 
   })
 
-  grunt.registerTask('test-cleanup', 'cleanup previous test', async function() {
+  grunt.registerTask('servers', 'start test servers', async function() {
+
     const done = this.async()
 
     if (signalingServers) {
@@ -137,19 +135,12 @@ module.exports = (grunt) => {
       })
     }
 
-    done()
 
-  })
-
-  grunt.registerTask('servers', 'start test servers', async function() {
-
-    const done = this.async()
-
-    const params = require('./test/e2e/node/params')
+    const params = require('./node/test/e2e/lib/params')
     const SignalingServer = require('./node/classes/SignalingServer').SignalingServer
     signalingServers = params.signalingServerPorts.map((port) => {
+      return new SignalingServer(port)
       console.log(`start server ${port}`)
-      return new SignalingServer(port, false)
     })
 
     await delay(1000)

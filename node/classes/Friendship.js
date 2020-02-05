@@ -33,6 +33,7 @@ var DESTROY_REASON;
     DESTROY_REASON["WRTC_CLOSE"] = "WRTC_CLOSE";
     DESTROY_REASON["WRTC_ERROR"] = "WRTC_ERROR";
     DESTROY_REASON["ICE_DISCONNECT"] = "ICE_DISCONNECT";
+    DESTROY_REASON["ICE_FAILED"] = "ICE_FAILED";
     DESTROY_REASON["TOO_FAR"] = "TOO_FAR";
     DESTROY_REASON["NEW_OFFER"] = "NEW_OFFER";
     DESTROY_REASON["SDP_TIMEOUT"] = "SDP_TIMEOUT";
@@ -60,8 +61,8 @@ var Friendship = (function () {
             wrtc: wrtc_1.default,
         });
         this.simplePeer.on('iceStateChange', function (iceConnectionState) {
-            if (iceConnectionState === 'disconnected') {
-                _this.destroy(DESTROY_REASON.ICE_DISCONNECT);
+            if (iceConnectionState === 'failed') {
+                _this.destroy(DESTROY_REASON.ICE_FAILED);
             }
         });
         this.simplePeer.on('connect', function () {
@@ -150,7 +151,7 @@ var Friendship = (function () {
         }
         this.destroyReason = reason;
         this.isDestroyed = true;
-        this.destroyedSnowdrop.emit();
+        this.destroyedSnowdrop.emit(reason);
         this.simplePeer.removeAllListeners();
         this.simplePeer.destroy();
     };

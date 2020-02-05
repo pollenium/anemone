@@ -1,5 +1,6 @@
 import { Uu } from 'pollenium-uvaursi'
 import { describe, it } from 'mocha'
+import delay from 'delay'
 import { SignalingClient } from '../../classes/SignalingClient'
 import { signalingServerUrls } from './lib/params'
 import { Offer } from '../../classes/Signal/Offer'
@@ -19,6 +20,10 @@ describe('signaling', () => {
       })
       signalingClients.push(signalingClient)
     }
+  })
+
+  it('should wait a second', () => {
+    return delay(1000)
   })
 
   it('should send/receive offers', async () => {
@@ -45,5 +50,5 @@ describe('signaling', () => {
     signalingClients[0].sendOffer(offer)
 
     await Promise.all([receivedPromise1, receivedPromise2])
-  }, 10000)
+  }).timeout(10 * 1000)
 })

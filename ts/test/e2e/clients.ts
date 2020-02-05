@@ -13,6 +13,8 @@ import {
   expectedMissiveReceivesCount,
 } from './lib/params'
 import { FRIENDSHIP_STATUS } from '../../classes/Friendship'
+import { hashcashWorkerUrl } from '../lib/hashcashWorkerUrl'
+import { isBrowser } from '../lib/isBrowser'
 
 const missives: Array<Missive> = []
 const clients: Array<Client> = []
@@ -29,7 +31,11 @@ const intervalId = setInterval(() => {
     return clientSummary.toJsonable()
   })
   const clientSummariesJson = JSON.stringify(clientSummaryJsonables, null, 2)
-  fs.writeFileSync(`${__dirname}/../../../clients.test.json`, clientSummariesJson)
+  if (fs.writeFileSync) {
+    fs.writeFileSync(`${__dirname}/../../../clients.test.json`, clientSummariesJson)
+  } else {
+    console.log(clientSummariesJson)
+  }
 }, 1000)
 
 describe('clients', () => {
@@ -41,8 +47,8 @@ describe('clients', () => {
         bootstrapOffersTimeout: i % 2 ? 0 : 5,
         maxOfferAttemptsCount: 2,
         missiveLatencyTolerance: 10,
-        sdpTimeout: 10,
-        connectionTimeout: 10,
+        sdpTimeout: isBrowser ? 30 : 10,
+        connectionTimeout: isBrowser ? 30 : 10,
         maxOfferLastReceivedAgo: 10,
         offerReuploadInterval: 5,
       })
@@ -79,7 +85,7 @@ describe('clients', () => {
         applicationData: Uu.genRandom(32),
         difficulty: 1,
         ttl: 30,
-        hashcashWorkerUrl: `${__dirname}/../../../node/hashcash-worker.js`,
+        hashcashWorkerUrl,
       })
 
       const missive = await missiveGenerator.fetchMissive()

@@ -65,6 +65,9 @@ export class SignalingServer {
   destroy(): void {
     this.wsServer.shutDown()
     this.httpServer.close()
+    this.menteeships.forEach((menteeship) => {
+      menteeship.destroy()
+    })
   }
 
 }

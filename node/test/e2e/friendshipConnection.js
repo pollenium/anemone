@@ -45,11 +45,12 @@ var Offer_1 = require("../../classes/Signal/Offer");
 var Answer_1 = require("../../classes/Signal/Answer");
 var Friendship_1 = require("../../classes/Friendship");
 var MissiveGenerator_1 = require("../../classes/MissiveGenerator");
+var hashcashWorkerUrl_1 = require("../lib/hashcashWorkerUrl");
 var clientId = pollenium_uvaursi_1.Uu.genRandom(32);
 var struct = {
     missiveLatencyTolerance: 30,
     sdpTimeout: 30,
-    connectionTimeout: 10,
+    connectionTimeout: 30,
 };
 var extrovert;
 var introvert;
@@ -119,7 +120,7 @@ mocha_1.describe('friendshipConnection', function () {
                         applicationData: pollenium_uvaursi_1.Uu.genRandom(32),
                         ttl: 30,
                         difficulty: 4,
-                        hashcashWorkerUrl: __dirname + "/../../../node/hashcash-worker.js",
+                        hashcashWorkerUrl: hashcashWorkerUrl_1.hashcashWorkerUrl,
                     });
                     return [4, missiveGenerator.fetchMissive()];
                 case 1:

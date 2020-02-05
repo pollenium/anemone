@@ -35,9 +35,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var mocha_1 = require("mocha");
+var delay_1 = __importDefault(require("delay"));
 var SignalingClient_1 = require("../../classes/SignalingClient");
 var params_1 = require("./lib/params");
 var Offer_1 = require("../../classes/Signal/Offer");
@@ -55,6 +59,9 @@ mocha_1.describe('signaling', function () {
             });
             signalingClients.push(signalingClient);
         }
+    });
+    mocha_1.it('should wait a second', function () {
+        return delay_1.default(1000);
     });
     mocha_1.it('should send/receive offers', function () { return __awaiter(void 0, void 0, void 0, function () {
         var receivedPromise1, receivedPromise2;
@@ -88,6 +95,6 @@ mocha_1.describe('signaling', function () {
                     return [2];
             }
         });
-    }); }, 10000);
+    }); }).timeout(10 * 1000);
 });
 //# sourceMappingURL=signaling.js.map

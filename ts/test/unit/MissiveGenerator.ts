@@ -3,6 +3,7 @@ import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import { MissiveGenerator } from '../../classes/MissiveGenerator'
 import { Missive } from '../../classes/Missive'
+import { hashcashWorkerUrl } from '../lib/hashcashWorkerUrl'
 
 describe('MissiveGenerator', () => {
   for (let difficulty = 0; difficulty <= 13; difficulty++) {
@@ -17,7 +18,7 @@ describe('MissiveGenerator', () => {
           applicationData,
           difficulty,
           ttl: 60,
-          hashcashWorkerUrl: `${__dirname}/../../../node/hashcash-worker.js`,
+          hashcashWorkerUrl,
         })
       })
       it('should fetch missive', async () => {

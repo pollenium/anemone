@@ -1,2 +1,3 @@
 *.log
 clients.test.json
+browser/**/*

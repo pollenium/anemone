@@ -67,6 +67,9 @@ var SignalingServer = (function () {
     SignalingServer.prototype.destroy = function () {
         this.wsServer.shutDown();
         this.httpServer.close();
+        this.menteeships.forEach(function (menteeship) {
+            menteeship.destroy();
+        });
     };
     return SignalingServer;
 }());

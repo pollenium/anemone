@@ -9,11 +9,13 @@
     <script type="text/javascript">
       mocha.setup({
         ui: 'bdd',
-        timeout: 2 * 1000
+        timeout: 2000,
+        bail: true
       })
+      mocha.describe = window.describe
+      mocha.it = window.it
     </script>
-    <script src="/browser/index.js"></script>
-    <script src="./index.js"></script>
+    <script src="./browser/test.js"></script>
     <script type="text/javascript">
       mocha.checkLeaks()
       mocha.run()
