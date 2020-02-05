@@ -39,12 +39,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var pollenium_primrose_1 = require("pollenium-primrose");
 var mocha_1 = require("mocha");
-var Introvert_1 = require("../../classes/Friendship/Introvert");
-var Extrovert_1 = require("../../classes/Friendship/Extrovert");
-var Offer_1 = require("../../classes/Signal/Offer");
-var Answer_1 = require("../../classes/Signal/Answer");
-var Friendship_1 = require("../../classes/Friendship");
-var MissiveGenerator_1 = require("../../classes/MissiveGenerator");
+var Introvert_1 = require("../../src/classes/Friendship/Introvert");
+var Extrovert_1 = require("../../src/classes/Friendship/Extrovert");
+var Offer_1 = require("../../src/classes/Signal/Offer");
+var Answer_1 = require("../../src/classes/Signal/Answer");
+var Friendship_1 = require("../../src/classes/Friendship");
+var MissiveGenerator_1 = require("../../src/classes/MissiveGenerator");
 var hashcashWorkerUrl_1 = require("../lib/hashcashWorkerUrl");
 var clientId = pollenium_uvaursi_1.Uu.genRandom(32);
 var struct = {
@@ -58,7 +58,7 @@ var offer;
 var answer;
 var missive;
 mocha_1.describe('friendshipConnection', function () {
-    mocha_1.it(' should create extrovert', function () {
+    mocha_1.it('should create extrovert', function () {
         extrovert = new Extrovert_1.Extrovert(struct);
     });
     mocha_1.it('should create offer', function () { return __awaiter(void 0, void 0, void 0, function () {

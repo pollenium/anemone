@@ -70,6 +70,10 @@ module.exports = (grunt) => {
         cmd: 'npm',
         args: ['run', 'browserify-test']
       },
+      'create-main': {
+        cmd: 'node',
+        args: ['./node/bin/create-main']
+      },
     }
   })
 
@@ -88,6 +92,7 @@ module.exports = (grunt) => {
     'clean',
     'mkdir',
     'ts',
+    'run:create-main',
     'eslint',
     'run:browserify',
     'run:browserify-hashcash-worker',
@@ -137,7 +142,7 @@ module.exports = (grunt) => {
 
 
     const params = require('./node/test/e2e/lib/params')
-    const SignalingServer = require('./node/classes/SignalingServer').SignalingServer
+    const SignalingServer = require('./node/src/classes/SignalingServer').SignalingServer
     signalingServers = params.signalingServerPorts.map((port) => {
       return new SignalingServer(port)
       console.log(`start server ${port}`)

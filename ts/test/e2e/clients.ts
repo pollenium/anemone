@@ -2,9 +2,9 @@ import { Uu } from 'pollenium-uvaursi'
 import delay from 'delay'
 import fs from 'fs'
 import { describe, it } from 'mocha'
-import { Client } from '../../classes/Client'
-import { MissiveGenerator } from '../../classes/MissiveGenerator'
-import { Missive } from '../../classes/Missive'
+import { Client } from '../../src/classes/Client'
+import { MissiveGenerator } from '../../src/classes/MissiveGenerator'
+import { Missive } from '../../src/classes/Missive'
 import {
   signalingServerUrls,
   clientsCount,
@@ -12,7 +12,7 @@ import {
   missivesCount,
   expectedMissiveReceivesCount,
 } from './lib/params'
-import { FRIENDSHIP_STATUS } from '../../classes/Friendship'
+import { FRIENDSHIP_STATUS } from '../../src/classes/Friendship'
 import { hashcashWorkerUrl } from '../lib/hashcashWorkerUrl'
 import { isBrowser } from '../lib/isBrowser'
 
@@ -32,7 +32,7 @@ const intervalId = setInterval(() => {
   })
   const clientSummariesJson = JSON.stringify(clientSummaryJsonables, null, 2)
   if (fs.writeFileSync) {
-    fs.writeFileSync(`${__dirname}/../../../clients.test.json`, clientSummariesJson)
+    fs.writeFileSync(`${__dirname}/../../src/../clients.test.json`, clientSummariesJson)
   } else {
     console.log(clientSummariesJson)
   }

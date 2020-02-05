@@ -39,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var mocha_1 = require("mocha");
 var chai_1 = require("chai");
-var MissiveGenerator_1 = require("../../classes/MissiveGenerator");
+var MissiveGenerator_1 = require("../../src/classes/MissiveGenerator");
 var hashcashWorkerUrl_1 = require("../lib/hashcashWorkerUrl");
 mocha_1.describe('MissiveGenerator', function () {
     var _loop_1 = function (difficulty) {

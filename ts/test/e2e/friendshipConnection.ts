@@ -1,13 +1,13 @@
 import { Uu } from 'pollenium-uvaursi'
 import { Primrose } from 'pollenium-primrose'
 import { describe, it } from 'mocha'
-import { Introvert } from '../../classes/Friendship/Introvert'
-import { Extrovert } from '../../classes/Friendship/Extrovert'
-import { Offer } from '../../classes/Signal/Offer'
-import { Answer } from '../../classes/Signal/Answer'
-import { FRIENDSHIP_STATUS, DESTROY_REASON } from '../../classes/Friendship'
-import { MissiveGenerator } from '../../classes/MissiveGenerator'
-import { Missive } from '../../classes/Missive'
+import { Introvert } from '../../src/classes/Friendship/Introvert'
+import { Extrovert } from '../../src/classes/Friendship/Extrovert'
+import { Offer } from '../../src/classes/Signal/Offer'
+import { Answer } from '../../src/classes/Signal/Answer'
+import { FRIENDSHIP_STATUS, DESTROY_REASON } from '../../src/classes/Friendship'
+import { MissiveGenerator } from '../../src/classes/MissiveGenerator'
+import { Missive } from '../../src/classes/Missive'
 import { hashcashWorkerUrl } from '../lib/hashcashWorkerUrl'
 
 const clientId = Uu.genRandom(32)
@@ -24,7 +24,7 @@ let answer: Answer
 let missive: Missive
 
 describe('friendshipConnection', () => {
-  it(' should create extrovert', () => {
+  it('should create extrovert', () => {
     extrovert = new Extrovert(struct)
   })
 

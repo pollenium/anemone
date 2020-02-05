@@ -1,8 +1,8 @@
 import { Uu } from 'pollenium-uvaursi'
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import { MissiveGenerator } from '../../classes/MissiveGenerator'
-import { Missive } from '../../classes/Missive'
+import { MissiveGenerator } from '../../src/classes/MissiveGenerator'
+import { Missive } from '../../src/classes/Missive'
 import { hashcashWorkerUrl } from '../lib/hashcashWorkerUrl'
 
 describe('MissiveGenerator', () => {

@@ -1,9 +1,9 @@
 import { Uu } from 'pollenium-uvaursi'
 import { describe, it } from 'mocha'
 import delay from 'delay'
-import { SignalingClient } from '../../classes/SignalingClient'
+import { SignalingClient } from '../../src/classes/SignalingClient'
 import { signalingServerUrls } from './lib/params'
-import { Offer } from '../../classes/Signal/Offer'
+import { Offer } from '../../src/classes/Signal/Offer'
 
 const signalingClients: Array<SignalingClient> = []
 const offer = new Offer({

@@ -42,9 +42,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var mocha_1 = require("mocha");
 var delay_1 = __importDefault(require("delay"));
-var SignalingClient_1 = require("../../classes/SignalingClient");
+var SignalingClient_1 = require("../../src/classes/SignalingClient");
 var params_1 = require("./lib/params");
-var Offer_1 = require("../../classes/Signal/Offer");
+var Offer_1 = require("../../src/classes/Signal/Offer");
 var signalingClients = [];
 var offer = new Offer_1.Offer({
     id: pollenium_uvaursi_1.Uu.genRandom(32),

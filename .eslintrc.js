@@ -22,7 +22,7 @@ module.exports =  {
     "lines-between-class-members": 0,
     "padded-blocks": [2, { "blocks": "never", "switches": "never", "classes": "always" }],
     "object-curly-spacing": [2, "always"],
-    "import/no-extraneous-dependencies": [2, { devDependencies: ["ts/test/**/**.ts"] }],
+    "import/no-extraneous-dependencies": [2, { devDependencies: ["ts/test/**/**.ts", "ts/bin/**/**.ts"] }],
     "import/prefer-default-export": 0,
     "@typescript-eslint/no-inferrable-types": [2, { ignoreParameters: true, ignoreProperties: true }],
     "@typescript-eslint/no-unused-vars": 2,

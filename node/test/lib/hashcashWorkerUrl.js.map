@@ -1,1 +1,1 @@
-{"version":3,"file":"hashcashWorkerUrl.js","sourceRoot":"","sources":["../../../ts/test/lib/hashcashWorkerUrl.ts"],"names":[],"mappings":";;AAAA,yCAAuC;AAE1B,QAAA,iBAAiB,GAAG,qBAAS;IACxC,CAAC,CAAC,8BAA8B;IAChC,CAAC,CAAI,SAAS,sCAAmC,CAAA"}
+{"version":3,"file":"hashcashWorkerUrl.js","sourceRoot":"","sources":["../../../ts/test/lib/hashcashWorkerUrl.ts"],"names":[],"mappings":";;AAAA,yCAAuC;AAE1B,QAAA,iBAAiB,GAAG,qBAAS;IACxC,CAAC,CAAC,8BAA8B;IAChC,CAAC,CAAI,SAAS,0CAAuC,CAAA"}

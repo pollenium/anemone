@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_buttercup_1 = require("pollenium-buttercup");
 var mocha_1 = require("mocha");
 var chai_1 = require("chai");
-var genMaxHash_1 = require("../../utils/genMaxHash");
+var genMaxHash_1 = require("../../src/utils/genMaxHash");
 mocha_1.describe('genMaxHash', function () {
     var _loop_1 = function (difficulty) {
         mocha_1.describe("difficulty: " + difficulty, function () {

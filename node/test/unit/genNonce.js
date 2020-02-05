@@ -4,8 +4,8 @@ var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var pollenium_buttercup_1 = require("pollenium-buttercup");
 var mocha_1 = require("mocha");
 var chai_1 = require("chai");
-var genTime_1 = require("../../utils/genTime");
-var genNonce_1 = require("../../utils/genNonce");
+var genTime_1 = require("../../src/utils/genTime");
+var genNonce_1 = require("../../src/utils/genNonce");
 var noncelessPrehash = pollenium_uvaursi_1.Uu.genRandom(64);
 mocha_1.describe('genNonce', function () {
     var _loop_1 = function (difficulty) {

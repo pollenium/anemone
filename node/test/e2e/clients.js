@@ -43,10 +43,10 @@ var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var delay_1 = __importDefault(require("delay"));
 var fs_1 = __importDefault(require("fs"));
 var mocha_1 = require("mocha");
-var Client_1 = require("../../classes/Client");
-var MissiveGenerator_1 = require("../../classes/MissiveGenerator");
+var Client_1 = require("../../src/classes/Client");
+var MissiveGenerator_1 = require("../../src/classes/MissiveGenerator");
 var params_1 = require("./lib/params");
-var Friendship_1 = require("../../classes/Friendship");
+var Friendship_1 = require("../../src/classes/Friendship");
 var hashcashWorkerUrl_1 = require("../lib/hashcashWorkerUrl");
 var isBrowser_1 = require("../lib/isBrowser");
 var missives = [];
@@ -62,7 +62,7 @@ var intervalId = setInterval(function () {
     });
     var clientSummariesJson = JSON.stringify(clientSummaryJsonables, null, 2);
     if (fs_1.default.writeFileSync) {
-        fs_1.default.writeFileSync(__dirname + "/../../../clients.test.json", clientSummariesJson);
+        fs_1.default.writeFileSync(__dirname + "/../../src/../clients.test.json", clientSummariesJson);
     }
     else {
         console.log(clientSummariesJson);

@@ -3,8 +3,8 @@ import { Uint256 } from 'pollenium-buttercup'
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 
-import { genTime } from '../../utils/genTime'
-import { genNonce } from '../../utils/genNonce'
+import { genTime } from '../../src/utils/genTime'
+import { genNonce } from '../../src/utils/genNonce'
 
 const noncelessPrehash = Uu.genRandom(64)
 
