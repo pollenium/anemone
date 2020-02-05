@@ -1,1 +1,0 @@
-{"version":3,"file":"start-signaling-servers.js","sourceRoot":"","sources":["../../../../ts/test/e2e/bin/start-signaling-servers.ts"],"names":[],"mappings":";;AAAA,oEAAkE;AAClE,wCAAoD;AAEpD,SAAS,GAAG;IACV,6BAAoB,CAAC,OAAO,CAAC,UAAC,IAAI;QAEhC,OAAO,CAAC,GAAG,CAAC,uCAAqC,IAAM,CAAC,CAAA;QAExD,IAAI,iCAAe,CAAC,IAAI,CAAC,CAAA;IAC3B,CAAC,CAAC,CAAA;AACJ,CAAC;AAED,GAAG,EAAE,CAAA"}
