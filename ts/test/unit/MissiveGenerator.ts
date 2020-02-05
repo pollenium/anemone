@@ -1,5 +1,4 @@
 import { Uu } from 'pollenium-uvaursi'
-import TinyWorker from 'tiny-worker'
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import { MissiveGenerator } from '../../classes/MissiveGenerator'
@@ -18,9 +17,7 @@ describe('MissiveGenerator', () => {
           applicationData,
           difficulty,
           ttl: 60,
-          hashcashWorker: new TinyWorker(`${__dirname}/../../../node/hashcash-worker.js`, [], {
-            esm: true,
-          }),
+          hashcashWorkerUrl: `${__dirname}/../../../node/hashcash-worker.js`,
         })
       })
       it('should fetch missive', async () => {

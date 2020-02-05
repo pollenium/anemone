@@ -1,5 +1,3 @@
-import TinyWorker from 'tiny-worker'
-import wrtc from 'wrtc'
 import { Uu } from 'pollenium-uvaursi'
 import { Primrose } from 'pollenium-primrose'
 import { describe, it } from 'mocha'
@@ -13,7 +11,6 @@ import { Missive } from '../../classes/Missive'
 
 const clientId = Uu.genRandom(32)
 const struct = {
-  wrtc,
   missiveLatencyTolerance: 30,
   sdpTimeout: 30,
   connectionTimeout: 10,
@@ -70,9 +67,7 @@ describe('friendshipConnection', () => {
       applicationData: Uu.genRandom(32),
       ttl: 30,
       difficulty: 4,
-      hashcashWorker: new TinyWorker(`${__dirname}/../../../node/hashcash-worker.js`, [], {
-        esm: true,
-      }),
+      hashcashWorkerUrl: `${__dirname}/../../../node/hashcash-worker.js`,
     })
     missive = await missiveGenerator.fetchMissive()
   }).timeout(20 * 1000)

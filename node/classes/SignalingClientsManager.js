@@ -21,10 +21,7 @@ var SignalingClientsManager = (function () {
     }
     SignalingClientsManager.prototype.create = function (url) {
         var _this = this;
-        var signalingClient = new SignalingClient_1.SignalingClient({
-            url: url,
-            WebSocket: this.struct.WebSocket,
-        });
+        var signalingClient = new SignalingClient_1.SignalingClient({ url: url });
         this.signalingClients.push(signalingClient);
         this.signalingClientsByUrl[url] = signalingClient;
         signalingClient.offerSnowdrop.addHandle(function (offer) {

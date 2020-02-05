@@ -8,6 +8,7 @@ var simple_peer_1 = __importDefault(require("simple-peer"));
 var pollenium_snowdrop_1 = require("pollenium-snowdrop");
 var pollenium_primrose_1 = require("pollenium-primrose");
 var delay_1 = __importDefault(require("delay"));
+var wrtc_1 = __importDefault(require("wrtc"));
 var genSimplePeerConfig_1 = require("../utils/genSimplePeerConfig");
 var genTime_1 = require("../utils/genTime");
 var Missive_1 = require("./Missive");
@@ -55,8 +56,8 @@ var Friendship = (function () {
         this.simplePeer = new simple_peer_1.default({
             initiator: struct.initiator,
             trickle: false,
-            wrtc: struct.wrtc,
             config: genSimplePeerConfig_1.genSimplePeerConfig(),
+            wrtc: wrtc_1.default,
         });
         this.simplePeer.on('iceStateChange', function (iceConnectionState) {
             if (iceConnectionState === 'disconnected') {

@@ -1,5 +1,4 @@
 import { Uu } from 'pollenium-uvaursi'
-import WebSocket from 'isomorphic-ws'
 import { describe, it } from 'mocha'
 import { SignalingClient } from '../../classes/SignalingClient'
 import { signalingServerUrls } from './lib/params'
@@ -17,7 +16,6 @@ describe('signaling', () => {
     for (let i = 0; i < 3; i++) {
       const signalingClient = new SignalingClient({
         url: signalingServerUrls[0],
-        WebSocket,
       })
       signalingClients.push(signalingClient)
     }

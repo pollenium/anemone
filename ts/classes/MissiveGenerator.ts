@@ -3,6 +3,7 @@ import {
 } from 'pollenium-buttercup'
 import { Uu, Uish } from 'pollenium-uvaursi'
 import { Primrose } from 'pollenium-primrose'
+import Worker from 'tiny-worker'
 import { Missive, MISSIVE_COVER } from './Missive'
 import { genTimestamp } from '../utils/genTimestamp'
 import { genTime } from '../utils/genTime'
@@ -23,20 +24,20 @@ export class MissiveGenerator {
   applicationData: Uu;
   difficulty: Uint8;
   ttl: number;
-  hashcashWorker: Worker;
+  hashcashWorkerUrl: string;
 
   constructor(struct: {
     applicationId: Uish;
     applicationData: Uish;
     difficulty: Uintable;
     ttl: number;
-    hashcashWorker: Worker;
+    hashcashWorkerUrl: string;
   }) {
     this.applicationId = Uu.wrap(struct.applicationId)
     this.applicationData = Uu.wrap(struct.applicationData)
     this.difficulty = Uint8.fromUintable(struct.difficulty)
     this.ttl = struct.ttl
-    this.hashcashWorker = struct.hashcashWorker
+    this.hashcashWorkerUrl = struct.hashcashWorkerUrl
   }
 
   private getNoncelessPrehash(): Uu {
@@ -55,9 +56,10 @@ export class MissiveGenerator {
 
   private fetchNonce(): Promise<Bytes32> {
     const noncePrimrose = new Primrose<Bytes32>()
+    const hashcashWorker = new Worker(this.hashcashWorkerUrl, [], { esm: true })
 
     const onMessage = async (event: { data: HashcashWorkerResolution; }): Promise<void> => {
-      this.hashcashWorker.terminate()
+      hashcashWorker.terminate()
       const hashcashResolution = event.data
       switch (hashcashResolution.key) {
         case HASHCASH_WORKER_RESOLUTION_KEY.SUCCESS:
@@ -74,8 +76,8 @@ export class MissiveGenerator {
       }
     }
 
-    this.hashcashWorker.addEventListener('message', onMessage)
-    this.hashcashWorker.onerror = (error: ErrorEvent): void => {
+    hashcashWorker.addEventListener('message', onMessage)
+    hashcashWorker.onerror = (error: ErrorEvent): void => {
       noncePrimrose.reject(error)
     }
 
@@ -87,7 +89,7 @@ export class MissiveGenerator {
       applicationDataLength: this.applicationData.u.length,
       timeoutAt,
     }
-    this.hashcashWorker.postMessage(request)
+    hashcashWorker.postMessage(request)
 
     return noncePrimrose.promise
   }

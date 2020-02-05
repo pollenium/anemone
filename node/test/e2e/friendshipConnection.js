@@ -35,12 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var tiny_worker_1 = __importDefault(require("tiny-worker"));
-var wrtc_1 = __importDefault(require("wrtc"));
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var pollenium_primrose_1 = require("pollenium-primrose");
 var mocha_1 = require("mocha");
@@ -52,7 +47,6 @@ var Friendship_1 = require("../../classes/Friendship");
 var MissiveGenerator_1 = require("../../classes/MissiveGenerator");
 var clientId = pollenium_uvaursi_1.Uu.genRandom(32);
 var struct = {
-    wrtc: wrtc_1.default,
     missiveLatencyTolerance: 30,
     sdpTimeout: 30,
     connectionTimeout: 10,
@@ -125,9 +119,7 @@ mocha_1.describe('friendshipConnection', function () {
                         applicationData: pollenium_uvaursi_1.Uu.genRandom(32),
                         ttl: 30,
                         difficulty: 4,
-                        hashcashWorker: new tiny_worker_1.default(__dirname + "/../../../node/hashcash-worker.js", [], {
-                            esm: true,
-                        }),
+                        hashcashWorkerUrl: __dirname + "/../../../node/hashcash-worker.js",
                     });
                     return [4, missiveGenerator.fetchMissive()];
                 case 1:

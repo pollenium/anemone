@@ -1,9 +1,6 @@
-import WebSocket from 'isomorphic-ws'
 import { Uu } from 'pollenium-uvaursi'
 import delay from 'delay'
 import fs from 'fs'
-import wrtc from 'wrtc'
-import TinyWorker from 'tiny-worker'
 import { describe, it } from 'mocha'
 import { Client } from '../../classes/Client'
 import { MissiveGenerator } from '../../classes/MissiveGenerator'
@@ -43,8 +40,6 @@ describe('clients', () => {
         maxFriendshipsCount,
         bootstrapOffersTimeout: i % 2 ? 0 : 5,
         maxOfferAttemptsCount: 2,
-        wrtc,
-        WebSocket,
         missiveLatencyTolerance: 10,
         sdpTimeout: 10,
         connectionTimeout: 10,
@@ -84,9 +79,7 @@ describe('clients', () => {
         applicationData: Uu.genRandom(32),
         difficulty: 1,
         ttl: 30,
-        hashcashWorker: new TinyWorker(`${__dirname}/../../../node/hashcash-worker.js`, [], {
-          esm: true,
-        }),
+        hashcashWorkerUrl: `${__dirname}/../../../node/hashcash-worker.js`,
       })
 
       const missive = await missiveGenerator.fetchMissive()

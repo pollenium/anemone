@@ -35,12 +35,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
-var tiny_worker_1 = __importDefault(require("tiny-worker"));
 var mocha_1 = require("mocha");
 var chai_1 = require("chai");
 var MissiveGenerator_1 = require("../../classes/MissiveGenerator");
@@ -57,9 +53,7 @@ mocha_1.describe('MissiveGenerator', function () {
                         applicationData: applicationData,
                         difficulty: difficulty,
                         ttl: 60,
-                        hashcashWorker: new tiny_worker_1.default(__dirname + "/../../../node/hashcash-worker.js", [], {
-                            esm: true,
-                        }),
+                        hashcashWorkerUrl: __dirname + "/../../../node/hashcash-worker.js",
                     });
                 });
                 mocha_1.it('should fetch missive', function () { return __awaiter(void 0, void 0, void 0, function () {

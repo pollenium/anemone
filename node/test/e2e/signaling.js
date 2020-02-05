@@ -35,12 +35,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
-var isomorphic_ws_1 = __importDefault(require("isomorphic-ws"));
 var mocha_1 = require("mocha");
 var SignalingClient_1 = require("../../classes/SignalingClient");
 var params_1 = require("./lib/params");
@@ -56,7 +52,6 @@ mocha_1.describe('signaling', function () {
         for (var i = 0; i < 3; i++) {
             var signalingClient = new SignalingClient_1.SignalingClient({
                 url: params_1.signalingServerUrls[0],
-                WebSocket: isomorphic_ws_1.default,
             });
             signalingClients.push(signalingClient);
         }

@@ -5,7 +5,6 @@ import delay from 'delay'
 import WebSocket from 'ws'
 
 export interface WisteriaStruct {
-  WebSocket: typeof WebSocket;
   url: string;
 }
 
@@ -25,7 +24,7 @@ export class Wisteria {
   }
 
   private async connect(): Promise<void> {
-    const webSocket = new this.struct.WebSocket(this.struct.url)
+    const webSocket = new WebSocket(this.struct.url)
     webSocket.binaryType = 'arraybuffer'
     webSocket.onopen = (): void => {
       this.isOpen = true

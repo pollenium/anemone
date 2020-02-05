@@ -43,6 +43,7 @@ var pollenium_snowdrop_1 = require("pollenium-snowdrop");
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var pollenium_primrose_1 = require("pollenium-primrose");
 var delay_1 = __importDefault(require("delay"));
+var ws_1 = __importDefault(require("ws"));
 var Wisteria = (function () {
     function Wisteria(struct) {
         this.struct = struct;
@@ -57,7 +58,7 @@ var Wisteria = (function () {
             var webSocket;
             var _this = this;
             return __generator(this, function (_a) {
-                webSocket = new this.struct.WebSocket(this.struct.url);
+                webSocket = new ws_1.default(this.struct.url);
                 webSocket.binaryType = 'arraybuffer';
                 webSocket.onopen = function () {
                     _this.isOpen = true;

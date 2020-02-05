@@ -1,6 +1,5 @@
 import { Uu } from 'pollenium-uvaursi'
 import { Snowdrop } from 'pollenium-snowdrop'
-import WebSocket from 'ws'
 import { Offer } from './Signal/Offer'
 import { Flush } from './Signal/Flush'
 import { Answer } from './Signal/Answer'
@@ -18,7 +17,7 @@ export class SignalingClient {
   readonly answerSnowdrop: Snowdrop<Answer> = new Snowdrop<Answer>();
   readonly flushOfferSnowdrop: Snowdrop<Flush> = new Snowdrop<Flush>();
 
-  constructor(struct: { url: string; WebSocket: typeof WebSocket; }) {
+  constructor(struct: { url: string; }) {
     this.wisteria = new Wisteria(struct)
     this.wisteria.dataSnowdrop.addHandle((data) => {
       const signalingMessageHenpojo = signalingMessageTemplate.decode(data.u)

@@ -35,10 +35,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_buttercup_1 = require("pollenium-buttercup");
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var pollenium_primrose_1 = require("pollenium-primrose");
+var tiny_worker_1 = __importDefault(require("tiny-worker"));
 var Missive_1 = require("./Missive");
 var genTimestamp_1 = require("../utils/genTimestamp");
 var genTime_1 = require("../utils/genTime");
@@ -52,7 +56,7 @@ var MissiveGenerator = (function () {
         this.applicationData = pollenium_uvaursi_1.Uu.wrap(struct.applicationData);
         this.difficulty = pollenium_buttercup_1.Uint8.fromUintable(struct.difficulty);
         this.ttl = struct.ttl;
-        this.hashcashWorker = struct.hashcashWorker;
+        this.hashcashWorkerUrl = struct.hashcashWorkerUrl;
     }
     MissiveGenerator.prototype.getNoncelessPrehash = function () {
         var encoding = missive_1.missiveTemplate.encode({
@@ -70,10 +74,11 @@ var MissiveGenerator = (function () {
     MissiveGenerator.prototype.fetchNonce = function () {
         var _this = this;
         var noncePrimrose = new pollenium_primrose_1.Primrose();
+        var hashcashWorker = new tiny_worker_1.default(this.hashcashWorkerUrl, [], { esm: true });
         var onMessage = function (event) { return __awaiter(_this, void 0, void 0, function () {
             var hashcashResolution;
             return __generator(this, function (_a) {
-                this.hashcashWorker.terminate();
+                hashcashWorker.terminate();
                 hashcashResolution = event.data;
                 switch (hashcashResolution.key) {
                     case HashcashWorker_1.HASHCASH_WORKER_RESOLUTION_KEY.SUCCESS:
@@ -91,8 +96,8 @@ var MissiveGenerator = (function () {
                 return [2];
             });
         }); };
-        this.hashcashWorker.addEventListener('message', onMessage);
-        this.hashcashWorker.onerror = function (error) {
+        hashcashWorker.addEventListener('message', onMessage);
+        hashcashWorker.onerror = function (error) {
             noncePrimrose.reject(error);
         };
         var timeoutAt = genTime_1.genTime() + this.ttl;
@@ -103,7 +108,7 @@ var MissiveGenerator = (function () {
             applicationDataLength: this.applicationData.u.length,
             timeoutAt: timeoutAt,
         };
-        this.hashcashWorker.postMessage(request);
+        hashcashWorker.postMessage(request);
         return noncePrimrose.promise;
     };
     MissiveGenerator.prototype.fetchMissive = function () {

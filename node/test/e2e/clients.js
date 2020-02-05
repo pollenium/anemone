@@ -39,12 +39,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var isomorphic_ws_1 = __importDefault(require("isomorphic-ws"));
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var delay_1 = __importDefault(require("delay"));
 var fs_1 = __importDefault(require("fs"));
-var wrtc_1 = __importDefault(require("wrtc"));
-var tiny_worker_1 = __importDefault(require("tiny-worker"));
 var mocha_1 = require("mocha");
 var Client_1 = require("../../classes/Client");
 var MissiveGenerator_1 = require("../../classes/MissiveGenerator");
@@ -79,8 +76,6 @@ mocha_1.describe('clients', function () {
                         maxFriendshipsCount: params_1.maxFriendshipsCount,
                         bootstrapOffersTimeout: i % 2 ? 0 : 5,
                         maxOfferAttemptsCount: 2,
-                        wrtc: wrtc_1.default,
-                        WebSocket: isomorphic_ws_1.default,
                         missiveLatencyTolerance: 10,
                         sdpTimeout: 10,
                         connectionTimeout: 10,
@@ -134,9 +129,7 @@ mocha_1.describe('clients', function () {
                         applicationData: pollenium_uvaursi_1.Uu.genRandom(32),
                         difficulty: 1,
                         ttl: 30,
-                        hashcashWorker: new tiny_worker_1.default(__dirname + "/../../../node/hashcash-worker.js", [], {
-                            esm: true,
-                        }),
+                        hashcashWorkerUrl: __dirname + "/../../../node/hashcash-worker.js",
                     });
                     return [4, missiveGenerator.fetchMissive()];
                 case 2:

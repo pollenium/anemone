@@ -1,5 +1,4 @@
 import { Snowdrop } from 'pollenium-snowdrop'
-import WebSocket from 'ws'
 import { Offer } from './Signal/Offer'
 import { Answer } from './Signal/Answer'
 import { Flush } from './Signal/Flush'
@@ -7,7 +6,6 @@ import { SignalingClient } from './SignalingClient'
 import { OffersDb, AnswersDb, FlushesDb } from './SignalsDb'
 
 export interface SignalingClientsManagerStruct {
-  WebSocket: typeof WebSocket;
   signalingServerUrls: string[];
 }
 
@@ -31,10 +29,7 @@ export class SignalingClientsManager {
   }
 
   private create(url: string): void {
-    const signalingClient = new SignalingClient({
-      url,
-      WebSocket: this.struct.WebSocket,
-    })
+    const signalingClient = new SignalingClient({ url })
     this.signalingClients.push(signalingClient)
     this.signalingClientsByUrl[url] = signalingClient
     signalingClient.offerSnowdrop.addHandle((offer) => {

@@ -37,7 +37,6 @@ export enum DESTROY_REASON {
 
 export interface FriendshipStruct {
   initiator: boolean;
-  wrtc?: wrtc;
   missiveLatencyTolerance: number;
   sdpTimeout: number;
   connectionTimeout: number;
@@ -68,8 +67,8 @@ export abstract class Friendship {
     this.simplePeer = new SimplePeer({
       initiator: struct.initiator,
       trickle: false,
-      wrtc: struct.wrtc,
       config: genSimplePeerConfig(),
+      wrtc,
     })
 
     this.simplePeer.on('iceStateChange', (iceConnectionState) => {
