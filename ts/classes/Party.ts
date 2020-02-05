@@ -237,6 +237,7 @@ export class Party {
 
   getSummary(): PartySummary {
     return new PartySummary({
+      peerClientIds: this.getPeerClientIds(),
       introvertsGroupSummary: this.introvertsGroupSummary,
       extrovertsGroupSummary: this.extrovertsGroupSummary,
       offerInfos: this.offerInfos,

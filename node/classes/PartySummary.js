@@ -47,6 +47,9 @@ var PartySummary = (function (_super) {
             createdAgo: genTime_1.genTime() - this.createdAt,
             friendshipsCount: this.getFriendshipsCount(),
             connectedFriendshipsCount: this.getFriendshipsCountByStatus(Friendship_1.FRIENDSHIP_STATUS.CONNECTED),
+            peerClientIds: this.struct.peerClientIds.map(function (peerClientId) {
+                return peerClientId.uu.toHex();
+            }),
             offersCount: this.struct.offerInfos.length,
             offerInfos: this.struct.offerInfos.map(function (offerInfo) {
                 return {

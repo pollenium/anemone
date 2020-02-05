@@ -70,9 +70,7 @@ test('await fullyConnected', async () => {
           const connectedFriendshipsCount = summary.struct.partySummary.getFriendshipsCountByStatus(
             FRIENDSHIP_STATUS.CONNECTED,
           )
-          console.log('connectedFriendshipsCount', connectedFriendshipsCount)
           if (connectedFriendshipsCount === maxFriendshipsCount) {
-            console.log('resolve')
             client.summarySnowdrop.removeHandleById(handleId)
             resolve()
           }

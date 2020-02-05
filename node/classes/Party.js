@@ -208,6 +208,7 @@ var Party = (function () {
     };
     Party.prototype.getSummary = function () {
         return new PartySummary_1.PartySummary({
+            peerClientIds: this.getPeerClientIds(),
             introvertsGroupSummary: this.introvertsGroupSummary,
             extrovertsGroupSummary: this.extrovertsGroupSummary,
             offerInfos: this.offerInfos,

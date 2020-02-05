@@ -1,4 +1,5 @@
 import { $enum } from 'ts-enum-util'
+import { Bytes32 } from 'pollenium-buttercup'
 import { Summary, Jsonable } from './Summary'
 import { genTime } from '../utils/genTime'
 import { FRIENDSHIP_STATUS } from './Friendship'
@@ -11,6 +12,7 @@ export class PartySummary extends Summary {
 
   constructor(
     readonly struct: {
+      peerClientIds: Array<Bytes32>;
       extrovertsGroupSummary: FriendshipsGroupSummary;
       introvertsGroupSummary: FriendshipsGroupSummary;
       offerInfos: Array<OfferInfo>;
@@ -47,6 +49,9 @@ export class PartySummary extends Summary {
       createdAgo: genTime() - this.createdAt,
       friendshipsCount: this.getFriendshipsCount(),
       connectedFriendshipsCount: this.getFriendshipsCountByStatus(FRIENDSHIP_STATUS.CONNECTED),
+      peerClientIds: this.struct.peerClientIds.map((peerClientId) => {
+        return peerClientId.uu.toHex()
+      }),
       offersCount: this.struct.offerInfos.length,
       offerInfos: this.struct.offerInfos.map((offerInfo) => {
         return {

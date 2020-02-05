@@ -104,9 +104,7 @@ test('await fullyConnected', function () { return __awaiter(void 0, void 0, void
                     return new Promise(function (resolve) {
                         var handleId = client.summarySnowdrop.addHandle(function (summary) {
                             var connectedFriendshipsCount = summary.struct.partySummary.getFriendshipsCountByStatus(Friendship_1.FRIENDSHIP_STATUS.CONNECTED);
-                            console.log('connectedFriendshipsCount', connectedFriendshipsCount);
                             if (connectedFriendshipsCount === params_1.maxFriendshipsCount) {
-                                console.log('resolve');
                                 client.summarySnowdrop.removeHandleById(handleId);
                                 resolve();
                             }
