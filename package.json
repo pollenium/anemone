@@ -13,7 +13,7 @@
     "tsc": "tsc",
     "build": "grunt build",
     "start": "grunt --stack",
-    "jest": "jest",
+    "mocha": "ts-mocha --ansi --bail --exit",
     "start-signaling-servers": "forever --watch ./node/test/e2e/bin/start-signaling-servers.js"
   },
   "author": "",
@@ -29,12 +29,11 @@
     "delay": "^4.3.0",
     "freeice": "^2.2.2",
     "hendricks": "^4.0.0",
-    "jest": "^25.1.0",
     "localStorage": "^1.0.4",
     "pollenium-buttercup": "^18.4.0",
     "pollenium-primrose": "^3.0.0",
     "pollenium-shasta": "^1.0.1",
-    "pollenium-snowdrop": "^1.2.0",
+    "pollenium-snowdrop": "^2.0.1",
     "pollenium-uvaursi": "^8.5.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
@@ -79,6 +78,7 @@
     "prompt-promise": "^1.0.3",
     "tiny-worker": "^2.3.0",
     "ts-jest": "^25.0.0",
+    "ts-mocha": "^6.0.0",
     "typescript": "^3.6.2"
   }
 }

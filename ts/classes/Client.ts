@@ -74,14 +74,13 @@ export class Client {
 
     this.party.partialFlushSnowdrop.addHandle((partialFlush) => {
       const flush = new Flush({
-        clientId: this.id,
         ...partialFlush,
       })
       this.signalingClientsManager.handleFlush(flush)
     })
 
     this.party.summarySnowdrop.addHandle(() => {
-      this.summarySnowdrop.emitIfHandle(this.getSummary())
+      this.summarySnowdrop.emit(this.getSummary())
     })
   }
 

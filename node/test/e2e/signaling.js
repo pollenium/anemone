@@ -41,6 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var isomorphic_ws_1 = __importDefault(require("isomorphic-ws"));
+var mocha_1 = require("mocha");
 var SignalingClient_1 = require("../../classes/SignalingClient");
 var params_1 = require("./lib/params");
 var Offer_1 = require("../../classes/Signal/Offer");
@@ -50,46 +51,48 @@ var offer = new Offer_1.Offer({
     clientId: pollenium_uvaursi_1.Uu.genRandom(32),
     sdpb: pollenium_uvaursi_1.Uu.genRandom(64),
 });
-test('signalingClient', function () {
-    for (var i = 0; i < 3; i++) {
-        var signalingClient = new SignalingClient_1.SignalingClient({
-            url: params_1.signalingServerUrls[0],
-            WebSocket: isomorphic_ws_1.default,
-        });
-        signalingClients.push(signalingClient);
-    }
-});
-test('send/receive offers', function () { return __awaiter(void 0, void 0, void 0, function () {
-    var receivedPromise1, receivedPromise2;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                receivedPromise1 = new Promise(function (resolve, reject) {
-                    signalingClients[1].offerSnowdrop.addHandle(function (_offer) {
-                        if (offer.id.uu.getIsEqual(_offer.id.uu)) {
-                            resolve();
-                        }
-                        else {
-                            reject(new Error('Ids dont match'));
-                        }
-                    });
-                });
-                receivedPromise2 = new Promise(function (resolve, reject) {
-                    signalingClients[2].offerSnowdrop.addHandle(function (_offer) {
-                        if (offer.id.uu.getIsEqual(_offer.id.uu)) {
-                            resolve();
-                        }
-                        else {
-                            reject(new Error('Ids dont match'));
-                        }
-                    });
-                });
-                signalingClients[0].sendOffer(offer);
-                return [4, Promise.all([receivedPromise1, receivedPromise2])];
-            case 1:
-                _a.sent();
-                return [2];
+mocha_1.describe('signaling', function () {
+    mocha_1.it('should create signalingClient', function () {
+        for (var i = 0; i < 3; i++) {
+            var signalingClient = new SignalingClient_1.SignalingClient({
+                url: params_1.signalingServerUrls[0],
+                WebSocket: isomorphic_ws_1.default,
+            });
+            signalingClients.push(signalingClient);
         }
     });
-}); }, 10000);
-//# sourceMappingURL=signaling.test.js.map
+    mocha_1.it('should send/receive offers', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var receivedPromise1, receivedPromise2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    receivedPromise1 = new Promise(function (resolve, reject) {
+                        signalingClients[1].offerSnowdrop.addHandle(function (_offer) {
+                            if (offer.id.uu.getIsEqual(_offer.id.uu)) {
+                                resolve();
+                            }
+                            else {
+                                reject(new Error('Ids dont match'));
+                            }
+                        });
+                    });
+                    receivedPromise2 = new Promise(function (resolve, reject) {
+                        signalingClients[2].offerSnowdrop.addHandle(function (_offer) {
+                            if (offer.id.uu.getIsEqual(_offer.id.uu)) {
+                                resolve();
+                            }
+                            else {
+                                reject(new Error('Ids dont match'));
+                            }
+                        });
+                    });
+                    signalingClients[0].sendOffer(offer);
+                    return [4, Promise.all([receivedPromise1, receivedPromise2])];
+                case 1:
+                    _a.sent();
+                    return [2];
+            }
+        });
+    }); }, 10000);
+});
+//# sourceMappingURL=signaling.js.map

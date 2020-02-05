@@ -1,18 +1,17 @@
 module.exports =  {
-  parser:  '@typescript-eslint/parser',  // Specifies the ESLint parser
+  parser:  '@typescript-eslint/parser',
   plugins: ["@typescript-eslint"],
   extends:  [
     'airbnb',
-    'plugin:@typescript-eslint/recommended',  // Uses the recommended rules from the @typescript-eslint/eslint-plugin
-    // 'prettier',
-    // 'plugin:prettier/recommended',  // Enables eslint-plugin-prettier and displays prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
+    'plugin:@typescript-eslint/recommended'
   ],
   parserOptions:  {
-    ecmaVersion:  2018,  // Allows for the parsing of modern ECMAScript features
-    sourceType:  'module',  // Allows for the use of imports
+    ecmaVersion:  2018,
+    sourceType:  'module',
     project: "./tsconfig.json"
   },
   rules: {
+    'max-len': 0,
     'no-underscore-dangle': 0,
     "no-useless-constructor": 0,
     "no-case-declarations": 0,
@@ -23,7 +22,7 @@ module.exports =  {
     "lines-between-class-members": 0,
     "padded-blocks": [2, { "blocks": "never", "switches": "never", "classes": "always" }],
     "object-curly-spacing": [2, "always"],
-    "import/no-extraneous-dependencies": [2, { devDependencies: ["**/*.test.ts"] }],
+    "import/no-extraneous-dependencies": [2, { devDependencies: ["ts/test/**/**.ts"] }],
     "import/prefer-default-export": 0,
     "@typescript-eslint/no-inferrable-types": [2, { ignoreParameters: true, ignoreProperties: true }],
     "@typescript-eslint/no-unused-vars": 2,
@@ -38,12 +37,6 @@ module.exports =  {
       }
     ]
   },
-  // "env": {
-  //   "browser": true,
-  // },
-  // "globals": {
-  //
-  // }
   settings: {
     'import/resolver': {
       node: {

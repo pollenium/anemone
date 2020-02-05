@@ -57,11 +57,11 @@ var Client = (function () {
             _this.signalingClientsManager.handleAnswer(answer);
         });
         this.party.partialFlushSnowdrop.addHandle(function (partialFlush) {
-            var flush = new Flush_1.Flush(__assign({ clientId: _this.id }, partialFlush));
+            var flush = new Flush_1.Flush(__assign({}, partialFlush));
             _this.signalingClientsManager.handleFlush(flush);
         });
         this.party.summarySnowdrop.addHandle(function () {
-            _this.summarySnowdrop.emitIfHandle(_this.getSummary());
+            _this.summarySnowdrop.emit(_this.getSummary());
         });
     }
     Client.prototype.getSummary = function () {

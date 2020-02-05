@@ -209,8 +209,8 @@ var Party = (function () {
     Party.prototype.getSummary = function () {
         return new PartySummary_1.PartySummary({
             peerClientIds: this.getPeerClientIds(),
-            introvertsGroupSummary: this.introvertsGroupSummary,
-            extrovertsGroupSummary: this.extrovertsGroupSummary,
+            introvertsGroupSummary: this.introvertsGroup.getSummary(),
+            extrovertsGroupSummary: this.extrovertsGroup.getSummary(),
             offerInfos: this.offerInfos,
         });
     };

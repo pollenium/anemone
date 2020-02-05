@@ -200,7 +200,7 @@ export abstract class Friendship {
       throw new Error('Can only increase status')
     }
     this.status = status
-    this.statusSnowdrop.emitIfHandle(status)
+    this.statusSnowdrop.emit(status)
   }
 
   protected getIsDestroyed(): boolean {

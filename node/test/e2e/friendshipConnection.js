@@ -43,6 +43,7 @@ var tiny_worker_1 = __importDefault(require("tiny-worker"));
 var wrtc_1 = __importDefault(require("wrtc"));
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var pollenium_primrose_1 = require("pollenium-primrose");
+var mocha_1 = require("mocha");
 var Introvert_1 = require("../../classes/Friendship/Introvert");
 var Extrovert_1 = require("../../classes/Friendship/Extrovert");
 var Offer_1 = require("../../classes/Signal/Offer");
@@ -61,12 +62,11 @@ var introvert;
 var offer;
 var answer;
 var missive;
-describe('friendshipConnection', function () {
-    test('create extrovert', function () {
+mocha_1.describe('friendshipConnection', function () {
+    mocha_1.it(' should create extrovert', function () {
         extrovert = new Extrovert_1.Extrovert(struct);
-        extrovert.destroyedSnowdrop.addHandle(function () { });
-    }, 20000);
-    test('create offer', function () { return __awaiter(void 0, void 0, void 0, function () {
+    });
+    mocha_1.it('should create offer', function () { return __awaiter(void 0, void 0, void 0, function () {
         var _a, _b;
         return __generator(this, function (_c) {
             switch (_c.label) {
@@ -83,12 +83,11 @@ describe('friendshipConnection', function () {
                     return [2];
             }
         });
-    }); });
-    test('create introvert', function () {
+    }); }).timeout(10 * 1000);
+    mocha_1.it('should create introvert', function () {
         introvert = new Introvert_1.Introvert(offer, struct);
-        introvert.destroyedSnowdrop.addHandle(function () { });
     });
-    test('create answer', function () { return __awaiter(void 0, void 0, void 0, function () {
+    mocha_1.it('should create answer', function () { return __awaiter(void 0, void 0, void 0, function () {
         var _a, _b;
         return __generator(this, function (_c) {
             switch (_c.label) {
@@ -105,8 +104,8 @@ describe('friendshipConnection', function () {
                     return [2];
             }
         });
-    }); });
-    test('connect', function () {
+    }); }).timeout(10 * 1000);
+    mocha_1.it('should connect', function () {
         var connectionPrimrose = new pollenium_primrose_1.Primrose();
         extrovert.statusSnowdrop.addHandle(function (signal) {
             if (signal === Friendship_1.FRIENDSHIP_STATUS.CONNECTED) {
@@ -115,8 +114,8 @@ describe('friendshipConnection', function () {
         });
         extrovert.handleAnswer(answer);
         return connectionPrimrose.promise;
-    }, 30000);
-    test('create missive', function () { return __awaiter(void 0, void 0, void 0, function () {
+    }).timeout(30 * 1000);
+    mocha_1.it('should create missive', function () { return __awaiter(void 0, void 0, void 0, function () {
         var missiveGenerator;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -136,8 +135,8 @@ describe('friendshipConnection', function () {
                     return [2];
             }
         });
-    }); }, 20000);
-    test('send missive', function () { return __awaiter(void 0, void 0, void 0, function () {
+    }); }).timeout(20 * 1000);
+    mocha_1.it('should send and receive missive', function () { return __awaiter(void 0, void 0, void 0, function () {
         var testPrimrose;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -158,10 +157,10 @@ describe('friendshipConnection', function () {
                     return [2];
             }
         });
-    }); }, 30000);
-    test('destroy', function () {
+    }); }).timeout(30 * 1000);
+    mocha_1.it('should destroy', function () {
         introvert.destroy(Friendship_1.DESTROY_REASON.GOODBYE);
         extrovert.destroy(Friendship_1.DESTROY_REASON.GOODBYE);
     });
 });
-//# sourceMappingURL=friendshipConnection.test.js.map
+//# sourceMappingURL=friendshipConnection.js.map

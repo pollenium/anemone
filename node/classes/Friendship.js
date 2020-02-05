@@ -173,7 +173,7 @@ var Friendship = (function () {
             throw new Error('Can only increase status');
         }
         this.status = status;
-        this.statusSnowdrop.emitIfHandle(status);
+        this.statusSnowdrop.emit(status);
     };
     Friendship.prototype.getIsDestroyed = function () {
         return this.isDestroyed;

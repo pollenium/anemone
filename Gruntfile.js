@@ -23,14 +23,13 @@ module.exports = (grunt) => {
         'package.json',
         'tsconfig.json',
         '.eslintrc.js',
-        '.prettierrc.js'
+        '.prettierrc.js',
         'ts/**/*.ts',
-        'test/**/*',
-        '!test/e2e/browser/index.js'
       ],
-      tasks: ['build'],
+      tasks: ['build', 'test'],
       options: {
-        spawn: false
+        spawn: true,
+        interrupt: true
       }
     },
     clean: ['node', 'browser'],
@@ -55,9 +54,9 @@ module.exports = (grunt) => {
       }
     },
     run: {
-      'npm-test-node': {
+      'mocha': {
         cmd: 'npm',
-        args: ['run', 'test-node']
+        args: ['run', 'mocha', './ts/test/index.ts']
       },
       browserify: {
         cmd: 'npm',
@@ -87,8 +86,8 @@ module.exports = (grunt) => {
 
   grunt.registerTask('build', [
     // 'test-cleanup',
-    // 'clean',
-    // 'mkdir',
+    'clean',
+    'mkdir',
     'ts',
     'eslint',
     // 'run:browserify',
@@ -97,10 +96,11 @@ module.exports = (grunt) => {
   ])
 
   grunt.registerTask('test', [
-    'test-cleanup',
-    'servers',
-    'run:npm-test-node',
-    'test-browser',
+    'run:mocha'
+    // 'test-cleanup',
+    // 'servers',
+    // 'run:npm-test-node',
+    // 'test-browser',
   ])
 
   grunt.registerTask('test-browser', 'open browser test in chrome', async function() {

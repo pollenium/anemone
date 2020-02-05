@@ -41,35 +41,46 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var tiny_worker_1 = __importDefault(require("tiny-worker"));
-var MissiveGenerator_1 = require("./MissiveGenerator");
-var _loop_1 = function (i) {
-    var difficulty = i * 1;
-    test("generate missive with difficulty " + difficulty, function () { return __awaiter(void 0, void 0, void 0, function () {
-        var applicationId, applicationData, missiveGenerator, missive;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    applicationId = pollenium_uvaursi_1.Uu.genRandom(32);
-                    applicationData = pollenium_uvaursi_1.Uu.genRandom(64);
+var mocha_1 = require("mocha");
+var chai_1 = require("chai");
+var MissiveGenerator_1 = require("../../classes/MissiveGenerator");
+mocha_1.describe('MissiveGenerator', function () {
+    var _loop_1 = function (difficulty) {
+        mocha_1.describe("difficulty " + difficulty, function () { return __awaiter(void 0, void 0, void 0, function () {
+            var missiveGenerator, missive;
+            return __generator(this, function (_a) {
+                mocha_1.it('should create missiveGenerator', function () {
+                    var applicationId = pollenium_uvaursi_1.Uu.genRandom(32);
+                    var applicationData = pollenium_uvaursi_1.Uu.genRandom(64);
                     missiveGenerator = new MissiveGenerator_1.MissiveGenerator({
                         applicationId: applicationId,
                         applicationData: applicationData,
                         difficulty: difficulty,
                         ttl: 60,
-                        hashcashWorker: new tiny_worker_1.default(__dirname + "/../../node/hashcash-worker.js", [], {
+                        hashcashWorker: new tiny_worker_1.default(__dirname + "/../../../node/hashcash-worker.js", [], {
                             esm: true,
                         }),
                     });
-                    return [4, missiveGenerator.fetchMissive()];
-                case 1:
-                    missive = _a.sent();
-                    expect(missive.getIsValid()).toBe(true);
-                    return [2];
-            }
-        });
-    }); }, 60000);
-};
-for (var i = 0; i <= 13; i++) {
-    _loop_1(i);
-}
-//# sourceMappingURL=MissiveGenerator.test.js.map
+                });
+                mocha_1.it('should fetch missive', function () { return __awaiter(void 0, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4, missiveGenerator.fetchMissive()];
+                            case 1:
+                                missive = _a.sent();
+                                return [2];
+                        }
+                    });
+                }); }).timeout(60 * 1000);
+                mocha_1.it('missive should be valid', function () {
+                    chai_1.expect(missive.getIsValid()).to.equal(true);
+                });
+                return [2];
+            });
+        }); });
+    };
+    for (var difficulty = 0; difficulty <= 13; difficulty++) {
+        _loop_1(difficulty);
+    }
+});
+//# sourceMappingURL=MissiveGenerator.js.map

@@ -6,7 +6,7 @@ import {
   ExtrovertsGroup,
   ExtrovertsGroupStruct,
 } from './FriendshipsGroup/ExtrovertsGroup'
-import { Offer } from './Signal/Offer'
+import { Offer, PartialOffer } from './Signal/Offer'
 import { Answer, PartialAnswer } from './Signal/Answer'
 import { Flush, PartialFlush } from './Signal/Flush'
 import { FriendshipsGroupStruct } from './FriendshipsGroup'
@@ -43,7 +43,7 @@ export class Party {
 
   readonly summarySnowdrop: Snowdrop<PartySummary> = new Snowdrop<PartySummary>();
   readonly partialAnswerSnowdrop: Snowdrop<PartialAnswer> = new Snowdrop<PartialAnswer>();
-  readonly partialOfferSnowdrop: Snowdrop<PartialAnswer> = new Snowdrop<PartialAnswer>();
+  readonly partialOfferSnowdrop: Snowdrop<PartialOffer> = new Snowdrop<PartialOffer>();
   readonly partialFlushSnowdrop: Snowdrop<PartialFlush> = new Snowdrop<PartialFlush>();
 
   constructor(private struct: PartyStruct) {
@@ -238,8 +238,8 @@ export class Party {
   getSummary(): PartySummary {
     return new PartySummary({
       peerClientIds: this.getPeerClientIds(),
-      introvertsGroupSummary: this.introvertsGroupSummary,
-      extrovertsGroupSummary: this.extrovertsGroupSummary,
+      introvertsGroupSummary: this.introvertsGroup.getSummary(),
+      extrovertsGroupSummary: this.extrovertsGroup.getSummary(),
       offerInfos: this.offerInfos,
     })
   }
