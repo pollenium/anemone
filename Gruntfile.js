@@ -74,6 +74,10 @@ module.exports = (grunt) => {
         cmd: 'node',
         args: ['./node/bin/create-main']
       },
+      'typedoc': {
+        cmd: 'npm',
+        args: ['run', 'typedoc']
+      },
     }
   })
 
@@ -97,6 +101,7 @@ module.exports = (grunt) => {
     'run:browserify',
     'run:browserify-hashcash-worker',
     'run:browserify-test',
+    'run:typedoc'
   ])
 
   grunt.registerTask('test', [

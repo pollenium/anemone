@@ -1,0 +1,319 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>pollenium-anemone</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">pollenium-anemone</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1>pollenium-anemone</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#anemone" id="anemone" style="color: inherit; text-decoration: none;">
+					<h1>anemone</h1>
+				</a>
+				<p>Anemone is collection of Pollenium client and signaling servers for typescript, node, and the browser.</p>
+				<blockquote>
+					<p> ⚠️ anemone is still in beta</p>
+				</blockquote>
+				<a href="#importing" id="importing" style="color: inherit; text-decoration: none;">
+					<h2>Importing</h2>
+				</a>
+				<pre><code><span class="hljs-keyword">import</span> { Client, MissiveGenerator } <span class="hljs-keyword">from</span> <span class="hljs-string">'pollenium-anemone'</span>
+<span class="hljs-keyword">import</span> { Uu } <span class="hljs-keyword">from</span> <span class="hljs-string">'pollenium-uvaursi'</span> <span class="hljs-comment">/* Uint8Array utilities *?</span></code></pre>
+				<a href="#node" id="node" style="color: inherit; text-decoration: none;">
+					<h3>Node</h3>
+				</a>
+				<pre><code><span class="hljs-variable">const</span> <span class="hljs-variable">pollenium</span> = <span class="hljs-function"><span class="hljs-title">require</span>(<span class="hljs-string">'pollenium-anemone'</span>)</span></code></pre>
+				<a href="#browser" id="browser" style="color: inherit; text-decoration: none;">
+					<h3>Browser</h3>
+				</a>
+				<pre><code><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/javascript"</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"./pollenium-anemone/browser/"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre>
+				<a href="#creating-a-client" id="creating-a-client" style="color: inherit; text-decoration: none;">
+					<h2>Creating a Client</h2>
+				</a>
+				<pre><code>const<span class="hljs-built_in"> client </span>= new pollenium.Client({
+  signalingServerUrls: [
+    <span class="hljs-string">'ws://unsecured-signaling-server.com'</span>,
+    <span class="hljs-string">'wss://secured-signaling-server'</span>
+  ],
+  maxFriendshipsCount: 6,
+  wrtc: isBrowser ? wrtc : require(<span class="hljs-string">'wrtc'</span>)
+  bootstrapOffersTimeout: 10,
+  maxOfferAttemptsCount: 2,
+  wrtc: any,
+  missiveLatencyTolerance: 30
+})</code></pre>
+				<a href="#missives" id="missives" style="color: inherit; text-decoration: none;">
+					<h2>Missives</h2>
+				</a>
+				<p>Missives require hashcash proof of work. This hashcash proof of work is generated asynchronously in a seperate thread so that it does not block the main execution.</p>
+				<pre><code><span class="hljs-keyword">const</span> applicationId = Uu.fromUtf8(<span class="hljs-string">'your-app-id'</span>).padLeft(<span class="hljs-number">32</span>)
+<span class="hljs-keyword">const</span> applicationData = Uu.genRandom(<span class="hljs-number">32</span>)
+<span class="hljs-keyword">const</span> difficulty = <span class="hljs-number">6</span>
+
+<span class="hljs-keyword">const</span> Worker = isWorker ? Worker : <span class="hljs-built_in">require</span>(<span class="hljs-string">'tiny-worker'</span>)
+<span class="hljs-keyword">const</span> missiveGenerator = <span class="hljs-keyword">new</span> pollenium.MissiveGenerator({
+  applicationId,
+  applicationData,
+  difficulty,
+  <span class="hljs-attr">hashcashWorker</span>: <span class="hljs-keyword">new</span> Worker(<span class="hljs-string">'pollenium-anemone/node/hashcash-worker.js'</span>, [], { <span class="hljs-attr">esm</span>: <span class="hljs-literal">true</span> })
+)
+
+<span class="hljs-keyword">const</span> missive = <span class="hljs-keyword">await</span> missiveGenerator.fetchMissive()
+
+client.broadcastMissive(missve)</code></pre><p>Listen for incoming missives on the client&#39;s missive snowdrop</p>
+				<pre><code>client.missiveSnowdrop.add<span class="hljs-constructor">Handle((<span class="hljs-params">missive</span>)</span> =&gt; {
+  <span class="hljs-keyword">do</span><span class="hljs-constructor">Thing(<span class="hljs-params">missive</span>.<span class="hljs-params">applicationData</span>)</span>
+})</code></pre>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_client_.html">&quot;classes/<wbr>Client&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_clientdefaultoptions_.html">&quot;classes/<wbr>Client<wbr>Default<wbr>Options&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_clientsummary_.html">&quot;classes/<wbr>Client<wbr>Summary&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_friendship_.html">&quot;classes/<wbr>Friendship&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_friendship_extrovert_.html">&quot;classes/<wbr>Friendship/<wbr>Extrovert&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_friendship_introvert_.html">&quot;classes/<wbr>Friendship/<wbr>Introvert&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_friendshipsgroup_.html">&quot;classes/<wbr>Friendships<wbr>Group&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_friendshipsgroup_extrovertsgroup_.html">&quot;classes/<wbr>Friendships<wbr>Group/<wbr>Extroverts<wbr>Group&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_friendshipsgroup_introvertsgroup_.html">&quot;classes/<wbr>Friendships<wbr>Group/<wbr>Introverts<wbr>Group&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_friendshipsgroupsummary_.html">&quot;classes/<wbr>Friendships<wbr>Group<wbr>Summary&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_menteeship_.html">&quot;classes/<wbr>Menteeship&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_missive_.html">&quot;classes/<wbr>Missive&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_missivegenerator_.html">&quot;classes/<wbr>Missive<wbr>Generator&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_missivesdb_.html">&quot;classes/<wbr>Missives<wbr>Db&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_offerinfo_.html">&quot;classes/<wbr>Offer<wbr>Info&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_party_.html">&quot;classes/<wbr>Party&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_partysummary_.html">&quot;classes/<wbr>Party<wbr>Summary&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_signal_.html">&quot;classes/<wbr>Signal&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_signal_answer_.html">&quot;classes/<wbr>Signal/<wbr>Answer&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_signal_flush_.html">&quot;classes/<wbr>Signal/<wbr>Flush&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_signal_offer_.html">&quot;classes/<wbr>Signal/<wbr>Offer&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_signalingclient_.html">&quot;classes/<wbr>Signaling<wbr>Client&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_signalingclientsmanager_.html">&quot;classes/<wbr>Signaling<wbr>Clients<wbr>Manager&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_signalingserver_.html">&quot;classes/<wbr>Signaling<wbr>Server&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_signalsdb_.html">&quot;classes/<wbr>Signals<wbr>Db&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_summary_.html">&quot;classes/<wbr>Summary&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_classes_wisteria_.html">&quot;classes/<wbr>Wisteria&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_hashcash_worker_.html">&quot;hashcash-<wbr>worker&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_interfaces_hashcashworker_.html">&quot;interfaces/<wbr>Hashcash<wbr>Worker&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_templates_missive_.html">&quot;templates/missive&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_templates_signalingmessage_.html">&quot;templates/signaling<wbr>Message&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_genera_.html">&quot;utils/gen<wbr>Era&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_genmaxhash_.html">&quot;utils/gen<wbr>Max<wbr>Hash&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_gennonce_.html">&quot;utils/gen<wbr>Nonce&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_gensimplepeerconfig_.html">&quot;utils/gen<wbr>Simple<wbr>Peer<wbr>Config&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_gentime_.html">&quot;utils/gen<wbr>Time&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_gentimestamp_.html">&quot;utils/gen<wbr>Timestamp&quot;</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>

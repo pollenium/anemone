@@ -11,7 +11,8 @@
     "tsc": "tsc",
     "build": "grunt build",
     "start": "grunt --stack",
-    "mocha": "ts-mocha --ansi --bail --exit"
+    "mocha": "ts-mocha --ansi --bail --exit",
+    "typedoc": "typedoc --out docs ts/src"
   },
   "browserify-shim": {
     "ws": "global:WebSocket",
@@ -70,6 +71,7 @@
     "prompt-promise": "^1.0.3",
     "recursive-readdir": "^2.2.2",
     "ts-mocha": "^6.0.0",
+    "typedoc": "^0.16.9",
     "typescript": "^3.6.2"
   }
 }
