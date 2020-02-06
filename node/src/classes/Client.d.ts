@@ -9,8 +9,8 @@ import { Missive } from './Missive';
 import { ClientSummary } from './ClientSummary';
 export interface ClientStruct extends Omit<PartyStruct, 'clientId'>, SignalingClientsManagerStruct {
 }
+export declare const clientDefaults: Omit<ClientStruct, 'signalingServerUrls'>;
 export declare class Client {
-    private struct;
     readonly id: Bytes32;
     readonly friendshipStatusSnowdrop: Snowdrop<Friendship>;
     readonly extrovertSnowdrop: Snowdrop<Extrovert>;

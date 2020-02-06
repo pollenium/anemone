@@ -2,8 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var Client_1 = require("./src/classes/Client");
 exports.Client = Client_1.Client;
-var ClientDefaultOptions_1 = require("./src/classes/ClientDefaultOptions");
-exports.ClientDefaultStruct = ClientDefaultOptions_1.ClientDefaultStruct;
+exports.clientDefaults = Client_1.clientDefaults;
 var ClientSummary_1 = require("./src/classes/ClientSummary");
 exports.ClientSummary = ClientSummary_1.ClientSummary;
 var Friendship_1 = require("./src/classes/Friendship");

@@ -22,10 +22,18 @@ var Offer_1 = require("./Signal/Offer");
 var Answer_1 = require("./Signal/Answer");
 var Flush_1 = require("./Signal/Flush");
 var ClientSummary_1 = require("./ClientSummary");
+exports.clientDefaults = {
+    missiveLatencyTolerance: 30,
+    sdpTimeout: 10,
+    bootstrapOffersTimeout: 10,
+    offerReuploadInterval: 5,
+    maxFriendshipsCount: 6,
+    maxOfferLastReceivedAgo: 30,
+    maxOfferAttemptsCount: 5,
+};
 var Client = (function () {
     function Client(struct) {
         var _this = this;
-        this.struct = struct;
         this.id = new pollenium_buttercup_1.Bytes32(pollenium_uvaursi_1.Uu.genRandom(32));
         this.friendshipStatusSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.extrovertSnowdrop = new pollenium_snowdrop_1.Snowdrop();

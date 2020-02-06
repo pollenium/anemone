@@ -32,7 +32,7 @@ module.exports = (grunt) => {
         interrupt: true
       }
     },
-    clean: ['node', 'browser'],
+    clean: ['node', 'browser', './clients.test.json'],
     mkdir: {
       node: {
         options: {
@@ -144,6 +144,8 @@ module.exports = (grunt) => {
         signalingServer.destroy()
       })
     }
+
+    await delay(5000)
 
 
     const params = require('./node/test/e2e/lib/params')

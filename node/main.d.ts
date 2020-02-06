@@ -1,5 +1,4 @@
-export { Client, ClientStruct, } from './src/classes/Client';
-export { ClientDefaultStruct, } from './src/classes/ClientDefaultOptions';
+export { Client, clientDefaults, ClientStruct, } from './src/classes/Client';
 export { ClientSummary, } from './src/classes/ClientSummary';
 export { FriendshipStruct, Friendship, FRIENDSHIP_STATUS, BAN_REASON, DESTROY_REASON, } from './src/classes/Friendship';
 export { Extrovert, } from './src/classes/Friendship/Extrovert';

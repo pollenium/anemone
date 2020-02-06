@@ -21,6 +21,16 @@ export interface ClientStruct
   extends Omit<PartyStruct, 'clientId'>,
     SignalingClientsManagerStruct {}
 
+export const clientDefaults: Omit<ClientStruct, 'signalingServerUrls'> = {
+  missiveLatencyTolerance: 30,
+  sdpTimeout: 10,
+  bootstrapOffersTimeout: 10,
+  offerReuploadInterval: 5,
+  maxFriendshipsCount: 6,
+  maxOfferLastReceivedAgo: 30,
+  maxOfferAttemptsCount: 5,
+}
+
 export class Client {
 
   readonly id: Bytes32 = new Bytes32(Uu.genRandom(32));
@@ -37,7 +47,7 @@ export class Client {
 
   private maxFriendshipsConnectedPrimrose: Primrose<void> = new Primrose<void>();
 
-  constructor(private struct: ClientStruct) {
+  constructor(struct: ClientStruct) {
     this.party = new Party({ clientId: this.id, ...struct })
     this.signalingClientsManager = new SignalingClientsManager({ ...struct })
 

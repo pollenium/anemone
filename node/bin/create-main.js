@@ -59,7 +59,7 @@ function run() {
                     });
                     newMainTs = tsParts.join('\n\n') + "\n";
                     newMd5 = md5_1.default(newMainTs);
-                    oldMainTs = fs_1.default.readFileSync(mainTsPath, 'utf8');
+                    oldMainTs = fs_1.default.existsSync(mainTsPath) ? fs_1.default.readFileSync(mainTsPath, 'utf8') : '';
                     oldMd5s = getWords({ needle: '/* create-main-md5: ', haystack: oldMainTs });
                     oldMd5 = oldMd5s.length === 0 ? null : oldMd5s[0];
                     if (newMd5 !== oldMd5) {

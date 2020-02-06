@@ -23,10 +23,18 @@ var Offer_1 = require("./Signal/Offer");
 var Answer_1 = require("./Signal/Answer");
 var Flush_1 = require("./Signal/Flush");
 var ClientSummary_1 = require("./ClientSummary");
+exports.clientDefaults = {
+    missiveLatencyTolerance: 30,
+    sdpTimeout: 10,
+    bootstrapOffersTimeout: 10,
+    offerReuploadInterval: 5,
+    maxFriendshipsCount: 6,
+    maxOfferLastReceivedAgo: 30,
+    maxOfferAttemptsCount: 5,
+};
 var Client = (function () {
     function Client(struct) {
         var _this = this;
-        this.struct = struct;
         this.id = new pollenium_buttercup_1.Bytes32(pollenium_uvaursi_1.Uu.genRandom(32));
         this.friendshipStatusSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.extrovertSnowdrop = new pollenium_snowdrop_1.Snowdrop();
@@ -2105,6 +2113,17 @@ exports.genTimestamp = genTimestamp;
 },{"./genTime":32,"pollenium-buttercup":132}],34:[function(require,module,exports){
 (function (global,__dirname){
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -2168,7 +2187,7 @@ var intervalId = setInterval(function () {
     });
     var clientSummariesJson = JSON.stringify(clientSummaryJsonables, null, 2);
     if (fs_1.default.writeFileSync) {
-        fs_1.default.writeFileSync(__dirname + "/../../src/../clients.test.json", clientSummariesJson);
+        fs_1.default.writeFileSync(__dirname + "/../../../clients.test.json", clientSummariesJson);
     }
     else {
         console.log(clientSummariesJson);
@@ -2184,17 +2203,8 @@ mocha_1.describe('clients', function () {
                     _a.label = 1;
                 case 1:
                     if (!(i < params_1.clientsCount)) return [3, 4];
-                    client = new Client_1.Client({
-                        signalingServerUrls: params_1.signalingServerUrls,
-                        maxFriendshipsCount: params_1.maxFriendshipsCount,
-                        bootstrapOffersTimeout: i % 2 ? 0 : 5,
-                        maxOfferAttemptsCount: 2,
-                        missiveLatencyTolerance: 10,
-                        sdpTimeout: isBrowser_1.isBrowser ? 30 : 10,
-                        connectionTimeout: isBrowser_1.isBrowser ? 30 : 10,
-                        maxOfferLastReceivedAgo: 10,
-                        offerReuploadInterval: 5,
-                    });
+                    client = new Client_1.Client(__assign(__assign({}, Client_1.clientDefaults), { signalingServerUrls: params_1.signalingServerUrls,
+                        maxFriendshipsCount: params_1.maxFriendshipsCount, bootstrapOffersTimeout: i % 2 ? 0 : 5, sdpTimeout: isBrowser_1.isBrowser ? 30 : 10, connectionTimeout: isBrowser_1.isBrowser ? 30 : 10 }));
                     clients.push(client);
                     return [4, delay_1.default(1000)];
                 case 2:

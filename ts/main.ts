@@ -1,13 +1,10 @@
-/* create-main-md5: 3e643d13fe107bc46f7d982da2635734 */
+/* create-main-md5: a3a5da468ea51bab7c8a080239e7b727 */
 
 export {
   Client,
+  clientDefaults,
   ClientStruct,
 } from './src/classes/Client'
-
-export {
-  ClientDefaultStruct,
-} from './src/classes/ClientDefaultOptions'
 
 export {
   ClientSummary,

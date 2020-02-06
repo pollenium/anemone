@@ -2,7 +2,7 @@ import { Uu } from 'pollenium-uvaursi'
 import delay from 'delay'
 import fs from 'fs'
 import { describe, it } from 'mocha'
-import { Client } from '../../src/classes/Client'
+import { Client, clientDefaults } from '../../src/classes/Client'
 import { MissiveGenerator } from '../../src/classes/MissiveGenerator'
 import { Missive } from '../../src/classes/Missive'
 import {
@@ -32,7 +32,7 @@ const intervalId = setInterval(() => {
   })
   const clientSummariesJson = JSON.stringify(clientSummaryJsonables, null, 2)
   if (fs.writeFileSync) {
-    fs.writeFileSync(`${__dirname}/../../src/../clients.test.json`, clientSummariesJson)
+    fs.writeFileSync(`${__dirname}/../../../clients.test.json`, clientSummariesJson)
   } else {
     console.log(clientSummariesJson)
   }
@@ -42,15 +42,12 @@ describe('clients', () => {
   it('should create clients', async () => {
     for (let i = 0; i < clientsCount; i++) {
       const client = new Client({
+        ...clientDefaults,
         signalingServerUrls,
         maxFriendshipsCount,
         bootstrapOffersTimeout: i % 2 ? 0 : 5,
-        maxOfferAttemptsCount: 2,
-        missiveLatencyTolerance: 10,
         sdpTimeout: isBrowser ? 30 : 10,
         connectionTimeout: isBrowser ? 30 : 10,
-        maxOfferLastReceivedAgo: 10,
-        offerReuploadInterval: 5,
       })
       clients.push(client)
 

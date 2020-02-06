@@ -17,7 +17,7 @@ async function run(): Promise<void> {
   })
   const newMainTs = `${tsParts.join('\n\n')}\n`
   const newMd5 = md5(newMainTs)
-  const oldMainTs = fs.readFileSync(mainTsPath, 'utf8')
+  const oldMainTs = fs.existsSync(mainTsPath) ? fs.readFileSync(mainTsPath, 'utf8') : ''
   const oldMd5s = getWords({ needle: '/* create-main-md5: ', haystack: oldMainTs })
   const oldMd5 = oldMd5s.length === 0 ? null : oldMd5s[0]
   if (newMd5 !== oldMd5) {

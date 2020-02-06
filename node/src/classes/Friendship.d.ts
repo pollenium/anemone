@@ -28,9 +28,9 @@ export declare enum DESTROY_REASON {
 }
 export interface FriendshipStruct {
     initiator: boolean;
-    missiveLatencyTolerance: number;
-    sdpTimeout: number;
-    connectionTimeout: number;
+    missiveLatencyTolerance?: number;
+    sdpTimeout?: number;
+    connectionTimeout?: number;
 }
 export declare abstract class Friendship {
     private struct;
