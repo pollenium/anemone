@@ -7,7 +7,8 @@
     "types": ["node"],
     "typeRoots": [
       "./node_modules/@types"
-    ]
+    ],
+    "declaration": true
   },
   "include": [
     "ts/**/*.ts"
