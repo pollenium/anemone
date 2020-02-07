@@ -65,9 +65,14 @@ var clients = [];
 var intervalId = setInterval(function () {
     var clientSummaryJsonables = clients.map(function (client) {
         var clientSummary = client.getSummary();
-        if (clientSummary.struct.partySummary.getFriendshipsCountByStatus(Friendship_1.FRIENDSHIP_STATUS.CONNECTED)
+        var connectedFriendshipsCount = clientSummary.struct.partySummary.getFriendshipsCountByStatus(Friendship_1.FRIENDSHIP_STATUS.CONNECTED);
+        if (connectedFriendshipsCount
             === params_1.maxFriendshipsCount) {
             return 'Fully Connected';
+        }
+        if (connectedFriendshipsCount
+            >= params_1.minConnectedFriendshipsCount) {
+            return 'Mostly Connected';
         }
         return clientSummary.toJsonable();
     });
@@ -110,7 +115,7 @@ mocha_1.describe('clients', function () {
                         return new Promise(function (resolve) {
                             var handleId = client.summarySnowdrop.addHandle(function (summary) {
                                 var connectedFriendshipsCount = summary.struct.partySummary.getFriendshipsCountByStatus(Friendship_1.FRIENDSHIP_STATUS.CONNECTED);
-                                if (connectedFriendshipsCount === params_1.maxFriendshipsCount) {
+                                if (connectedFriendshipsCount >= params_1.minConnectedFriendshipsCount) {
                                     client.summarySnowdrop.removeHandleById(handleId);
                                     resolve();
                                 }
@@ -153,32 +158,37 @@ mocha_1.describe('clients', function () {
         });
     }); });
     mocha_1.it("should send " + params_1.missivesCount + " missives which should be receieved " + params_1.expectedMissiveReceivesCount + " times", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var receivesCount;
+        var receivesCount, promise;
         return __generator(this, function (_a) {
             receivesCount = 0;
-            clients.forEach(function (client) {
-                client.missiveSnowdrop.addHandle(function () { return __awaiter(void 0, void 0, void 0, function () {
-                    return __generator(this, function (_a) {
-                        switch (_a.label) {
-                            case 0:
-                                receivesCount += 1;
-                                if (!(receivesCount === params_1.expectedMissiveReceivesCount)) return [3, 2];
-                                return [4, delay_1.default(2000)];
-                            case 1:
-                                _a.sent();
-                                if (receivesCount !== params_1.expectedMissiveReceivesCount) {
-                                    throw new Error('Received too many times');
-                                }
-                                _a.label = 2;
-                            case 2: return [2];
-                        }
-                    });
-                }); });
+            promise = new Promise(function (resolve, reject) {
+                clients.forEach(function (client) {
+                    client.missiveSnowdrop.addHandle(function () { return __awaiter(void 0, void 0, void 0, function () {
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    receivesCount += 1;
+                                    if (!(receivesCount === params_1.expectedMissiveReceivesCount)) return [3, 2];
+                                    return [4, delay_1.default(2000)];
+                                case 1:
+                                    _a.sent();
+                                    if (receivesCount !== params_1.expectedMissiveReceivesCount) {
+                                        reject(new Error('Received too many times'));
+                                    }
+                                    else {
+                                        resolve();
+                                    }
+                                    _a.label = 2;
+                                case 2: return [2];
+                            }
+                        });
+                    }); });
+                });
             });
             missives.forEach(function (missive) {
                 clients[0].broadcastMissive(missive);
             });
-            return [2];
+            return [2, promise];
         });
     }); }).timeout(10 * 1000);
 });

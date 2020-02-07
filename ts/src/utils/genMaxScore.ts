@@ -3,7 +3,7 @@ import { Uintable, Uint256, Uint8 } from 'pollenium-buttercup'
 const two256 = Uint256.fromNumber(2)
 const twofiftyfive256 = Uint256.fromNumber(255)
 
-export function genMaxHash(struct: {
+export function genMaxScore(struct: {
   difficulty: Uintable;
   cover: Uintable;
   applicationDataLength: Uintable;
@@ -14,6 +14,6 @@ export function genMaxHash(struct: {
 
   const pow = twofiftyfive256.opSub(difficulty)
   const divisor = cover.opAdd(applicationDataLength)
-  const maxHash = two256.opPow(pow).opDiv(divisor)
-  return maxHash
+  const MaxScore = two256.opPow(pow).opDiv(divisor)
+  return MaxScore
 }

@@ -24,7 +24,7 @@ var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var pollenium_buttercup_1 = require("pollenium-buttercup");
 var shasta = __importStar(require("pollenium-shasta"));
 var genTime_1 = require("./genTime");
-var genMaxHash_1 = require("./genMaxHash");
+var genMaxScore_1 = require("./genMaxScore");
 var TimeoutError = (function (_super) {
     __extends(TimeoutError, _super);
     function TimeoutError() {
@@ -34,7 +34,7 @@ var TimeoutError = (function (_super) {
 }(Error));
 exports.TimeoutError = TimeoutError;
 function genNonce(struct) {
-    var maxHash = genMaxHash_1.genMaxHash(struct);
+    var maxScore = genMaxScore_1.genMaxScore(struct);
     while (true) {
         if (genTime_1.genTime() > struct.timeoutAt) {
             throw new TimeoutError();
@@ -42,7 +42,7 @@ function genNonce(struct) {
         var nonce = pollenium_uvaursi_1.Uu.genRandom(32);
         var prehash = pollenium_uvaursi_1.Uu.genConcat([struct.noncelessPrehash, nonce]);
         var hash = new pollenium_buttercup_1.Uint256(shasta.genSha256(prehash));
-        if (hash.compLte(maxHash)) {
+        if (hash.compLte(maxScore)) {
             return new pollenium_buttercup_1.Uint256(nonce);
         }
     }

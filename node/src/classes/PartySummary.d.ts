@@ -1,18 +1,18 @@
-import { Bytes32 } from 'pollenium-buttercup';
 import { Summary, Jsonable } from './Summary';
 import { FRIENDSHIP_STATUS } from './Friendship';
 import { OfferInfo } from './OfferInfo';
 import { FriendshipsGroupSummary } from './FriendshipsGroupSummary';
+import { PeerClientIdAndDistance } from './Party';
 export declare class PartySummary extends Summary {
     readonly struct: {
-        peerClientIds: Array<Bytes32>;
+        peerClientIdAndDistances: Array<PeerClientIdAndDistance>;
         extrovertsGroupSummary: FriendshipsGroupSummary;
         introvertsGroupSummary: FriendshipsGroupSummary;
         offerInfos: Array<OfferInfo>;
     };
     readonly createdAt: number;
     constructor(struct: {
-        peerClientIds: Array<Bytes32>;
+        peerClientIdAndDistances: Array<PeerClientIdAndDistance>;
         extrovertsGroupSummary: FriendshipsGroupSummary;
         introvertsGroupSummary: FriendshipsGroupSummary;
         offerInfos: Array<OfferInfo>;

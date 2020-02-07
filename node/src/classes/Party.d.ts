@@ -1,5 +1,5 @@
 import { Snowdrop } from 'pollenium-snowdrop';
-import { Bytes32 } from 'pollenium-buttercup';
+import { Bytes32, Uint256 } from 'pollenium-buttercup';
 import { ExtrovertsGroupStruct } from './FriendshipsGroup/ExtrovertsGroup';
 import { Offer, PartialOffer } from './Signal/Offer';
 import { Answer, PartialAnswer } from './Signal/Answer';
@@ -7,6 +7,10 @@ import { Flush, PartialFlush } from './Signal/Flush';
 import { FriendshipsGroupStruct } from './FriendshipsGroup';
 import { Missive } from './Missive';
 import { PartySummary } from './PartySummary';
+export interface PeerClientIdAndDistance {
+    peerClientId: Bytes32;
+    distance: Uint256;
+}
 export interface PartyStruct extends FriendshipsGroupStruct, ExtrovertsGroupStruct {
     clientId: Bytes32;
     bootstrapOffersTimeout: number;
@@ -27,11 +31,13 @@ export declare class Party {
     readonly partialAnswerSnowdrop: Snowdrop<PartialAnswer>;
     readonly partialOfferSnowdrop: Snowdrop<PartialOffer>;
     readonly partialFlushSnowdrop: Snowdrop<PartialFlush>;
+    readonly missiveSnowdrop: Snowdrop<Missive>;
     constructor(struct: PartyStruct);
     private clearOldOffers;
     private getBestConnectableOfferInfo;
     private maybeCreateFriendship;
     private maybeDestroyFriendship;
+    private getPeerClientIdsAndDistances;
     private getWorstPeerClientIdAndDistance;
     private destroyFriendshipWithPeerClientId;
     private emitPartySummary;

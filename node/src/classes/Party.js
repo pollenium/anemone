@@ -43,6 +43,7 @@ var Party = (function () {
         this.partialAnswerSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.partialOfferSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.partialFlushSnowdrop = new pollenium_snowdrop_1.Snowdrop();
+        this.missiveSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.introvertsGroup = new IntrovertsGroup_1.IntrovertsGroup(__assign({}, struct));
         this.extrovertsGroup = new ExtrovertsGroup_1.ExtrovertsGroup(__assign({}, struct));
         this.extrovertsGroup.partialOfferSnowdrop.addHandle(function (partialOffer) {
@@ -73,6 +74,12 @@ var Party = (function () {
         });
         this.extrovertsGroup.banSnowdrop.addHandle(function (clientId) {
             _this.banClientId(clientId);
+        });
+        this.introvertsGroup.missiveSnowdrop.addHandle(function (snowdrop) {
+            _this.missiveSnowdrop.emit(snowdrop);
+        });
+        this.extrovertsGroup.missiveSnowdrop.addHandle(function (snowdrop) {
+            _this.missiveSnowdrop.emit(snowdrop);
         });
         delay_1.default(struct.bootstrapOffersTimeout * 1000).then(function () {
             _this.isBootstrapOffersComplete = true;
@@ -166,26 +173,25 @@ var Party = (function () {
             this.destroyFriendshipWithPeerClientId(peerClientId, Friendship_1.DESTROY_REASON.TOO_FAR);
         }
     };
-    Party.prototype.getWorstPeerClientIdAndDistance = function () {
+    Party.prototype.getPeerClientIdsAndDistances = function () {
         var _this = this;
-        var peerClientIds = this.getPeerClientIds();
-        if (peerClientIds.length === 0) {
-            return null;
-        }
-        var peerClientIdAndDistances = peerClientIds
+        return this.getPeerClientIds()
             .map(function (peerClientId) {
             return {
                 peerClientId: peerClientId,
                 distance: new pollenium_buttercup_1.Uint256(peerClientId.uu.genXor(_this.struct.clientId.uu)),
             };
-        })
+        });
+    };
+    Party.prototype.getWorstPeerClientIdAndDistance = function () {
+        var peerClientIdAndDistances = this.getPeerClientIdsAndDistances()
             .sort(function (peerClientIdAndDistanceA, peerClientIdAndDistanceB) {
             var distanceA = peerClientIdAndDistanceA.distance;
             var distanceB = peerClientIdAndDistanceB.distance;
-            if (distanceA.compLt(distanceB)) {
+            if (distanceA.compGt(distanceB)) {
                 return -1;
             }
-            if (distanceA.compGt(distanceB)) {
+            if (distanceA.compLt(distanceB)) {
                 return 1;
             }
             return 0;
@@ -208,7 +214,7 @@ var Party = (function () {
     };
     Party.prototype.getSummary = function () {
         return new PartySummary_1.PartySummary({
-            peerClientIds: this.getPeerClientIds(),
+            peerClientIdAndDistances: this.getPeerClientIdsAndDistances(),
             introvertsGroupSummary: this.introvertsGroup.getSummary(),
             extrovertsGroupSummary: this.extrovertsGroup.getSummary(),
             offerInfos: this.offerInfos,

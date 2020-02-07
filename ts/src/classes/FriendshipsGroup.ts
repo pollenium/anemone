@@ -18,6 +18,7 @@ export class FriendshipsGroup<FriendshipClass extends Friendship> {
   >();
   readonly destroyedSnowdrop: Snowdrop<void> = new Snowdrop<void>();
   readonly banSnowdrop: Snowdrop<Bytes32> = new Snowdrop<Bytes32>();
+  readonly missiveSnowdrop: Snowdrop<Missive> = new Snowdrop<Missive>();
 
   private friendships: Array<FriendshipClass> = [];
 
@@ -36,6 +37,10 @@ export class FriendshipsGroup<FriendshipClass extends Friendship> {
       this.removeFriendship(friendship)
       this.destroyedSnowdrop.emit()
       this.emitSummary()
+    })
+
+    friendship.missiveSnowdrop.addHandle((missive) => {
+      this.missiveSnowdrop.emit(missive)
     })
 
     this.friendships.push(friendship)
@@ -126,10 +131,7 @@ export class FriendshipsGroup<FriendshipClass extends Friendship> {
 
   broadcastMissive(missive: Missive): void {
     this.friendships.forEach((friendship) => {
-      if (friendship.getStatus() !== FRIENDSHIP_STATUS.CONNECTED) {
-        return
-      }
-      friendship.sendMissive(missive)
+      friendship.maybeSendMissive(missive)
     })
   }
 

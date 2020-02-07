@@ -10,9 +10,8 @@ export { FriendshipsGroupSummary, } from './src/classes/FriendshipsGroupSummary'
 export { Menteeship, } from './src/classes/Menteeship';
 export { Missive, MISSIVE_COVER, } from './src/classes/Missive';
 export { MissiveGenerator, } from './src/classes/MissiveGenerator';
-export { MissivesDb, } from './src/classes/MissivesDb';
 export { OfferInfo, } from './src/classes/OfferInfo';
-export { Party, PartyStruct, } from './src/classes/Party';
+export { Party, PeerClientIdAndDistance, PartyStruct, } from './src/classes/Party';
 export { PartySummary, } from './src/classes/PartySummary';
 export { Signal, } from './src/classes/Signal';
 export { Answer, PartialAnswer, } from './src/classes/Signal/Answer';
@@ -28,7 +27,7 @@ export { HashcashWorkerRequest, HashcashWorkerResolution, HASHCASH_WORKER_RESOLU
 export { missiveTemplate, MISSIVE_KEY, } from './src/templates/missive';
 export { signalingMessageTemplate, SIGNALING_MESSAGE_KEY, } from './src/templates/signalingMessage';
 export { genEra, } from './src/utils/genEra';
-export { genMaxHash, } from './src/utils/genMaxHash';
+export { genMaxScore, } from './src/utils/genMaxScore';
 export { TimeoutError, genNonce, } from './src/utils/genNonce';
 export { stunServers, genSimplePeerConfig, } from './src/utils/genSimplePeerConfig';
 export { genTime, } from './src/utils/genTime';

@@ -74,7 +74,7 @@ mocha_1.describe('MissiveGenerator', function () {
             });
         }); });
     };
-    for (var difficulty = 0; difficulty <= 13; difficulty++) {
+    for (var difficulty = 0; difficulty <= 12; difficulty++) {
         _loop_1(difficulty);
     }
 });

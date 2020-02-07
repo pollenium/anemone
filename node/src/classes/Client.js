@@ -17,7 +17,6 @@ var pollenium_snowdrop_1 = require("pollenium-snowdrop");
 var pollenium_primrose_1 = require("pollenium-primrose");
 var SignalingClientsManager_1 = require("./SignalingClientsManager");
 var Party_1 = require("./Party");
-var MissivesDb_1 = require("./MissivesDb");
 var Offer_1 = require("./Signal/Offer");
 var Answer_1 = require("./Signal/Answer");
 var Flush_1 = require("./Signal/Flush");
@@ -40,8 +39,9 @@ var Client = (function () {
         this.introvertSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.missiveSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.summarySnowdrop = new pollenium_snowdrop_1.Snowdrop();
-        this.missivesDb = new MissivesDb_1.MissivesDb();
         this.maxFriendshipsConnectedPrimrose = new pollenium_primrose_1.Primrose();
+        this.isMissiveReceivedByHashHex = {};
+        this.isMissiveBroadcastedByHashHex = {};
         this.party = new Party_1.Party(__assign({ clientId: this.id }, struct));
         this.signalingClientsManager = new SignalingClientsManager_1.SignalingClientsManager(__assign({}, struct));
         this.signalingClientsManager.offerSnowdrop.addHandle(function (offer) {
@@ -71,6 +71,18 @@ var Client = (function () {
         this.party.summarySnowdrop.addHandle(function () {
             _this.summarySnowdrop.emit(_this.getSummary());
         });
+        this.party.missiveSnowdrop.addHandle(function (missive) {
+            var missiveHashHex = missive.getHash().uu.toHex();
+            if (_this.isMissiveReceivedByHashHex[missiveHashHex]) {
+                return;
+            }
+            if (_this.isMissiveBroadcastedByHashHex[missiveHashHex]) {
+                return;
+            }
+            _this.isMissiveReceivedByHashHex[missiveHashHex] = true;
+            _this.missiveSnowdrop.emit(missive);
+            _this.broadcastMissive(missive);
+        });
     }
     Client.prototype.getSummary = function () {
         return new ClientSummary_1.ClientSummary({
@@ -79,6 +91,11 @@ var Client = (function () {
         });
     };
     Client.prototype.broadcastMissive = function (missive) {
+        var missiveHashHex = missive.getHash().uu.toHex();
+        if (this.isMissiveBroadcastedByHashHex[missiveHashHex]) {
+            throw new Error('Trying to broadcast a missive that has already been broadcast');
+        }
+        this.isMissiveBroadcastedByHashHex[missiveHashHex] = true;
         this.party.broadcastMissive(missive);
     };
     return Client;

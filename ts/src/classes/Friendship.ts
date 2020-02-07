@@ -64,6 +64,7 @@ export abstract class Friendship {
   private banReason: BAN_REASON | null = null;
   private destroyReason: DESTROY_REASON | null = null;
 
+
   constructor(private struct: FriendshipStruct) {
     this.simplePeer = new SimplePeer({
       initiator: struct.initiator,
@@ -100,18 +101,24 @@ export abstract class Friendship {
       } catch (error) {
         this.banAndDestroy(BAN_REASON.MISSIVE_NONDECODABLE)
       }
-      if (this.getIsMissiveReceived(missive)) {
+      const missiveHashHex = missive.getHash().uu.toHex()
+      if (this.isMissiveReceivedByHashHex[missiveHashHex]) {
         this.banAndDestroy(BAN_REASON.MISSIVE_DUPLICATE)
+        return
       }
+      this.isMissiveReceivedByHashHex[missiveHashHex] = true
       if (!missive.getIsValid()) {
         this.banAndDestroy(BAN_REASON.MISSIVE_INVALID)
+        return
       }
       const time = genTime()
       if (missive.timestamp.toNumber() > time) {
         this.banAndDestroy(BAN_REASON.MISSIVE_TIMETRAVEL)
+        return
       }
       if (missive.timestamp.toNumber() < time - struct.missiveLatencyTolerance) {
         this.banAndDestroy(BAN_REASON.MISSIVE_OLD)
+        return
       }
       this.missiveSnowdrop.emit(missive)
     })
@@ -155,7 +162,10 @@ export abstract class Friendship {
     return true
   }
 
-  sendMissive(missive: Missive): void {
+  maybeSendMissive(missive: Missive): void {
+    if (this.status !== FRIENDSHIP_STATUS.CONNECTED) {
+      return
+    }
     this.send(missive.getEncoding())
   }
 
@@ -212,16 +222,6 @@ export abstract class Friendship {
       type: struct.type,
       sdp: struct.sdpb.toUtf8(),
     })
-  }
-
-  private getIsMissiveReceived(missive: Missive): boolean {
-    const missiveHashHex = missive.getHash().uu.toHex()
-    return !!this.isMissiveReceivedByHashHex[missiveHashHex]
-  }
-
-  private markIsMissiveReceived(missive: Missive): void {
-    const missiveHashHex = missive.getHash().uu.toHex()
-    this.isMissiveReceivedByHashHex[missiveHashHex] = true
   }
 
   private banAndDestroy(reason: BAN_REASON): void {

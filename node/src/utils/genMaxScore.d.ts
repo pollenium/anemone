@@ -1,5 +1,5 @@
 import { Uintable, Uint256 } from 'pollenium-buttercup';
-export declare function genMaxHash(struct: {
+export declare function genMaxScore(struct: {
     difficulty: Uintable;
     cover: Uintable;
     applicationDataLength: Uintable;

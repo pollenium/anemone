@@ -89,18 +89,24 @@ var Friendship = (function () {
             catch (error) {
                 _this.banAndDestroy(BAN_REASON.MISSIVE_NONDECODABLE);
             }
-            if (_this.getIsMissiveReceived(missive)) {
+            var missiveHashHex = missive.getHash().uu.toHex();
+            if (_this.isMissiveReceivedByHashHex[missiveHashHex]) {
                 _this.banAndDestroy(BAN_REASON.MISSIVE_DUPLICATE);
+                return;
             }
+            _this.isMissiveReceivedByHashHex[missiveHashHex] = true;
             if (!missive.getIsValid()) {
                 _this.banAndDestroy(BAN_REASON.MISSIVE_INVALID);
+                return;
             }
             var time = genTime_1.genTime();
             if (missive.timestamp.toNumber() > time) {
                 _this.banAndDestroy(BAN_REASON.MISSIVE_TIMETRAVEL);
+                return;
             }
             if (missive.timestamp.toNumber() < time - struct.missiveLatencyTolerance) {
                 _this.banAndDestroy(BAN_REASON.MISSIVE_OLD);
+                return;
             }
             _this.missiveSnowdrop.emit(missive);
         });
@@ -136,7 +142,10 @@ var Friendship = (function () {
         }
         return true;
     };
-    Friendship.prototype.sendMissive = function (missive) {
+    Friendship.prototype.maybeSendMissive = function (missive) {
+        if (this.status !== FRIENDSHIP_STATUS.CONNECTED) {
+            return;
+        }
         this.send(missive.getEncoding());
     };
     Friendship.prototype.send = function (bytes) {
@@ -185,14 +194,6 @@ var Friendship = (function () {
             type: struct.type,
             sdp: struct.sdpb.toUtf8(),
         });
-    };
-    Friendship.prototype.getIsMissiveReceived = function (missive) {
-        var missiveHashHex = missive.getHash().uu.toHex();
-        return !!this.isMissiveReceivedByHashHex[missiveHashHex];
-    };
-    Friendship.prototype.markIsMissiveReceived = function (missive) {
-        var missiveHashHex = missive.getHash().uu.toHex();
-        this.isMissiveReceivedByHashHex[missiveHashHex] = true;
     };
     Friendship.prototype.banAndDestroy = function (reason) {
         this.banReason = reason;

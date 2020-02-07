@@ -10,6 +10,7 @@ export declare class FriendshipsGroup<FriendshipClass extends Friendship> {
     readonly summarySnowdrop: Snowdrop<FriendshipsGroupSummary>;
     readonly destroyedSnowdrop: Snowdrop<void>;
     readonly banSnowdrop: Snowdrop<Bytes32>;
+    readonly missiveSnowdrop: Snowdrop<Missive>;
     private friendships;
     constructor(struct: FriendshipsGroupStruct);
     protected addFriendship(friendship: FriendshipClass): void;

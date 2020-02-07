@@ -9,6 +9,7 @@ var FriendshipsGroup = (function () {
         this.summarySnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.destroyedSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.banSnowdrop = new pollenium_snowdrop_1.Snowdrop();
+        this.missiveSnowdrop = new pollenium_snowdrop_1.Snowdrop();
         this.friendships = [];
     }
     FriendshipsGroup.prototype.addFriendship = function (friendship) {
@@ -23,6 +24,9 @@ var FriendshipsGroup = (function () {
             _this.removeFriendship(friendship);
             _this.destroyedSnowdrop.emit();
             _this.emitSummary();
+        });
+        friendship.missiveSnowdrop.addHandle(function (missive) {
+            _this.missiveSnowdrop.emit(missive);
         });
         this.friendships.push(friendship);
         this.emitSummary();
@@ -99,10 +103,7 @@ var FriendshipsGroup = (function () {
     };
     FriendshipsGroup.prototype.broadcastMissive = function (missive) {
         this.friendships.forEach(function (friendship) {
-            if (friendship.getStatus() !== Friendship_1.FRIENDSHIP_STATUS.CONNECTED) {
-                return;
-            }
-            friendship.sendMissive(missive);
+            friendship.maybeSendMissive(missive);
         });
     };
     return FriendshipsGroup;

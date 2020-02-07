@@ -6,7 +6,7 @@ import { Missive } from '../../src/classes/Missive'
 import { hashcashWorkerUrl } from '../lib/hashcashWorkerUrl'
 
 describe('MissiveGenerator', () => {
-  for (let difficulty = 0; difficulty <= 13; difficulty++) {
+  for (let difficulty = 0; difficulty <= 12; difficulty++) {
     describe(`difficulty ${difficulty}`, async () => {
       let missiveGenerator: MissiveGenerator
       let missive: Missive

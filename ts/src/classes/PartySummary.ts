@@ -1,10 +1,10 @@
 import { $enum } from 'ts-enum-util'
-import { Bytes32 } from 'pollenium-buttercup'
 import { Summary, Jsonable } from './Summary'
 import { genTime } from '../utils/genTime'
 import { FRIENDSHIP_STATUS } from './Friendship'
 import { OfferInfo } from './OfferInfo'
 import { FriendshipsGroupSummary } from './FriendshipsGroupSummary'
+import { PeerClientIdAndDistance } from './Party'
 
 export class PartySummary extends Summary {
 
@@ -12,7 +12,7 @@ export class PartySummary extends Summary {
 
   constructor(
     readonly struct: {
-      peerClientIds: Array<Bytes32>;
+      peerClientIdAndDistances: Array<PeerClientIdAndDistance>;
       extrovertsGroupSummary: FriendshipsGroupSummary;
       introvertsGroupSummary: FriendshipsGroupSummary;
       offerInfos: Array<OfferInfo>;
@@ -49,8 +49,13 @@ export class PartySummary extends Summary {
       createdAgo: genTime() - this.createdAt,
       friendshipsCount: this.getFriendshipsCount(),
       connectedFriendshipsCount: this.getFriendshipsCountByStatus(FRIENDSHIP_STATUS.CONNECTED),
-      peerClientIds: this.struct.peerClientIds.map((peerClientId) => {
-        return peerClientId.uu.toHex()
+      peerClientIdAndDistancess: this.struct.peerClientIdAndDistances.map((peerClientIdAndDistance) => {
+        const { peerClientId, distance } = peerClientIdAndDistance
+        return {
+          peerClientId: peerClientId.uu.toHex(),
+          distance: distance.toNumberString(10),
+          distanceExp: distance.toNumberString(10).length,
+        }
       }),
       offersCount: this.struct.offerInfos.length,
       offerInfos: this.struct.offerInfos.map((offerInfo) => {
@@ -61,6 +66,7 @@ export class PartySummary extends Summary {
           firstReceivedAgo: offerInfo.getFirstReceivedAgo(),
           lastReceivedAgo: offerInfo.getLastReceivedAgo(),
           distance: offerInfo.getDistance().uu.toHex(),
+          distanceExp: offerInfo.getDistance().toNumberString(10).length,
         }
       }),
       friendshipsCountsByStatus: this.getFriendshipsCountsByStatus(),

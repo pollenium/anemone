@@ -16,6 +16,11 @@ import { Missive } from './Missive'
 import { OfferInfo } from './OfferInfo'
 import { PartySummary } from './PartySummary'
 
+export interface PeerClientIdAndDistance {
+  peerClientId: Bytes32;
+  distance: Uint256;
+}
+
 export interface PartyStruct extends FriendshipsGroupStruct, ExtrovertsGroupStruct {
   clientId: Bytes32;
   bootstrapOffersTimeout: number;
@@ -45,6 +50,7 @@ export class Party {
   readonly partialAnswerSnowdrop: Snowdrop<PartialAnswer> = new Snowdrop<PartialAnswer>();
   readonly partialOfferSnowdrop: Snowdrop<PartialOffer> = new Snowdrop<PartialOffer>();
   readonly partialFlushSnowdrop: Snowdrop<PartialFlush> = new Snowdrop<PartialFlush>();
+  readonly missiveSnowdrop: Snowdrop<Missive> = new Snowdrop<Missive>();
 
   constructor(private struct: PartyStruct) {
     this.introvertsGroup = new IntrovertsGroup({ ...struct })
@@ -81,6 +87,14 @@ export class Party {
     })
     this.extrovertsGroup.banSnowdrop.addHandle((clientId) => {
       this.banClientId(clientId)
+    })
+
+    this.introvertsGroup.missiveSnowdrop.addHandle((snowdrop) => {
+      this.missiveSnowdrop.emit(snowdrop)
+    })
+
+    this.extrovertsGroup.missiveSnowdrop.addHandle((snowdrop) => {
+      this.missiveSnowdrop.emit(snowdrop)
     })
 
     delay(struct.bootstrapOffersTimeout * 1000).then(() => {
@@ -184,31 +198,28 @@ export class Party {
     }
   }
 
-  private getWorstPeerClientIdAndDistance(): {
-    peerClientId: Bytes32;
-    distance: Uint256;
-  } | null {
-    const peerClientIds = this.getPeerClientIds()
-    if (peerClientIds.length === 0) {
-      return null
-    }
-    const peerClientIdAndDistances: Array<{
-      peerClientId: Bytes32;
-      distance: Uint256;
-    }> = peerClientIds
+  private getPeerClientIdsAndDistances(): Array<PeerClientIdAndDistance> {
+    return this.getPeerClientIds()
       .map((peerClientId) => {
         return {
           peerClientId,
           distance: new Uint256(peerClientId.uu.genXor(this.struct.clientId.uu)),
         }
       })
+  }
+
+  private getWorstPeerClientIdAndDistance(): {
+    peerClientId: Bytes32;
+    distance: Uint256;
+  } | null {
+    const peerClientIdAndDistances = this.getPeerClientIdsAndDistances()
       .sort((peerClientIdAndDistanceA, peerClientIdAndDistanceB) => {
         const distanceA = peerClientIdAndDistanceA.distance
         const distanceB = peerClientIdAndDistanceB.distance
-        if (distanceA.compLt(distanceB)) {
+        if (distanceA.compGt(distanceB)) {
           return -1
         }
-        if (distanceA.compGt(distanceB)) {
+        if (distanceA.compLt(distanceB)) {
           return 1
         }
         return 0
@@ -237,7 +248,7 @@ export class Party {
 
   getSummary(): PartySummary {
     return new PartySummary({
-      peerClientIds: this.getPeerClientIds(),
+      peerClientIdAndDistances: this.getPeerClientIdsAndDistances(),
       introvertsGroupSummary: this.introvertsGroup.getSummary(),
       extrovertsGroupSummary: this.extrovertsGroup.getSummary(),
       offerInfos: this.offerInfos,

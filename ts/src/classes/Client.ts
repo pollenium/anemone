@@ -10,7 +10,6 @@ import {
   SignalingClientsManagerStruct,
 } from './SignalingClientsManager'
 import { Party, PartyStruct } from './Party'
-import { MissivesDb } from './MissivesDb'
 import { Missive } from './Missive'
 import { Offer } from './Signal/Offer'
 import { Answer } from './Signal/Answer'
@@ -41,11 +40,12 @@ export class Client {
   readonly missiveSnowdrop: Snowdrop<Missive> = new Snowdrop<Missive>();
   readonly summarySnowdrop: Snowdrop<ClientSummary> = new Snowdrop<ClientSummary>();
 
-  private missivesDb: MissivesDb = new MissivesDb();
   private party: Party;
   private signalingClientsManager: SignalingClientsManager;
 
   private maxFriendshipsConnectedPrimrose: Primrose<void> = new Primrose<void>();
+  private isMissiveReceivedByHashHex: Record<string, boolean> = {};
+  private isMissiveBroadcastedByHashHex: Record<string, boolean> = {};
 
   constructor(struct: ClientStruct) {
     this.party = new Party({ clientId: this.id, ...struct })
@@ -92,6 +92,19 @@ export class Client {
     this.party.summarySnowdrop.addHandle(() => {
       this.summarySnowdrop.emit(this.getSummary())
     })
+
+    this.party.missiveSnowdrop.addHandle((missive) => {
+      const missiveHashHex = missive.getHash().uu.toHex()
+      if (this.isMissiveReceivedByHashHex[missiveHashHex]) {
+        return
+      }
+      if (this.isMissiveBroadcastedByHashHex[missiveHashHex]) {
+        return
+      }
+      this.isMissiveReceivedByHashHex[missiveHashHex] = true
+      this.missiveSnowdrop.emit(missive)
+      this.broadcastMissive(missive)
+    })
   }
 
   getSummary(): ClientSummary {
@@ -102,6 +115,11 @@ export class Client {
   }
 
   broadcastMissive(missive: Missive): void {
+    const missiveHashHex = missive.getHash().uu.toHex()
+    if (this.isMissiveBroadcastedByHashHex[missiveHashHex]) {
+      throw new Error('Trying to broadcast a missive that has already been broadcast')
+    }
+    this.isMissiveBroadcastedByHashHex[missiveHashHex] = true
     this.party.broadcastMissive(missive)
   }
 

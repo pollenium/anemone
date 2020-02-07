@@ -12,7 +12,7 @@ var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var shasta = __importStar(require("pollenium-shasta"));
 var missive_1 = require("../templates/missive");
 var genEra_1 = require("../utils/genEra");
-var genMaxHash_1 = require("../utils/genMaxHash");
+var genMaxScore_1 = require("../utils/genMaxScore");
 var MISSIVE_COVER;
 (function (MISSIVE_COVER) {
     MISSIVE_COVER[MISSIVE_COVER["V0"] = 69] = "V0";
@@ -39,17 +39,17 @@ var Missive = (function () {
             },
         }));
     };
-    Missive.prototype.getId = function () {
-        return this.getHash();
-    };
     Missive.prototype.getHash = function () {
         return new pollenium_buttercup_1.Uint256(shasta.genSha256(this.getEncoding().unwrap()));
+    };
+    Missive.prototype.getScore = function () {
+        return new pollenium_buttercup_1.Uint256(this.getHash());
     };
     Missive.prototype.getEra = function () {
         return genEra_1.genEra(this.timestamp.toNumber());
     };
-    Missive.prototype.getMaxHash = function () {
-        return genMaxHash_1.genMaxHash({
+    Missive.prototype.getMaxScore = function () {
+        return genMaxScore_1.genMaxScore({
             difficulty: this.difficulty,
             cover: this.cover,
             applicationDataLength: this.applicationData.u.length,
@@ -59,7 +59,7 @@ var Missive = (function () {
         if (this.version !== missive_1.MISSIVE_KEY.V0) {
             return false;
         }
-        if (this.getHash().compGt(this.getMaxHash())) {
+        if (this.getScore().compGt(this.getMaxScore())) {
             return false;
         }
         return true;

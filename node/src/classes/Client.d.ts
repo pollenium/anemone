@@ -17,10 +17,11 @@ export declare class Client {
     readonly introvertSnowdrop: Snowdrop<Introvert>;
     readonly missiveSnowdrop: Snowdrop<Missive>;
     readonly summarySnowdrop: Snowdrop<ClientSummary>;
-    private missivesDb;
     private party;
     private signalingClientsManager;
     private maxFriendshipsConnectedPrimrose;
+    private isMissiveReceivedByHashHex;
+    private isMissiveBroadcastedByHashHex;
     constructor(struct: ClientStruct);
     getSummary(): ClientSummary;
     broadcastMissive(missive: Missive): void;

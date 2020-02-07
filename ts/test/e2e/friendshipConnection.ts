@@ -84,7 +84,7 @@ describe('friendshipConnection', () => {
       }
     })
 
-    extrovert.sendMissive(missive)
+    extrovert.maybeSendMissive(missive)
 
     await testPrimrose.promise
   }).timeout(30 * 1000)

@@ -51,7 +51,7 @@ export declare abstract class Friendship {
     getStatus(): FRIENDSHIP_STATUS;
     fetchSdpb(): Promise<Uu>;
     getIsSendable(): boolean;
-    sendMissive(missive: Missive): void;
+    maybeSendMissive(missive: Missive): void;
     private send;
     destroy(reason: DESTROY_REASON): void;
     protected startConnectOrDestroyTimeout(): void;
@@ -62,7 +62,5 @@ export declare abstract class Friendship {
         type: string;
         sdpb: Uu;
     }): void;
-    private getIsMissiveReceived;
-    private markIsMissiveReceived;
     private banAndDestroy;
 }

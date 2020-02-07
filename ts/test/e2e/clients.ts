@@ -8,6 +8,7 @@ import { Missive } from '../../src/classes/Missive'
 import {
   signalingServerUrls,
   clientsCount,
+  minConnectedFriendshipsCount,
   maxFriendshipsCount,
   missivesCount,
   expectedMissiveReceivesCount,
@@ -22,12 +23,20 @@ const clients: Array<Client> = []
 const intervalId = setInterval(() => {
   const clientSummaryJsonables = clients.map((client) => {
     const clientSummary = client.getSummary()
+    const connectedFriendshipsCount = clientSummary.struct.partySummary.getFriendshipsCountByStatus(FRIENDSHIP_STATUS.CONNECTED)
     if (
-      clientSummary.struct.partySummary.getFriendshipsCountByStatus(FRIENDSHIP_STATUS.CONNECTED)
+      connectedFriendshipsCount
       === maxFriendshipsCount
     ) {
       return 'Fully Connected'
     }
+    if (
+      connectedFriendshipsCount
+      >= minConnectedFriendshipsCount
+    ) {
+      return 'Mostly Connected'
+    }
+
     return clientSummary.toJsonable()
   })
   const clientSummariesJson = JSON.stringify(clientSummaryJsonables, null, 2)
@@ -63,7 +72,7 @@ describe('clients', () => {
             const connectedFriendshipsCount = summary.struct.partySummary.getFriendshipsCountByStatus(
               FRIENDSHIP_STATUS.CONNECTED,
             )
-            if (connectedFriendshipsCount === maxFriendshipsCount) {
+            if (connectedFriendshipsCount >= minConnectedFriendshipsCount) {
               client.summarySnowdrop.removeHandleById(handleId)
               resolve()
             }
@@ -92,19 +101,24 @@ describe('clients', () => {
 
   it(`should send ${missivesCount} missives which should be receieved ${expectedMissiveReceivesCount} times`, async () => {
     let receivesCount = 0
-    clients.forEach((client) => {
-      client.missiveSnowdrop.addHandle(async () => {
-        receivesCount += 1
-        if (receivesCount === expectedMissiveReceivesCount) {
-          await delay(2000)
-          if (receivesCount !== expectedMissiveReceivesCount) {
-            throw new Error('Received too many times')
+    const promise = new Promise((resolve, reject): void => {
+      clients.forEach((client) => {
+        client.missiveSnowdrop.addHandle(async () => {
+          receivesCount += 1
+          if (receivesCount === expectedMissiveReceivesCount) {
+            await delay(2000)
+            if (receivesCount !== expectedMissiveReceivesCount) {
+              reject(new Error('Received too many times'))
+            } else {
+              resolve()
+            }
           }
-        }
+        })
       })
     })
     missives.forEach((missive) => {
       clients[0].broadcastMissive(missive)
     })
+    return promise
   }).timeout(10 * 1000)
 })

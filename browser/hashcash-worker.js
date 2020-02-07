@@ -65,16 +65,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var pollenium_buttercup_1 = require("pollenium-buttercup");
 var two256 = pollenium_buttercup_1.Uint256.fromNumber(2);
 var twofiftyfive256 = pollenium_buttercup_1.Uint256.fromNumber(255);
-function genMaxHash(struct) {
+function genMaxScore(struct) {
     var difficulty = pollenium_buttercup_1.Uint8.fromUintable(struct.difficulty);
     var cover = pollenium_buttercup_1.Uint256.fromUintable(struct.cover);
     var applicationDataLength = pollenium_buttercup_1.Uint256.fromUintable(struct.applicationDataLength);
     var pow = twofiftyfive256.opSub(difficulty);
     var divisor = cover.opAdd(applicationDataLength);
-    var maxHash = two256.opPow(pow).opDiv(divisor);
-    return maxHash;
+    var MaxScore = two256.opPow(pow).opDiv(divisor);
+    return MaxScore;
 }
-exports.genMaxHash = genMaxHash;
+exports.genMaxScore = genMaxScore;
 
 },{"pollenium-buttercup":29}],4:[function(require,module,exports){
 "use strict";
@@ -103,7 +103,7 @@ var pollenium_uvaursi_1 = require("pollenium-uvaursi");
 var pollenium_buttercup_1 = require("pollenium-buttercup");
 var shasta = __importStar(require("pollenium-shasta"));
 var genTime_1 = require("./genTime");
-var genMaxHash_1 = require("./genMaxHash");
+var genMaxScore_1 = require("./genMaxScore");
 var TimeoutError = (function (_super) {
     __extends(TimeoutError, _super);
     function TimeoutError() {
@@ -113,7 +113,7 @@ var TimeoutError = (function (_super) {
 }(Error));
 exports.TimeoutError = TimeoutError;
 function genNonce(struct) {
-    var maxHash = genMaxHash_1.genMaxHash(struct);
+    var maxScore = genMaxScore_1.genMaxScore(struct);
     while (true) {
         if (genTime_1.genTime() > struct.timeoutAt) {
             throw new TimeoutError();
@@ -121,14 +121,14 @@ function genNonce(struct) {
         var nonce = pollenium_uvaursi_1.Uu.genRandom(32);
         var prehash = pollenium_uvaursi_1.Uu.genConcat([struct.noncelessPrehash, nonce]);
         var hash = new pollenium_buttercup_1.Uint256(shasta.genSha256(prehash));
-        if (hash.compLte(maxHash)) {
+        if (hash.compLte(maxScore)) {
             return new pollenium_buttercup_1.Uint256(nonce);
         }
     }
 }
 exports.genNonce = genNonce;
 
-},{"./genMaxHash":3,"./genTime":5,"pollenium-buttercup":29,"pollenium-shasta":33,"pollenium-uvaursi":35}],5:[function(require,module,exports){
+},{"./genMaxScore":3,"./genTime":5,"pollenium-buttercup":29,"pollenium-shasta":33,"pollenium-uvaursi":35}],5:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function genTime() {
@@ -362,7 +362,7 @@ utf8.write = function utf8_write(string, buffer, offset) {
       number = -number;
     }
     if (number < 0x4000000) {
-      this.words = [ number & 0x3ffffff ];
+      this.words = [number & 0x3ffffff];
       this.length = 1;
     } else if (number < 0x10000000000000) {
       this.words = [
@@ -390,7 +390,7 @@ utf8.write = function utf8_write(string, buffer, offset) {
     // Perhaps a Uint8Array
     assert(typeof number.length === 'number');
     if (number.length <= 0) {
-      this.words = [ 0 ];
+      this.words = [0];
       this.length = 1;
       return this;
     }
@@ -520,7 +520,7 @@ utf8.write = function utf8_write(string, buffer, offset) {
 
   BN.prototype._parseBase = function _parseBase (number, base, start) {
     // Initialize as zero
-    this.words = [ 0 ];
+    this.words = [0];
     this.length = 1;
 
     // Find length of limb in base
@@ -573,11 +573,15 @@ utf8.write = function utf8_write(string, buffer, offset) {
     dest.red = this.red;
   };
 
+  function move (dest, src) {
+    dest.words = src.words;
+    dest.length = src.length;
+    dest.negative = src.negative;
+    dest.red = src.red;
+  }
+
   BN.prototype._move = function _move (dest) {
-    dest.words = this.words;
-    dest.length = this.length;
-    dest.negative = this.negative;
-    dest.red = this.red;
+    move(dest, this);
   };
 
   BN.prototype.clone = function clone () {
@@ -609,9 +613,17 @@ utf8.write = function utf8_write(string, buffer, offset) {
     return this;
   };
 
-  BN.prototype.inspect = function inspect () {
+  // Check Symbol.for because not everywhere where Symbol defined
+  // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol#Browser_compatibility
+  if (typeof Symbol !== 'undefined' && typeof Symbol.for === 'function') {
+    BN.prototype[Symbol.for('nodejs.util.inspect.custom')] = inspect;
+  } else {
+    BN.prototype.inspect = inspect;
+  }
+
+  function inspect () {
     return (this.red ? '<BN-R: ' : '<BN: ') + this.toString(16) + '>';
-  };
+  }
 
   /*
 
@@ -786,51 +798,97 @@ utf8.write = function utf8_write(string, buffer, offset) {
     return this.toArrayLike(Array, endian, length);
   };
 
-  BN.prototype.toArrayLike = function toArrayLike (ArrayType, endian, length) {
-    var byteLength = this.byteLength();
-    var reqLength = length || Math.max(1, byteLength);
-    assert(byteLength <= reqLength, 'byte array longer than desired length');
-    assert(reqLength > 0, 'Requested array length <= 0');
-
-    this._strip();
-    var littleEndian = endian === 'le';
-    var res = allocate(ArrayType, reqLength);
-
-    var b, i;
-    var q = this.clone();
-    if (!littleEndian) {
-      // Assume big-endian
-      for (i = 0; i < reqLength - byteLength; i++) {
-        res[i] = 0;
-      }
-
-      for (i = 0; !q.isZero(); i++) {
-        b = q.andln(0xff);
-        q.iushrn(8);
-
-        res[reqLength - i - 1] = b;
-      }
-    } else {
-      for (i = 0; !q.isZero(); i++) {
-        b = q.andln(0xff);
-        q.iushrn(8);
-
-        res[i] = b;
-      }
-
-      for (; i < reqLength; i++) {
-        res[i] = 0;
-      }
-    }
-
-    return res;
-  };
-
   var allocate = function allocate (ArrayType, size) {
     if (ArrayType.allocUnsafe) {
       return ArrayType.allocUnsafe(size);
     }
     return new ArrayType(size);
+  };
+
+  BN.prototype.toArrayLike = function toArrayLike (ArrayType, endian, length) {
+    this._strip();
+
+    var byteLength = this.byteLength();
+    var reqLength = length || Math.max(1, byteLength);
+    assert(byteLength <= reqLength, 'byte array longer than desired length');
+    assert(reqLength > 0, 'Requested array length <= 0');
+
+    var res = allocate(ArrayType, reqLength);
+    var postfix = endian === 'le' ? 'LE' : 'BE';
+    this['_toArrayLike' + postfix](res, byteLength);
+    return res;
+  };
+
+  BN.prototype._toArrayLikeLE = function _toArrayLikeLE (res, byteLength) {
+    var position = 0;
+    var carry = 0;
+
+    for (var i = 0, shift = 0; i < this.length; i++) {
+      var word = (this.words[i] << shift) | carry;
+
+      res[position++] = word & 0xff;
+      if (position < res.length) {
+        res[position++] = (word >> 8) & 0xff;
+      }
+      if (position < res.length) {
+        res[position++] = (word >> 16) & 0xff;
+      }
+
+      if (shift === 6) {
+        if (position < res.length) {
+          res[position++] = (word >> 24) & 0xff;
+        }
+        carry = 0;
+        shift = 0;
+      } else {
+        carry = word >>> 24;
+        shift += 2;
+      }
+    }
+
+    if (position < res.length) {
+      res[position++] = carry;
+
+      while (position < res.length) {
+        res[position++] = 0;
+      }
+    }
+  };
+
+  BN.prototype._toArrayLikeBE = function _toArrayLikeBE (res, byteLength) {
+    var position = res.length - 1;
+    var carry = 0;
+
+    for (var i = 0, shift = 0; i < this.length; i++) {
+      var word = (this.words[i] << shift) | carry;
+
+      res[position--] = word & 0xff;
+      if (position >= 0) {
+        res[position--] = (word >> 8) & 0xff;
+      }
+      if (position >= 0) {
+        res[position--] = (word >> 16) & 0xff;
+      }
+
+      if (shift === 6) {
+        if (position >= 0) {
+          res[position--] = (word >> 24) & 0xff;
+        }
+        carry = 0;
+        shift = 0;
+      } else {
+        carry = word >>> 24;
+        shift += 2;
+      }
+    }
+
+    if (position >= 0) {
+      res[position--] = carry;
+
+      while (position >= 0) {
+        res[position--] = 0;
+      }
+    }
   };
 
   if (Math.clz32) {
@@ -903,7 +961,7 @@ utf8.write = function utf8_write(string, buffer, offset) {
       var off = (bit / 26) | 0;
       var wbit = bit % 26;
 
-      w[bit] = (num.words[off] & (1 << wbit)) >>> wbit;
+      w[bit] = (num.words[off] >>> wbit) & 0x01;
     }
 
     return w;
@@ -1925,8 +1983,10 @@ utf8.write = function utf8_write(string, buffer, offset) {
   }
 
   function jumboMulTo (self, num, out) {
-    var fftm = new FFTM();
-    return fftm.mulp(self, num, out);
+    // Temporary disable, see https://github.com/indutny/bn.js/issues/211
+    // var fftm = new FFTM();
+    // return fftm.mulp(self, num, out);
+    return bigMulTo(self, num, out);
   }
 
   BN.prototype.mulTo = function mulTo (num, out) {
@@ -2406,7 +2466,7 @@ utf8.write = function utf8_write(string, buffer, offset) {
 
     // Possible sign change
     if (this.negative !== 0) {
-      if (this.length === 1 && (this.words[0] | 0) < num) {
+      if (this.length === 1 && (this.words[0] | 0) <= num) {
         this.words[0] = num - (this.words[0] | 0);
         this.negative = 0;
         return this;
@@ -2723,7 +2783,7 @@ utf8.write = function utf8_write(string, buffer, offset) {
     var cmp = mod.cmp(half);
 
     // Round down
-    if (cmp < 0 || r2 === 1 && cmp === 0) return dm.div;
+    if (cmp < 0 || (r2 === 1 && cmp === 0)) return dm.div;
 
     // Round up
     return dm.div.negative !== 0 ? dm.div.isubn(1) : dm.div.iaddn(1);
@@ -3433,7 +3493,7 @@ utf8.write = function utf8_write(string, buffer, offset) {
   Red.prototype.imod = function imod (a) {
     if (this.prime) return this.prime.ireduce(a)._forceRed(this);
 
-    a.umod(this.m)._forceRed(this)._move(a);
+    move(a, a.umod(this.m)._forceRed(this));
     return a;
   };
 
@@ -7414,11 +7474,20 @@ var utils_1 = require("../utils");
 var UintX = /** @class */ (function (_super) {
     __extends(UintX, _super);
     function UintX(length, uish) {
-        return _super.call(this, length, uish) || this;
+        var _this = _super.call(this, length, uish) || this;
+        _this.numberStringByBase = {};
+        return _this;
     }
     UintX.prototype.toNumber = function () {
         this.number = new bn_js_1["default"](this.uu.u).toNumber();
         return this.number;
+    };
+    UintX.prototype.toNumberString = function (base) {
+        if (this.numberStringByBase[base]) {
+            return this.numberStringByBase[base];
+        }
+        this.numberStringByBase[base] = new bn_js_1["default"](this.uu.u).toString(base);
+        return this.numberStringByBase[base];
     };
     UintX.prototype.getIsZero = function () {
         return this.uu.u.every(function (byte) {

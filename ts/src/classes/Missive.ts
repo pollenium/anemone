@@ -5,7 +5,7 @@ import { Uu, Uish } from 'pollenium-uvaursi'
 import * as shasta from 'pollenium-shasta'
 import { MISSIVE_KEY, missiveTemplate } from '../templates/missive'
 import { genEra } from '../utils/genEra'
-import { genMaxHash } from '../utils/genMaxHash'
+import { genMaxScore } from '../utils/genMaxScore'
 
 
 export enum MISSIVE_COVER {
@@ -54,12 +54,12 @@ export class Missive {
     )
   }
 
-  getId(): Uint256 {
-    return this.getHash()
+  getHash(): Bytes32 {
+    return new Uint256(shasta.genSha256(this.getEncoding().unwrap()))
   }
 
-  getHash(): Uint256 {
-    return new Uint256(shasta.genSha256(this.getEncoding().unwrap()))
+  getScore(): Uint256 {
+    return new Uint256(this.getHash())
   }
 
   getEra(): number {
@@ -84,8 +84,8 @@ export class Missive {
   //   this.client.missiveIsReceivedByIdHexByEra[era][idHex] = true
   // }
 
-  getMaxHash(): Uint256 {
-    return genMaxHash({
+  getMaxScore(): Uint256 {
+    return genMaxScore({
       difficulty: this.difficulty,
       cover: this.cover,
       applicationDataLength: this.applicationData.u.length,
@@ -96,7 +96,7 @@ export class Missive {
     if (this.version !== MISSIVE_KEY.V0) {
       return false
     }
-    if (this.getHash().compGt(this.getMaxHash())) {
+    if (this.getScore().compGt(this.getMaxScore())) {
       return false
     }
     return true

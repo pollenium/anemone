@@ -1,4 +1,4 @@
-/* create-main-md5: a3a5da468ea51bab7c8a080239e7b727 */
+/* create-main-md5: 358f1f375abaafc5cc6c64f651202f52 */
 
 export {
   Client,
@@ -58,15 +58,12 @@ export {
 } from './src/classes/MissiveGenerator'
 
 export {
-  MissivesDb,
-} from './src/classes/MissivesDb'
-
-export {
   OfferInfo,
 } from './src/classes/OfferInfo'
 
 export {
   Party,
+  PeerClientIdAndDistance,
   PartyStruct,
 } from './src/classes/Party'
 
@@ -142,8 +139,8 @@ export {
 } from './src/utils/genEra'
 
 export {
-  genMaxHash,
-} from './src/utils/genMaxHash'
+  genMaxScore,
+} from './src/utils/genMaxScore'
 
 export {
   TimeoutError,

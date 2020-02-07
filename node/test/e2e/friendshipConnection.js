@@ -143,7 +143,7 @@ mocha_1.describe('friendshipConnection', function () {
                             testPrimrose.reject('Missive mismatch');
                         }
                     });
-                    extrovert.sendMissive(missive);
+                    extrovert.maybeSendMissive(missive);
                     return [4, testPrimrose.promise];
                 case 1:
                     _a.sent();

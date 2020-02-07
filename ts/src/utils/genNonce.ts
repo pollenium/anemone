@@ -2,7 +2,7 @@ import { Uish, Uu } from 'pollenium-uvaursi'
 import { Uintable, Uint256 } from 'pollenium-buttercup'
 import * as shasta from 'pollenium-shasta'
 import { genTime } from './genTime'
-import { genMaxHash } from './genMaxHash'
+import { genMaxScore } from './genMaxScore'
 
 export class TimeoutError extends Error {
 
@@ -19,7 +19,7 @@ export function genNonce(struct: {
   applicationDataLength: Uintable;
   timeoutAt: number;
 }): Uint256 {
-  const maxHash = genMaxHash(struct)
+  const maxScore = genMaxScore(struct)
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
@@ -29,7 +29,7 @@ export function genNonce(struct: {
     const nonce = Uu.genRandom(32)
     const prehash = Uu.genConcat([struct.noncelessPrehash, nonce])
     const hash = new Uint256(shasta.genSha256(prehash))
-    if (hash.compLte(maxHash)) {
+    if (hash.compLte(maxScore)) {
       return new Uint256(nonce)
     }
   }

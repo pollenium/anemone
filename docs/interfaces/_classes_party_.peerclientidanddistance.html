@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>MissivesDb | pollenium-anemone</title>
+	<title>PeerClientIdAndDistance | pollenium-anemone</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_classes_missivesdb_.html">&quot;classes/MissivesDb&quot;</a>
+					<a href="../modules/_classes_party_.html">&quot;classes/Party&quot;</a>
 				</li>
 				<li>
-					<a href="_classes_missivesdb_.missivesdb.html">MissivesDb</a>
+					<a href="_classes_party_.peerclientidanddistance.html">PeerClientIdAndDistance</a>
 				</li>
 			</ul>
-			<h1>Class MissivesDb</h1>
+			<h1>Interface PeerClientIdAndDistance</h1>
 		</div>
 	</div>
 </header>
@@ -73,7 +73,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">MissivesDb</span>
+						<span class="target">PeerClientIdAndDistance</span>
 					</li>
 				</ul>
 			</section>
@@ -81,82 +81,37 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
+						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_classes_missivesdb_.missivesdb.html#isreceivedbyidhex" class="tsd-kind-icon">is<wbr>Received<wbr>ById<wbr>Hex</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Methods</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_classes_missivesdb_.missivesdb.html#getisreceived" class="tsd-kind-icon">get<wbr>IsReceived</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_classes_missivesdb_.missivesdb.html#markisreceived" class="tsd-kind-icon">mark<wbr>IsReceived</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_classes_party_.peerclientidanddistance.html#distance" class="tsd-kind-icon">distance</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_classes_party_.peerclientidanddistance.html#peerclientid" class="tsd-kind-icon">peer<wbr>Client<wbr>Id</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="isreceivedbyidhex" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> is<wbr>Received<wbr>ById<wbr>Hex</h3>
-					<div class="tsd-signature tsd-kind-icon">is<wbr>Received<wbr>ById<wbr>Hex<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="distance" class="tsd-anchor"></a>
+					<h3>distance</h3>
+					<div class="tsd-signature tsd-kind-icon">distance<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Uint256</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/pollenium/anemone/blob/bf27b46/ts/src/classes/MissivesDb.ts#L5">ts/src/classes/MissivesDb.ts:5</a></li>
+							<li>Defined in <a href="https://github.com/pollenium/anemone/blob/8f07d38/ts/src/classes/Party.ts#L21">ts/src/classes/Party.ts:21</a></li>
 						</ul>
 					</aside>
 				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getisreceived" class="tsd-anchor"></a>
-					<h3>get<wbr>IsReceived</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>IsReceived<span class="tsd-signature-symbol">(</span>missive<span class="tsd-signature-symbol">: </span><a href="_classes_missive_.missive.html" class="tsd-signature-type">Missive</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/pollenium/anemone/blob/bf27b46/ts/src/classes/MissivesDb.ts#L7">ts/src/classes/MissivesDb.ts:7</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>missive: <a href="_classes_missive_.missive.html" class="tsd-signature-type">Missive</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="markisreceived" class="tsd-anchor"></a>
-					<h3>mark<wbr>IsReceived</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">mark<wbr>IsReceived<span class="tsd-signature-symbol">(</span>missive<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/pollenium/anemone/blob/bf27b46/ts/src/classes/MissivesDb.ts#L12">ts/src/classes/MissivesDb.ts:12</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>missive: <span class="tsd-signature-type">any</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="peerclientid" class="tsd-anchor"></a>
+					<h3>peer<wbr>Client<wbr>Id</h3>
+					<div class="tsd-signature tsd-kind-icon">peer<wbr>Client<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Bytes32</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/pollenium/anemone/blob/8f07d38/ts/src/classes/Party.ts#L20">ts/src/classes/Party.ts:20</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 		</div>
@@ -167,25 +122,28 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_classes_missivesdb_.html">&quot;classes/<wbr>Missives<wbr>Db&quot;</a>
+						<a href="../modules/_classes_party_.html">&quot;classes/<wbr>Party&quot;</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="../classes/_classes_party_.party.html" class="tsd-kind-icon">Party</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_classes_party_.partystruct.html" class="tsd-kind-icon">Party<wbr>Struct</a>
+					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_classes_missivesdb_.missivesdb.html" class="tsd-kind-icon">Missives<wbr>Db</a>
+					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_classes_party_.peerclientidanddistance.html" class="tsd-kind-icon">Peer<wbr>Client<wbr>IdAnd<wbr>Distance</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_classes_missivesdb_.missivesdb.html#isreceivedbyidhex" class="tsd-kind-icon">is<wbr>Received<wbr>ById<wbr>Hex</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_classes_party_.peerclientidanddistance.html#distance" class="tsd-kind-icon">distance</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_classes_missivesdb_.missivesdb.html#getisreceived" class="tsd-kind-icon">get<wbr>IsReceived</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_classes_missivesdb_.missivesdb.html#markisreceived" class="tsd-kind-icon">mark<wbr>IsReceived</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_classes_party_.peerclientidanddistance.html#peerclientid" class="tsd-kind-icon">peer<wbr>Client<wbr>Id</a>
 							</li>
 						</ul>
 					</li>

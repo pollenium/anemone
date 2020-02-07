@@ -21,10 +21,10 @@ export declare class Missive {
         difficulty: Uintable;
     });
     getEncoding(): Uu;
-    getId(): Uint256;
-    getHash(): Uint256;
+    getHash(): Bytes32;
+    getScore(): Uint256;
     getEra(): number;
-    getMaxHash(): Uint256;
+    getMaxScore(): Uint256;
     getIsValid(): boolean;
     static fromHenpojo(henpojo: any): Missive;
     static fromEncoding(encoding: Uish): Missive;

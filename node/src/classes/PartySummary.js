@@ -47,8 +47,13 @@ var PartySummary = (function (_super) {
             createdAgo: genTime_1.genTime() - this.createdAt,
             friendshipsCount: this.getFriendshipsCount(),
             connectedFriendshipsCount: this.getFriendshipsCountByStatus(Friendship_1.FRIENDSHIP_STATUS.CONNECTED),
-            peerClientIds: this.struct.peerClientIds.map(function (peerClientId) {
-                return peerClientId.uu.toHex();
+            peerClientIdAndDistancess: this.struct.peerClientIdAndDistances.map(function (peerClientIdAndDistance) {
+                var peerClientId = peerClientIdAndDistance.peerClientId, distance = peerClientIdAndDistance.distance;
+                return {
+                    peerClientId: peerClientId.uu.toHex(),
+                    distance: distance.toNumberString(10),
+                    distanceExp: distance.toNumberString(10).length,
+                };
             }),
             offersCount: this.struct.offerInfos.length,
             offerInfos: this.struct.offerInfos.map(function (offerInfo) {
@@ -59,6 +64,7 @@ var PartySummary = (function (_super) {
                     firstReceivedAgo: offerInfo.getFirstReceivedAgo(),
                     lastReceivedAgo: offerInfo.getLastReceivedAgo(),
                     distance: offerInfo.getDistance().uu.toHex(),
+                    distanceExp: offerInfo.getDistance().toNumberString(10).length,
                 };
             }),
             friendshipsCountsByStatus: this.getFriendshipsCountsByStatus(),
