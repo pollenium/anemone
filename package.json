@@ -39,7 +39,7 @@
     "simple-peer": "^9.6.2",
     "tiny-worker": "^2.3.0",
     "ts-enum-util": "^4.0.1",
-    "ts-loader": "^6.0.4",
+    "ts-loader": "^9.4.2",
     "websocket": "^1.0.29",
     "wrtc": "^0.4.3",
     "ws": "^7.2.1"
